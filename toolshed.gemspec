@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Toolshed::VERSION
   spec.authors       = ["test"]
   spec.email         = ["test@gmail.com"]
-  spec.description   = %q{This is a utility used to automated small tasks like creating a github pull request}
+  spec.description   = %q{This is a utility used to automated small tasks like creating a github pull request.}
   spec.summary       = %q{Ditto}
   spec.homepage      = ""
   spec.license       = "MIT"
