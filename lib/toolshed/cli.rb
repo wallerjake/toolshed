@@ -1,5 +1,4 @@
 module Toolshed
-
   class CommandNotFound < RuntimeError
   end
 
@@ -7,7 +6,7 @@ module Toolshed
     def execute(command_name, args, options={})
       Toolshed::Client.load_credentials_if_necessary
       command = commands[command_name]
-      puts "Command: #{command.inspect}"
+      puts "Command: #{command}"
       if command
         begin
           command.new.execute(args, options)

@@ -20,3 +20,4 @@ end
 require 'toolshed/base'
 require 'toolshed/client'
 require 'toolshed/github'
+require 'toolshed/error'
