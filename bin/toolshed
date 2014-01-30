@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'rubygems'
+  require 'toolshed'
+  gem 'rake'
+rescue LoadError
+end
+
+require 'rake'
+require File.dirname(__FILE__) + '/toolshed'
