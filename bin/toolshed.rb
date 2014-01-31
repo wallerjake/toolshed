@@ -46,12 +46,7 @@ if $0.split("/").last == 'toolshed'
     end
   end
 
-  subcommands = {
-
-  }
-  #subcommands = {
-    #'create_github_pull_request' => 
-  #}
+  subcommands = { }
 
   command = ARGV.shift
   if command.nil? || command == 'help'
