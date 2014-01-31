@@ -23,7 +23,7 @@ module Toolshed
         }.to_json
       })
 
-      response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.github_username}/#{Toolshed::Client.branched_from_remote_name}/pulls", options).response
+      response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.branched_from_user}/#{Toolshed::Client.branched_from_repo_name}/pulls", options).response
       response = JSON.parse(response.body)
 
       if (response["errors"].nil?)

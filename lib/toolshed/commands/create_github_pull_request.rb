@@ -55,20 +55,22 @@ module Toolshed
 
         # create the pull request
         begin
+          puts "Running Github Pull Request"
           github_pull_request_result = github.create_pull_request(github_pull_request_title, github_pull_request_body)
+          puts "Github Pull Request URL: #{github_pull_request_result["html_url"]}"
+
+          if (Toolshed::Client.use_pivotal_tracker)
+            print "Would you like to add a note to PivotalTracker with the pull request URL(y/n)? "
+            update_pt_info = $stdin.gets.chomp.strip
+
+            if (update_pt_info == 'y')
+              result = pivotal_tracker.add_note(story_id, github_pull_request_result["html_url"])
+              result = pivotal_tracker.update_story_state(story_id, Toolshed::PivotalTracker::STORY_STATUS_DEFAULT)
+            end
+          end
         rescue => e
           puts e.message
           exit
-        end
-
-        if (Toolshed::Client.use_pivotal_tracker)
-          print "Would you like to add a note to PivotalTracker with the pull request URL(y/n)? "
-          update_pt_info = $stdin.gets.chomp.strip
-
-          if (update_pt_info == 'y')
-            result = pivotal_tracker.add_note(story_id, JSON.parse(github_pull_request_result.body["html_url"]))
-            result = pivotal_tracker.update_story_state(story_id, Toolshed::PivotalTracker::STORY_STATUS_DEFAULT)
-          end
         end
       end
     end
