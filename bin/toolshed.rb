@@ -17,6 +17,18 @@ be found at https://github.com/wallerjake/toolshed
 Before using this tool you should create a file called .toolshed in your home directory
 and add the following to that file:
 
+  use_pivotal_tracker: true
+  pivotal_tracker_username: [pivotal_tracker_username]
+  pivotal_tracker_password: [pivotal_tracker_password]
+  default_pivotal_tracker_project_id: [project_id]
+  github_username: [github_username]
+  github_password: [github_password]
+  branched_from_remote_name: [branched_from_remote_name]
+  branched_from_user: [branched_from_username]
+  branched_from_repo_name: [branched_from_repo_name]
+  push_from_user: [push_from_yourself]
+  push_to_myself: [push_to_yourself]
+
 == Commands
 
 All commands are executed as toolshed [options] command [command-options] args
