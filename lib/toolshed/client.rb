@@ -4,6 +4,7 @@ require 'yaml'
 module Toolshed
   class Client
     GITHUB_BASE_API_URL  = "https://api.github.com/"
+    PIVOTAL_TRACKER_BASE_API_URL = "https://www.pivotaltracker.com/services/v5/"
 
     def self.debug?
       @debug
@@ -12,7 +13,6 @@ module Toolshed
     def self.debug=(debug)
       @debug = debug
     end
-
 
 
     # github config settings
@@ -99,6 +99,13 @@ module Toolshed
       @default_pivotal_tracker_project_id = default_pivotal_tracker_project_id
     end
 
+    def self.use_pivotal_tracker
+      @use_pivotal_tracker
+    end
+
+    def self.use_pivotal_tracker=(use_pivotal_tracker)
+      @use_pivotal_tracker = use_pivotal_tracker
+    end
 
 
     def self.http_proxy
@@ -119,11 +126,7 @@ module Toolshed
 
     def self.load_credentials(path = config_path)
       begin
-        if (File.exists?('.toolshed'))
-          credentials = YAML.load_file(File.expand_path('.toolshed'))
-        else
-          credentials = YAML.load_file(File.expand_path(path))
-        end
+        credentials = YAML.load_file(File.expand_path(path))
         self.github_username                    ||= credentials['github_username']
         self.github_password                    ||= credentials['github_password']
         self.pivotal_tracker_username           ||= credentials['pivotal_tracker_username']
@@ -134,6 +137,7 @@ module Toolshed
         self.branched_from_repo_name            ||= credentials['branched_from_repo_name']
         self.push_from_user                     ||= credentials['push_from_user']
         self.push_to_myself                     ||= credentials['push_to_myself']
+        self.use_pivotal_tracker                ||= credentials['use_pivotal_tracker']
         @credentials_loaded = true
         puts "Credentials loaded from #{path}"
       rescue => error

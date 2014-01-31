@@ -25,6 +25,9 @@ The following commands are available:
 
 help                                    # show this usage
 create_github_pull_request              # create a github pull request based on the branch you currently have checked out
+get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
+create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
+update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
 EOF
 end
 

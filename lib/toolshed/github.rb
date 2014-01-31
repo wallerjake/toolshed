@@ -2,7 +2,7 @@ module Toolshed
   class Github
     include HTTParty
 
-    def initialize
+    def initialize(options={})
       @auth = { username: Toolshed::Client::github_username, password: Toolshed::Client::github_password }
       @default_options = {
         :headers => {

@@ -6,7 +6,6 @@ module Toolshed
     def execute(command_name, args, options={})
       Toolshed::Client.load_credentials_if_necessary
       command = commands[command_name]
-      puts "Command: #{command}"
       if command
         begin
           command.new.execute(args, options)
@@ -22,7 +21,10 @@ module Toolshed
 
     def commands
       {
-        'create_github_pull_request' => Toolshed::Commands::CreateGithubPullRequest,
+        'create_github_pull_request'            => Toolshed::Commands::CreateGithubPullRequest,
+        'create_pivotal_tracker_note'           => Toolshed::Commands::CreatePivotalTrackerNote,
+        'get_pivotal_tracker_story_information' => Toolshed::Commands::GetPivotalTrackerStoryInformation,
+        'update_pivotal_tracker_story_status'   => Toolshed::Commands::UpdatePivotalTrackerStoryStatus,
       }
     end
   end
@@ -30,3 +32,6 @@ module Toolshed
 end
 
 require 'toolshed/commands/create_github_pull_request'
+require 'toolshed/commands/create_pivotal_tracker_note'
+require 'toolshed/commands/get_pivotal_tracker_story_information'
+require 'toolshed/commands/update_pivotal_tracker_story_status'
