@@ -9,10 +9,12 @@ module Toolshed
           branch_from = $stdin.gets.chomp
 
           git_submodule_command = ''
-          print "Update Submodules (y/n)? "
-          update_submodules = $stdin.gets.chomp
-          if (update_submodules == 'y')
-            git_submodule_command = "git submodule update --init;"
+          if (Toolshed::Client.use_git_submodules)
+            print "Update Submodules (y/n)? "
+            update_submodules = $stdin.gets.chomp
+            if (update_submodules == 'y')
+              git_submodule_command = "git submodule update --init;"
+            end
           end
 
           branch_name = branch_name.strip.downcase.tr(" ", "_").gsub("-", "").gsub("&", "").gsub("/", "_").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "")

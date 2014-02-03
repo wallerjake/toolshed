@@ -8,10 +8,12 @@ module Toolshed
         branch_name = `git branch | grep \"#{ticket_id}\"`.gsub("*", "").strip
 
         git_submodule_command = ''
-        print "Update Submodules (y/n)? "
-        update_submodules = $stdin.gets.chomp
-        if (update_submodules == 'y')
-          git_submodule_command = "git submodule update --init;"
+        if (Toolshed::Client.use_git_submodules)
+          print "Update Submodules (y/n)? "
+          update_submodules = $stdin.gets.chomp
+          if (update_submodules == 'y')
+            git_submodule_command = "git submodule update --init;"
+          end
         end
 
         system("git checkout #{branch_name}; #{git_submodule_command}")

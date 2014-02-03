@@ -72,6 +72,14 @@ module Toolshed
       @push_to_myself = push_to_myself 
     end
 
+    def self.use_git_submodules
+      @use_git_submodules
+    end
+
+    def self.use_git_submodules=(use_git_submodules)
+      @use_git_submodules = use_git_submodules
+    end
+
 
 
     # pivotal tracker config
@@ -152,6 +160,7 @@ module Toolshed
         self.push_from_user                     ||= credentials['push_from_user']
         self.push_to_myself                     ||= credentials['push_to_myself']
         self.use_pivotal_tracker                ||= credentials['use_pivotal_tracker']
+        self.use_git_submodules                 ||= credentials['use_git_submodules']
         @credentials_loaded = true
         puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
       rescue => error

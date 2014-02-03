@@ -17,16 +17,17 @@ Before using this tool you should create a file called .toolshedrc in your proje
 Note that it will only read one file which ever file is closest to the directory you are in. Then and add the following to that file:
 
   use_pivotal_tracker: true (required)
-  pivotal_tracker_username: [pivotal_tracker_username] (not required)
-  pivotal_tracker_password: [pivotal_tracker_password] (not required)
-  default_pivotal_tracker_project_id: [project_id] (not required)
-  github_username: [github_username] (not required)
-  github_password: [github_password] (not required)
+  pivotal_tracker_username: [pivotal_tracker_username] (optional)
+  pivotal_tracker_password: [pivotal_tracker_password] (optional)
+  default_pivotal_tracker_project_id: [project_id] (optional)
+  github_username: [github_username] (optional)
+  github_password: [github_password] (optional)
   branched_from_remote_name: [branched_from_remote_name] (required)
   branched_from_user: [branched_from_username] (required)
   branched_from_repo_name: [branched_from_repo_name] (required)
   push_from_user: [push_from_yourself] (required)
   push_to_myself: [push_to_yourself] (required)
+  use_git_submodules: false (optional)
 
 == Commands
 
@@ -60,7 +61,7 @@ if $0.split("/").last == 'toolshed'
     opts.on("-p", "--pivotal_tracker_password [ARG]") do |password|
       Toolshed::Client.pivotal_tracker_password = password
     end
-    opts.on("-d", "--debug [ARG]", "Debug") do
+    opts.on("-d", "--debug [ARG]") do
       Toolshed::Client.debug = true
     end
     opts.on("-h", "--help", "Help") do
