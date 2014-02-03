@@ -1,6 +1,6 @@
 # Toolshed
 
-TODO: Write a gem description
+Toolshed is a utility gem meant to make small tasks faster. This includes things like making a pull request up to Github all the way to creating a branch. This gem can be extended to used else where also.
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+After install the gem run toolshed for help menu. It will list the available commands.
 
 ## Contributing
 
