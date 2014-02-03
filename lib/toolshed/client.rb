@@ -126,7 +126,21 @@ module Toolshed
 
     def self.load_credentials(path = config_path)
       begin
-        credentials = YAML.load_file(File.expand_path(path))
+        dir = Dir.pwd
+        while File.expand_path(dir) != '/' do
+          if (File.exists? "#{dir}/.toolshedrc")
+            loaded_from_path = "#{dir}/.toolshedrc"
+            break
+          elsif (File.exists? "#{dir}/.toolshed")
+            loaded_from_path = "#{dir}/.toolshed"
+            warn "[DEPRECATION] `.toolshed` file is being deprecated.  Please use a `.toolshedrc` file instead."
+            break
+          end
+
+          dir = File.join dir, '..'
+        end
+
+        credentials = YAML.load_file(File.expand_path(loaded_from_path))
         self.github_username                    ||= credentials['github_username']
         self.github_password                    ||= credentials['github_password']
         self.pivotal_tracker_username           ||= credentials['pivotal_tracker_username']
@@ -139,7 +153,7 @@ module Toolshed
         self.push_to_myself                     ||= credentials['push_to_myself']
         self.use_pivotal_tracker                ||= credentials['use_pivotal_tracker']
         @credentials_loaded = true
-        puts "Credentials loaded from #{path}"
+        puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
       rescue => error
         puts "Error loading your credentials: #{error.message}"
         exit 1

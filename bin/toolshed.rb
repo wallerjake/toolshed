@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-
 require 'toolshed'
 require 'toolshed/cli'
 
@@ -11,23 +10,23 @@ require 'optparse'
 
 def usage
   $stderr.puts <<EOF
-This is the command line tool for toolshed. More information about toolshed can
+Command line tool for toolshed. More information about toolshed can
 be found at https://github.com/wallerjake/toolshed
 
-Before using this tool you should create a file called .toolshed in your home directory
-and add the following to that file:
+Before using this tool you should create a file called .toolshedrc in your projects directory or home directory if you want to use the settings globally.
+Note that it will only read one file which ever file is closest to the directory you are in. Then and add the following to that file:
 
-  use_pivotal_tracker: true
-  pivotal_tracker_username: [pivotal_tracker_username]
-  pivotal_tracker_password: [pivotal_tracker_password]
-  default_pivotal_tracker_project_id: [project_id]
-  github_username: [github_username]
-  github_password: [github_password]
-  branched_from_remote_name: [branched_from_remote_name]
-  branched_from_user: [branched_from_username]
-  branched_from_repo_name: [branched_from_repo_name]
-  push_from_user: [push_from_yourself]
-  push_to_myself: [push_to_yourself]
+  use_pivotal_tracker: true (required)
+  pivotal_tracker_username: [pivotal_tracker_username] (not required)
+  pivotal_tracker_password: [pivotal_tracker_password] (not required)
+  default_pivotal_tracker_project_id: [project_id] (not required)
+  github_username: [github_username] (not required)
+  github_password: [github_password] (not required)
+  branched_from_remote_name: [branched_from_remote_name] (required)
+  branched_from_user: [branched_from_username] (required)
+  branched_from_repo_name: [branched_from_repo_name] (required)
+  push_from_user: [push_from_yourself] (required)
+  push_to_myself: [push_to_yourself] (required)
 
 == Commands
 
@@ -49,19 +48,29 @@ if $0.split("/").last == 'toolshed'
   options = {}
 
   global = OptionParser.new do |opts|
-    opts.on("-u", "--username [ARG]") do |username|
-      # Set username here
+    opts.on("-u", "--github_username [ARG]") do |username|
+      Toolshed::Client.github_username = username
     end
-    opts.on("-p", "--password [ARG]") do |password|
-      # Set password here
+    opts.on("-p", "--github_password [ARG]") do |password|
+      Toolshed::Client.github_password = password
     end
-    opts.on("-d") do
-      # Set debug here
+    opts.on("-u", "--pivotal_tracker_username [ARG]") do |username|
+      Toolshed::Client.pivotal_tracker_username = username
+    end
+    opts.on("-p", "--pivotal_tracker_password [ARG]") do |password|
+      Toolshed::Client.pivotal_tracker_password = password
+    end
+    opts.on("-d", "--debug [ARG]", "Debug") do
+      Toolshed::Client.debug = true
+    end
+    opts.on("-h", "--help", "Help") do
+      usage
     end
   end
 
-  subcommands = { }
+  subcommands = {}
 
+  global.order!
   command = ARGV.shift
   if command.nil? || command == 'help'
     usage
