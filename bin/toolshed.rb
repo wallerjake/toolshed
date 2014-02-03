@@ -42,6 +42,7 @@ create_pivotal_tracker_note             # Create a note for a specific PivotalTr
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
 create_git_branch                       # Create a git branch and push it to your local repository
 checkout_git_branch                     # Checkout a git branch and update the submodules if you use them
+push_git_branch                         # Push your current working branch to your own repository
 EOF
 end
 
