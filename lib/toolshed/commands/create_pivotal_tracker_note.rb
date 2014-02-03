@@ -8,7 +8,7 @@ module Toolshed
           project_id = Toolshed::Client.default_pivotal_tracker_project_id
         end
 
-        pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id})
+        pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
         github = Toolshed::Github.new
 
         default_story_id = Toolshed::PivotalTracker::story_id_from_branch_name(github.branch_name)

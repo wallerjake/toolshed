@@ -10,7 +10,7 @@ module Toolshed
           project_id = Toolshed::Client.default_pivotal_tracker_project_id
         end
 
-        pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id})
+        pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
         github = Toolshed::Github.new
 
         default_story_id = Toolshed::PivotalTracker::story_id_from_branch_name(github.branch_name)
@@ -28,7 +28,9 @@ module Toolshed
 
         begin
           result = pivotal_tracker.update_story_state(story_id, story_status)
-          puts "Story Status Updated At: #{result["created_at"]}"
+          result.each do |key, value|
+            puts "#{key}: #{value}"
+          end
         rescue => e
           puts e.message
           exit

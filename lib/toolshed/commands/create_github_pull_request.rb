@@ -10,7 +10,7 @@ module Toolshed
           if (project_id == '')
             project_id = Toolshed::Client.default_pivotal_tracker_project_id
           end
-          pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password})
+          pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
         end
 
         github = Toolshed::Github.new({ username: Toolshed::Github.username, password: Toolshed::Github.password })

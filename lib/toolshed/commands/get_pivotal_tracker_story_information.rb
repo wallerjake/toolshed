@@ -9,7 +9,7 @@ module Toolshed
             project_id = Toolshed::Client.default_pivotal_tracker_project_id
           end
 
-          pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id})
+          pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
           github = Toolshed::Github.new
 
           default_story_id = Toolshed::PivotalTracker::story_id_from_branch_name(github.branch_name)
@@ -20,9 +20,9 @@ module Toolshed
           end
 
           result = pivotal_tracker.story_information(story_id)
-          puts "Name: #{result.name}"
-          puts "Url: #{result.url}"
-          puts "Description: #{result.description}"
+          result.instance_variables.each do |name, value|
+            puts "#{name}: #{result.instance_variable_get(name).inspect}"
+          end
           exit
         rescue => e
           puts e.message
