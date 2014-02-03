@@ -3,7 +3,18 @@ module Toolshed
     include HTTParty
 
     def initialize(options={})
-      @auth = { username: Toolshed::Client::github_username, password: Toolshed::Client::github_password }
+      username = Toolshed::Client::github_username
+      password = Toolshed::Client::github_password
+
+      unless (options[:username].nil?)
+        username = options[:username]
+      end
+
+      unless (options[:password].nil?)
+         password = options[:password]
+      end
+
+      @auth = { username: username, password: password }
       @default_options = {
         :headers => {
             "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17"
@@ -49,6 +60,30 @@ module Toolshed
 
     def branched_from
       branched_from = `git rev-parse --abbrev-ref --symbolic-full-name @{u}`.split('/')[-1].strip
+    end
+
+    def self.username
+      username = Toolshed::Client::github_username
+      if (username.nil?)
+        # prompt to ask for username
+        puts "Github username? "
+        username = $stdin.gets.chomp.strip
+      end
+
+      return username
+    end
+
+    def self.password
+      password = Toolshed::Client::github_password
+      if (password.nil?)
+        # prompt to ask for password
+        system "stty -echo"
+        puts "Github password? "
+        password = $stdin.gets.chomp.strip
+        system "stty echo"
+      end
+
+      return password
     end
   end
 end

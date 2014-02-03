@@ -7,7 +7,19 @@ module Toolshed
     attr_accessor :project_id, :token
 
     def initialize(options={})
-      self.token = ::PivotalTracker::Client.token(Toolshed::Client.pivotal_tracker_username, Toolshed::Client.pivotal_tracker_password)
+      username = Toolshed::Client::pivotal_tracker_username
+      password = Toolshed::Client::pivotal_tracker_password
+
+      unless (options[:username].nil?)
+        username = options[:username]
+      end
+
+      unless (options[:password].nil?)
+         password = options[:password]
+      end
+
+
+      self.token = ::PivotalTracker::Client.token(username, password)
 
       self.project_id = (options[:project_id].nil?) ? Toolshed::Client.default_pivotal_tracker_project_id : options[:project_id]
       @pt_project = ::PivotalTracker::Project.find(self.project_id)
@@ -46,6 +58,30 @@ module Toolshed
       else
         raise "validation errors #{response.inspect}"
       end
+    end
+
+    def self.username
+      username = Toolshed::Client::pivotal_tracker_username
+      if (username.nil?)
+        # prompt to ask for username
+        puts "PivotalTracker username? "
+        username = $stdin.gets.chomp.strip
+      end
+
+      return username
+    end
+
+    def self.password
+      password = Toolshed::Client::pivotal_tracker_password
+      if (password.nil?)
+        # prompt to ask for password
+        system "stty -echo"
+        puts "PivotalTracker password? "
+        password = $stdin.gets.chomp.strip
+        system "stty echo"
+      end
+
+      return password
     end
   end
 end
