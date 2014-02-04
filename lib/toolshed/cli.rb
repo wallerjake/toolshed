@@ -21,7 +21,7 @@ module Toolshed
 
     def commands
       {
-        'create_github_pull_request'            => Toolshed::Commands::CreateGithubPullRequest,
+        'create_pull_request'                   => Toolshed::Commands::CreatePullRequest,
         'create_pivotal_tracker_note'           => Toolshed::Commands::CreatePivotalTrackerNote,
         'get_pivotal_tracker_story_information' => Toolshed::Commands::GetPivotalTrackerStoryInformation,
         'update_pivotal_tracker_story_status'   => Toolshed::Commands::UpdatePivotalTrackerStoryStatus,
@@ -33,7 +33,7 @@ module Toolshed
   end
 end
 
-require 'toolshed/commands/create_github_pull_request'
+require 'toolshed/commands/create_pull_request'
 require 'toolshed/commands/create_pivotal_tracker_note'
 require 'toolshed/commands/get_pivotal_tracker_story_information'
 require 'toolshed/commands/update_pivotal_tracker_story_status'

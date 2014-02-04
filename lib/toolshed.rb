@@ -20,6 +20,8 @@ end
 
 require 'toolshed/base'
 require 'toolshed/client'
-require 'toolshed/github'
-require 'toolshed/pivotal_tracker'
+require 'toolshed/git/git'
+require 'toolshed/git/github'
+require 'toolshed/ticket_tracking/ticket_tracking'
+require 'toolshed/ticket_tracking/pivotal_tracker'
 require 'toolshed/error'

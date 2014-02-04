@@ -10,20 +10,23 @@ module Toolshed
           project_id = Toolshed::Client.default_pivotal_tracker_project_id
         end
 
-        pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
-        github = Toolshed::Github.new
+        pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({
+            project_id: project_id,
+            username: Toolshed::TicketTracking::PivotalTracker.username,
+            password: Toolshed::TicketTracking::PivotalTracker.password,
+        })
 
-        default_story_id = Toolshed::PivotalTracker::story_id_from_branch_name(github.branch_name)
+        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git.branch_name)
         print "Story ID (Default: #{default_story_id})? "
         story_id = $stdin.gets.chomp.strip
         if (story_id == '')
           story_id = default_story_id
         end
 
-        print "Status (Default: #{Toolshed::PivotalTracker::STORY_STATUS_DEFAULT})? "
+        print "Status (Default: #{Toolshed::TicketTracking::PivotalTracker::STORY_STATUS_DEFAULT})? "
         story_status = $stdin.gets.chomp.strip
         if (story_status == '')
-          story_status = Toolshed::PivotalTracker::STORY_STATUS_DEFAULT
+          story_status = Toolshed::TicketTracking::PivotalTracker::STORY_STATUS_DEFAULT
         end
 
         begin

@@ -5,7 +5,7 @@ module Toolshed
         print "Ticket ID or Branch Name? "
         ticket_id = $stdin.gets.chomp
 
-        branch_name = `git branch | grep \"#{ticket_id}\"`.gsub("*", "").strip
+        branch_name = Toolshed::Git.branch_name_from_id(ticket_id)
 
         git_submodule_command = ''
         if (Toolshed::Client.use_git_submodules)

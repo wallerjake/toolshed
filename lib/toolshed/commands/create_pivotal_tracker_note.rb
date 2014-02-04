@@ -8,10 +8,13 @@ module Toolshed
           project_id = Toolshed::Client.default_pivotal_tracker_project_id
         end
 
-        pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
-        github = Toolshed::Github.new
+        pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({
+            project_id: project_id,
+            username: Toolshed::TicketTracking::PivotalTracker.username,
+            password: Toolshed::TicketTracking::PivotalTracker.password,
+        })
 
-        default_story_id = Toolshed::PivotalTracker::story_id_from_branch_name(github.branch_name)
+        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git.branch_name)
         print "Story ID (Default: #{default_story_id})? "
         story_id = $stdin.gets.chomp.strip
         if (story_id == '')
@@ -23,7 +26,9 @@ module Toolshed
 
         begin
           result = pivotal_tracker.add_note(story_id, note_text)
-          puts result.inspect
+          result.instance_variables.each do |name, value|
+            puts "#{name}: #{result.instance_variable_get(name).inspect}"
+          end
         rescue => e
           puts e.message
           exit

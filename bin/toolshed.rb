@@ -36,7 +36,7 @@ All commands are executed as toolshed [options] command [command-options] args
 The following commands are available:
 
 help                                    # show this usage
-create_github_pull_request              # create a github pull request based on the branch you currently have checked out
+create_pull_request [--tool "github"]   # create a github pull request based on the branch you currently have checked out
 get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
@@ -70,7 +70,18 @@ if $0.split("/").last == 'toolshed'
     end
   end
 
-  subcommands = {}
+  subcommands = {
+    'create_pull_request' => OptionParser.new do |opts|
+      opts.on("--tool [ARG]") do |opt|
+        Toolshed::Client.git_tool = opt.downcase
+      end
+    end,
+    'push_git_branch' => OptionParser.new do |opts|
+      opts.on("--force [ARG]") do |opt|
+        Toolshed::Client.git_force = opt
+      end
+    end,
+  }
 
   global.order!
   command = ARGV.shift

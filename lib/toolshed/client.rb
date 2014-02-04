@@ -80,6 +80,22 @@ module Toolshed
       @use_git_submodules = use_git_submodules
     end
 
+    def self.git_tool
+      (@git_tool.nil?) ? Toolshed::Git::DEFAULT_GIT_TOOL : @git_tool
+    end
+
+    def self.git_tool=(git_tool)
+      @git_tool = git_tool
+    end
+
+    def self.git_force
+      @git_force
+    end
+
+    def self.git_force=(git_force)
+      @git_force = git_force
+    end
+
 
 
     # pivotal tracker config
