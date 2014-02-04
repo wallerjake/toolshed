@@ -3,6 +3,8 @@ module Toolshed
     class Harvest
       extend TimeTracking
 
+      MAX_ATTEMPTS = 10
+
       attr_accessor :harvest_client, :project_id
 
       def initialize(options={})
@@ -30,7 +32,7 @@ module Toolshed
         notes = "Previous:\n\n"
 
         time_entries = self.harvest_client.time.all((DateTime.now - days_ago), self.project_id)
-        if (time_entries.size > 0)
+        if (time_entries.size > 0 || days_ago == Toolshed::TimeTracking::Harvest::MAX_ATTEMPTS)
           time_entries.each do |time_entry|
             notes = "#{notes}#{time_entry.notes}\n"
           end
