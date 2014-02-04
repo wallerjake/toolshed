@@ -26,10 +26,6 @@ module Toolshed
         @pt_project = ::PivotalTracker::Project.find(self.project_id)
       end
 
-      def self.story_id_from_branch_name(branch_name)
-        story_id = branch_name.split("_")[0]
-      end
-
       def story_information(story_id)
         return @pt_project.stories.find(story_id)
       end
@@ -61,6 +57,25 @@ module Toolshed
         end
       end
 
+      #
+      # Get the story id based on what the user enters
+      #
+      def get_story_by_story_id
+        # load up the story information from PivotalTracker
+        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git.branch_name)
+        print "Story ID (Default: #{default_story_id})? "
+        story_id = $stdin.gets.chomp.strip
+        if (story_id == '')
+          story_id = default_story_id
+        end
+
+        story_information = self.story_information(story_id)
+      end
+
+      def self.story_id_from_branch_name(branch_name)
+        story_id = branch_name.split("_")[0]
+      end
+
       def self.username
         username = Toolshed::Client::pivotal_tracker_username
         if (username.nil?)
@@ -83,6 +98,24 @@ module Toolshed
         end
 
         return password
+      end
+
+      #
+      # Get the pivotal tracker object based off of the project_id
+      #
+      def self.get_pivotal_tracker_by_project_id_command
+        # load up the project information for pivotal tracker
+        print "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id})? "
+        project_id = $stdin.gets.chomp.strip
+        if (project_id == '')
+          project_id = Toolshed::Client.default_pivotal_tracker_project_id
+        end
+
+        pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({ project_id: project_id, username: Toolshed::TicketTracking::PivotalTracker.username, password: Toolshed::TicketTracking::PivotalTracker.password })
+      end
+
+      def self.clean_title(title)
+        title.gsub("'", "").gsub("\"", "")
       end
     end
   end

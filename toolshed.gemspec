@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "httparty"
   spec.add_dependency "json"
   spec.add_dependency "pivotal-tracker"
+  spec.add_dependency "harvested"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"

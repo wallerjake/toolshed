@@ -1,6 +1,7 @@
 require "toolshed/version"
 require 'httparty'
 require 'pivotal-tracker'
+require 'harvested'
 
 module Toolshed
   BLANK_REGEX = /\S+/
@@ -24,4 +25,6 @@ require 'toolshed/git/git'
 require 'toolshed/git/github'
 require 'toolshed/ticket_tracking/ticket_tracking'
 require 'toolshed/ticket_tracking/pivotal_tracker'
+require 'toolshed/time_tracking/time_tracking'
+require 'toolshed/time_tracking/harvest'
 require 'toolshed/error'

@@ -6,46 +6,34 @@ module Toolshed
         puts "Current Branch: #{Toolshed::Git.branch_name}"
         puts "Branched From: #{Toolshed::Git.branched_from}"
 
-        pivotal_tracker = nil
-        if (Toolshed::Client.use_pivotal_tracker)
-          # load up the project information for pivotal tracker
-          print "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id})? "
-          project_id = $stdin.gets.chomp.strip
-          if (project_id == '')
-            project_id = Toolshed::Client.default_pivotal_tracker_project_id
-          end
-          pivotal_tracker = Toolshed::PivotalTracker.new({ project_id: project_id, username: Toolshed::PivotalTracker.username, password: Toolshed::PivotalTracker.password })
-        end
+        ticket_tracking_url = ''
+        ticket_tracking_title = ''
+        ticket_id = ''
 
-        pt_ticket_title = ''
-        if (Toolshed::Client.use_pivotal_tracker)
-          # load up the story information from PivotalTracker
-          default_story_id = Toolshed::PivotalTracker::story_id_from_branch_name(Toolshed::Git.branch_name)
-          print "Story ID (Default: #{default_story_id})? "
-          story_id = $stdin.gets.chomp.strip
-          if (story_id == '')
-            story_id = default_story_id
-          end
+        if (Toolshed::Client.ticket_tracking_tool == 'pivotal_tracker')
+          pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.get_pivotal_tracker_by_project_id_command
+          pivotal_tracker_story_information = pivotal_tracker.get_story_by_story_id
 
-          pivotal_tracker_result = pivotal_tracker.story_information(story_id)
-
-          pt_ticket_title = pivotal_tracker_result.name
-          pt_ticket_title = pt_ticket_title.gsub("'", "").gsub("\"", "")
+          ticket_tracking_url = pivotal_tracker_story_information.url
+          ticket_tracking_title = Toolshed::TicketTracking::PivotalTracker.clean_title(pivotal_tracker_story_information.name)
+          ticket_id = pivotal_tracker_story_information.id
         end
 
         if (Toolshed::Client.git_tool == 'github')
-          # create the pull request
+          pull_request_url = ''
+
           begin
             github = Toolshed::Git::Github.new({ username: Toolshed::Git::Github.username, password: Toolshed::Git::Github.password })
-            github_pull_request_result = github.create_pull_request(pt_ticket_title, pivotal_tracker_result.url)
+            github_pull_request_result = github.create_pull_request_command(ticket_tracking_title, ticket_tracking_url)
+            pull_request_url = github_pull_request_result["html_url"]
 
-            if (Toolshed::Client.use_pivotal_tracker)
+            if (Toolshed::Client.ticket_tracking_tool == 'pivotal_tracker')
               print "Would you like to add a note to PivotalTracker with the pull request URL(y/n)? "
               update_pt_info = $stdin.gets.chomp.strip
 
               if (update_pt_info == 'y')
-                result = pivotal_tracker.add_note(story_id, github_pull_request_result["html_url"])
-                result = pivotal_tracker.update_story_state(story_id, Toolshed::PivotalTracker::STORY_STATUS_DEFAULT)
+                result = pivotal_tracker.add_note(ticket_id, pull_request_url)
+                result = pivotal_tracker.update_story_state(ticket_id, Toolshed::TicketTracking::PivotalTracker::STORY_STATUS_DEFAULT)
               end
             end
           rescue => e

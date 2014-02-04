@@ -123,22 +123,60 @@ module Toolshed
       @default_pivotal_tracker_project_id = default_pivotal_tracker_project_id
     end
 
-    def self.use_pivotal_tracker
-      @use_pivotal_tracker
+
+    # ticket tracking configuration
+
+    def self.ticket_tracking_tool
+      @ticket_tracking_tool
     end
 
-    def self.use_pivotal_tracker=(use_pivotal_tracker)
-      @use_pivotal_tracker = use_pivotal_tracker
+    def self.ticket_tracking_tool=(ticket_tracking_tool)
+      @ticket_tracking_tool = ticket_tracking_tool
+    end
+
+    # time tracking configuration
+
+    def self.time_tracking_tool
+      @time_tracking_tool
+    end
+
+    def self.time_tracking_tool=(time_tracking_tool)
+      @time_tracking_tool = time_tracking_tool
+    end
+
+    def self.time_tracking_username
+      @time_tracking_username
+    end
+
+    def self.time_tracking_username=(time_tracking_username)
+      @time_tracking_username = time_tracking_username
+    end
+
+    def self.time_tracking_password
+      @time_tracking_password
+    end
+
+    def self.time_tracking_password=(time_tracking_password)
+      @time_tracking_password = time_tracking_password
+    end
+
+    def self.time_tracking_owner
+      @time_tracking_owner
+    end
+
+    def self.time_tracking_owner=(time_tracking_owner)
+      @time_tracking_owner = time_tracking_owner
+    end
+
+    def self.time_tracking_default_project_id
+      @time_tracking_default_project_id
+    end
+
+    def self.time_tracking_default_project_id=(time_tracking_default_project_id)
+      @time_tracking_default_project_id = time_tracking_default_project_id
     end
 
 
-    def self.http_proxy
-      @http_proxy
-    end
-
-    def self.http_proxy=(http_proxy)
-      @http_proxy = http_proxy
-    end
 
     def self.load_credentials_if_necessary
       load_credentials unless credentials_loaded?
@@ -175,8 +213,14 @@ module Toolshed
         self.branched_from_repo_name            ||= credentials['branched_from_repo_name']
         self.push_from_user                     ||= credentials['push_from_user']
         self.push_to_myself                     ||= credentials['push_to_myself']
-        self.use_pivotal_tracker                ||= credentials['use_pivotal_tracker']
+        self.ticket_tracking_tool               ||= credentials['ticket_tracking_tool']
         self.use_git_submodules                 ||= credentials['use_git_submodules']
+        self.git_tool                           ||= credentials['git_tool']
+        self.time_tracking_username             ||= credentials['time_tracking_username']
+        self.time_tracking_password             ||= credentials['time_tracking_password']
+        self.time_tracking_owner                ||= credentials['time_tracking_owner']
+        self.time_tracking_default_project_id   ||= credentials['time_tracking_default_project_id']
+        self.time_tracking_tool                 ||= credentials['time_tracking_tool']
         @credentials_loaded = true
         puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
       rescue => error
@@ -186,55 +230,7 @@ module Toolshed
     end
 
     def self.credentials_loaded?
-      (@credentials_loaded ||= false) or (github_username and github_password and pivotal_tracker_username and pivotal_tracker_password)
-    end
-
-    def self.base_options
-      options = {
-        :format => :json,
-        :headers => { 'Accept' => 'application/json', 'User-Agent' => "toolshed-ruby/#{Toolshed::VERSION}" },
-      }
-
-      if http_proxy
-        options.merge!(
-          :http_proxyaddr => self.http_proxy[:addr],
-          :http_proxyport => self.http_proxy[:port]
-        )
-      end
-
-      if password
-        options[:basic_auth] = { :username => username, :password => password }
-      else
-        raise Error, 'A password is required for all API requests.'
-      end
-
-      options
-    end
-
-    def self.get(path, options = {})
-      request :get, path, options
-    end
-
-    def self.post(path, options = {})
-      request :post, path, options
-    end
-
-    def self.put(path, options = {})
-      request :put, path, options
-    end
-
-    def self.delete(path, options = {})
-      request :delete, path, options
-    end
-
-    def self.request(method, path, options)
-      response = HTTParty.send(method, "#{base_uri}#{path}", base_options.merge(options))
-
-      if response.code == 401
-        raise AuthenticationFailed
-      end
-
-      response
+      (@credentials_loaded ||= false)
     end
   end
 end

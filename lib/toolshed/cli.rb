@@ -28,6 +28,7 @@ module Toolshed
         'create_git_branch'                     => Toolshed::Commands::CreateGitBranch,
         'checkout_git_branch'                   => Toolshed::Commands::CheckoutGitBranch,
         'push_git_branch'                       => Toolshed::Commands::PushGitBranch,
+        'get_daily_time_update'                 => Toolshed::Commands::GetDailyTimeUpdate,
       }
     end
   end
@@ -40,3 +41,4 @@ require 'toolshed/commands/update_pivotal_tracker_story_status'
 require 'toolshed/commands/create_git_branch'
 require 'toolshed/commands/checkout_git_branch'
 require 'toolshed/commands/push_git_branch'
+require 'toolshed/commands/get_daily_time_update'
