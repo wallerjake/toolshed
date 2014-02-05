@@ -17,5 +17,18 @@ module Toolshed
     def self.branch_name_from_id(id)
       branch_name = `git branch | grep \"#{ticket_id}\"`.gsub("*", "").strip
     end
+
+    def self.checkout(branch_name)
+        git_submodule_command = ''
+        if (Toolshed::Client.use_git_submodules)
+          print "Update Submodules (y/n)? "
+          update_submodules = $stdin.gets.chomp
+          if (update_submodules == 'y')
+            git_submodule_command = "git submodule update --init;"
+          end
+        end
+
+        system("git checkout #{branch_name}; #{git_submodule_command}")
+    end
   end
 end
