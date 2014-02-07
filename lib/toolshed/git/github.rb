@@ -1,10 +1,12 @@
 module Toolshed
   module Git
-    class Github
-      extend Git
+    class Github < Base
+      extend Toolshed::Git
       include HTTParty
 
       def initialize(options={})
+        super(options)
+
         username = Toolshed::Client::github_username
         password = Toolshed::Client::github_password
 

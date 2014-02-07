@@ -5,18 +5,7 @@ module Toolshed
         print "Ticket ID or Branch Name? "
         ticket_id = $stdin.gets.chomp
 
-        branch_name = Toolshed::Git.branch_name_from_id(ticket_id)
-
-        git_submodule_command = ''
-        if (Toolshed::Client.use_git_submodules)
-          print "Update Submodules (y/n)? "
-          update_submodules = $stdin.gets.chomp
-          if (update_submodules == 'y')
-            git_submodule_command = "git submodule update --init;"
-          end
-        end
-
-        system("git checkout #{branch_name}; #{git_submodule_command}")
+        Toolshed::Git.checkout(ticket_id)
       end
     end
   end

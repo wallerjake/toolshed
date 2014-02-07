@@ -2,6 +2,7 @@ require "toolshed/version"
 require 'httparty'
 require 'pivotal-tracker'
 require 'harvested'
+require 'veto'
 
 module Toolshed
   BLANK_REGEX = /\S+/

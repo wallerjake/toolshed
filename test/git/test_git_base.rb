@@ -12,3 +12,7 @@ end
 def save_stash
   stash = `git stash save`
 end
+
+def delete_branch(branch_name)
+  db = `git branch -D #{branch_name}`
+end
