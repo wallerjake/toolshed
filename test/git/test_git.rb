@@ -46,7 +46,7 @@ class GitTest < Test::Unit::TestCase
     Toolshed::Git::Base.checkout(branch_id)
     assert_equal new_branch_name, Toolshed::Git::Base.branch_name
 
-    Toolshed::Git.checkout(current_branch)
+    Toolshed::Git::Base.checkout(current_branch)
 
     delete_branch(new_branch_name)
   end
