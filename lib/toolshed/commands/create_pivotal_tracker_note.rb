@@ -14,7 +14,7 @@ module Toolshed
             password: Toolshed::TicketTracking::PivotalTracker.password,
         })
 
-        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git.branch_name)
+        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
         print "Story ID (Default: #{default_story_id})? "
         story_id = $stdin.gets.chomp.strip
         if (story_id == '')

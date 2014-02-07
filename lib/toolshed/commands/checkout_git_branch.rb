@@ -5,7 +5,7 @@ module Toolshed
         print "Ticket ID or Branch Name? "
         ticket_id = $stdin.gets.chomp
 
-        Toolshed::Git.checkout(ticket_id)
+        Toolshed::Git::Base.checkout(ticket_id)
       end
     end
   end

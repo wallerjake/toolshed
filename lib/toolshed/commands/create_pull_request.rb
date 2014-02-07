@@ -3,8 +3,8 @@ module Toolshed
     class CreatePullRequest
       def execute(args, options = {})
         # see what branch is checked out and where we are branched from
-        puts "Current Branch: #{Toolshed::Git.branch_name}"
-        puts "Branched From: #{Toolshed::Git.branched_from}"
+        puts "Current Branch: #{Toolshed::Git::Base.branch_name}"
+        puts "Branched From: #{Toolshed::Git::Base.branched_from}"
 
         ticket_tracking_url = ''
         ticket_tracking_title = ''

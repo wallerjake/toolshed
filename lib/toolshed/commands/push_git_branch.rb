@@ -6,7 +6,7 @@ module Toolshed
         if (Toolshed::Client.git_force)
           force_command = " --force"
         end
-        system("git push #{Toolshed::Client.push_to_myself} #{Toolshed::Git.branch_name} #{force_command}")
+        system("git push #{Toolshed::Client.push_to_myself} #{Toolshed::Git::Base.branch_name} #{force_command}")
       end
     end
   end
