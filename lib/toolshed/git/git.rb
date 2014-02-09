@@ -92,7 +92,6 @@ module Toolshed
         self.validator = ::Toolshed::Git::GitValidator.new
       end
 
-
       def create_branch
         self.validator.validate!(self)
         system("git remote update; git checkout -b #{self.to_remote_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name}; #{Toolshed::Git::Base.git_submodule_command} git push #{self.to_remote_name} #{self.to_remote_branch_name}")

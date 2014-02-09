@@ -1,8 +1,8 @@
 require 'helper'
 
-def create_and_checkout_branch(name)
+def create_and_checkout_branch(name, branch_from='master')
   save_stash
-  cb = `git checkout -b #{name}`
+  cb = `git checkout -b #{name} origin/#{branch_from}`
 end
 
 def pop_stash
