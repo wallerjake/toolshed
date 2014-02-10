@@ -3,13 +3,8 @@ before_install:
   - sudo apt-get install -qq freetds-dev
   - rm -f Gemfile.lock
 before_script:
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-after_script:
-  - git config credential.helper "store --file=.git/credentials"
-  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+  - git config --global user.email "wallerjake@gmail.com"
+  - git config --global user.name "wallerjake"
 language: ruby
 rvm:
 - 2.0.0
-env:
-  global:
-    secure: YHutLHzmLmbTDIp8roG1N0uXO31bZ+e/UF8w4A3SNfsAgRjYus6Uo+21IjGkIW3qbKHYAoCtvDSsAvSXZgUsfVo0X9d1OVsHMoHS3hOsMGqaXJUzu/ivHr+3LxtzvA0kyC99GqB6oIeri+lN6hjT1s3FQY/XkK+quWhkquOfRfs=
