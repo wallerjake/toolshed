@@ -6,12 +6,21 @@ module Toolshed
     GITHUB_BASE_API_URL  = "https://api.github.com/"
     PIVOTAL_TRACKER_BASE_API_URL = "https://www.pivotaltracker.com/services/v5/"
 
+    # debugging options
     def self.debug?
       @debug
     end
 
     def self.debug=(debug)
       @debug = debug
+    end
+
+    def self.git_quiet
+      @git_quiet
+    end
+
+    def self.git_quiet=(git_quiet)
+      @git_quiet = git_quiet
     end
 
 
@@ -221,6 +230,7 @@ module Toolshed
         self.time_tracking_owner                ||= credentials['time_tracking_owner']
         self.time_tracking_default_project_id   ||= credentials['time_tracking_default_project_id']
         self.time_tracking_tool                 ||= credentials['time_tracking_tool']
+        self.git_quiet                          ||= (credentials['git_quiet']) ? '--quiet' : ''
         @credentials_loaded = true
         puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
       rescue => error

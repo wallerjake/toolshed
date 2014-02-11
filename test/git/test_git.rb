@@ -2,7 +2,6 @@ require 'git/test_git_base'
 
 class GitTest < Test::Unit::TestCase
   def test_get_branch_name
-    Toolshed::Client.use_git_submodules = false
     current_branch = Toolshed::Git::Base.branch_name
 
     new_branch_name = ::Faker::Lorem.word.downcase
@@ -12,7 +11,6 @@ class GitTest < Test::Unit::TestCase
 
     Toolshed::Git::Base.checkout(current_branch)
     pop_stash
-
     delete_branch(new_branch_name)
   end
 
