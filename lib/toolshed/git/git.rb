@@ -70,12 +70,12 @@ module Toolshed
 
       def initialize(options={})
         # options with defaults
-        self.from_remote_name = Toolshed::Client.branched_from_remote_name
+        self.from_remote_name = Toolshed::Client.pull_from_remote_name
         unless (options[:from_remote_name].nil?)
          self.from_remote_name  = options[:from_remote_name]
         end
 
-        self.to_remote_name = Toolshed::Client.push_to_myself
+        self.to_remote_name = Toolshed::Client.push_to_remote_name
         unless (options[:to_remote_name].nil?)
          self.to_remote_name = options[:to_remote_name]
         end

@@ -41,44 +41,44 @@ module Toolshed
       @github_password = password
     end
 
-    def self.branched_from_remote_name
-      @branched_from_remote_name
+    def self.pull_from_remote_name
+      @pull_from_remote_name
     end
 
-    def self.branched_from_remote_name=(branched_from_remote_name)
-      @branched_from_remote_name = branched_from_remote_name 
+    def self.pull_from_remote_name=(pull_from_remote_name)
+      @pull_from_remote_name = pull_from_remote_name
     end
 
-    def self.branched_from_user
-      @branched_from_user
+    def self.pull_from_repository_user
+      @pull_from_repository_user
     end
 
-    def self.branched_from_user=(branched_from_user)
-      @branched_from_user = branched_from_user 
+    def self.pull_from_repository_user=(pull_from_repository_user)
+      @pull_from_repository_user = pull_from_repository_user
     end
 
-    def self.branched_from_repo_name
-      @branched_from_repo_name
+    def self.pull_from_repository_name
+      @pull_from_repository_name
     end
 
-    def self.branched_from_repo_name=(branched_from_repo_name)
-      @branched_from_repo_name = branched_from_repo_name 
+    def self.pull_from_repository_name=(pull_from_repository_name)
+      @pull_from_repository_name = pull_from_repository_name
     end
 
-    def self.push_from_user
-      @push_from_user
+    def self.push_to_repository_user
+      @push_to_repository_user
     end
 
-    def self.push_from_user=(push_from_user)
-      @push_from_user = push_from_user 
+    def self.push_to_repository_user=(push_to_repository_user)
+      @push_to_repository_user = push_to_repository_user
     end
 
-    def self.push_to_myself
-      @push_to_myself
+    def self.push_to_remote_name
+      @push_to_remote_name
     end
 
-    def self.push_to_myself=(push_to_myself)
-      @push_to_myself = push_to_myself 
+    def self.push_to_remote_name=(push_to_remote_name)
+      @push_to_remote_name = push_to_remote_name
     end
 
     def self.use_git_submodules
@@ -217,11 +217,11 @@ module Toolshed
         self.pivotal_tracker_username           ||= credentials['pivotal_tracker_username']
         self.pivotal_tracker_password           ||= credentials['pivotal_tracker_password']
         self.default_pivotal_tracker_project_id ||= credentials['default_pivotal_tracker_project_id']
-        self.branched_from_remote_name          ||= credentials['branched_from_remote_name']
-        self.branched_from_user                 ||= credentials['branched_from_user']
-        self.branched_from_repo_name            ||= credentials['branched_from_repo_name']
-        self.push_from_user                     ||= credentials['push_from_user']
-        self.push_to_myself                     ||= credentials['push_to_myself']
+        self.pull_from_remote_name              ||= credentials['pull_from_remote_name']
+        self.pull_from_repository_user          ||= credentials['pull_from_repository_user']
+        self.pull_from_repository_name          ||= credentials['pull_from_repository_name']
+        self.push_to_repository_user            ||= credentials['push_to_repository_user']
+        self.push_to_remote_name                ||= credentials['push_to_remote_name']
         self.ticket_tracking_tool               ||= credentials['ticket_tracking_tool']
         self.use_git_submodules                 ||= credentials['use_git_submodules']
         self.git_tool                           ||= credentials['git_tool']

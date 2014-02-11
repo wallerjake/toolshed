@@ -38,7 +38,7 @@ module Toolshed
           }.to_json
         })
 
-        response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.branched_from_user}/#{Toolshed::Client.branched_from_repo_name}/pulls", options).response
+        response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.pull_from_repository_user}/#{Toolshed::Client.pull_from_repository_name}/pulls", options).response
         response = JSON.parse(response.body)
         if (response["errors"].nil?)
           response
@@ -50,7 +50,7 @@ module Toolshed
       def list_branches(options={})
         options.merge!(@default_options)
 
-        response = HTTParty.get("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.github_username}/#{Toolshed::Client.branched_from_repo_name}/branches", options).response
+        response = HTTParty.get("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.github_username}/#{Toolshed::Client.pull_from_repository_name}/branches", options).response
         response = JSON.parse(response.body)
       end
 

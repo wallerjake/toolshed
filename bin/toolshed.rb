@@ -22,11 +22,11 @@ Note that it will only read one file which ever file is closest to the directory
   default_pivotal_tracker_project_id: [project_id] (optional)
   github_username: [github_username] (optional)
   github_password: [github_password] (optional)
-  branched_from_remote_name: [branched_from_remote_name] (required)
-  branched_from_user: [branched_from_username] (required)
-  branched_from_repo_name: [branched_from_repo_name] (required)
-  push_from_user: [push_from_yourself] (required)
-  push_to_myself: [push_to_yourself] (required)
+  pull_from_remote_name: [pull_from_remote_name] (required)
+  pull_from_repository_user: [pull_from_repository_username] (required)
+  pull_from_repository_name: [pull_from_repository_name] (required)
+  push_to_repository_user: [push_to_repository_user] (required)
+  push_to_remote_name: [push_to_remote_name] (optional)
   use_git_submodules: false (optional)
   git_tool: github (optional default `github`)
   time_tracking_username: [username] (optional)
@@ -96,7 +96,7 @@ if $0.split("/").last == 'toolshed'
     end,
     'list_branches' => OptionParser.new do |opts|
       opts.on("--repository-name [ARG]") do |opt|
-        Toolshed::Client.branched_from_repo_name = opt
+        Toolshed::Client.pull_from_repository_name = opt
       end
     end,
   }
