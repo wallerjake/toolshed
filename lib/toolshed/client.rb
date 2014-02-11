@@ -230,7 +230,7 @@ module Toolshed
         self.time_tracking_owner                ||= credentials['time_tracking_owner']
         self.time_tracking_default_project_id   ||= credentials['time_tracking_default_project_id']
         self.time_tracking_tool                 ||= credentials['time_tracking_tool']
-        self.git_quiet                          ||= (credentials['git_quiet']) ? '--quiet' : ''
+        self.git_quiet                          ||= (credentials['git_quiet']) ? '&> /dev/null' : ''
         @credentials_loaded = true
         puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
       rescue => error

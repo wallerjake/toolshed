@@ -6,11 +6,11 @@ def create_and_checkout_branch(name, branch_from='master')
 end
 
 def pop_stash
-  stash = `git stash pop --quiet`
+  stash = `git stash pop &> /dev/null`
 end
 
 def save_stash
-  stash = `git stash save --quiet`
+  stash = `git stash save &> /dev/null`
 end
 
 def delete_branch(branch_name)

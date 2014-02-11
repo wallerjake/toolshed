@@ -9,7 +9,7 @@ require 'toolshed'
 
 Test::Unit.at_start do
   Toolshed::Client.use_git_submodules = false
-  Toolshed::Client.git_quiet = '--quiet'
+  Toolshed::Client.git_quiet = '&> /dev/null'
 
   # setup a fake remote directory so we can reference everything locally
   if (Dir.exists? (File.join(TEST_ROOT, "remote")))

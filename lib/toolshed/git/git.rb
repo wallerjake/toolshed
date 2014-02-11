@@ -96,7 +96,7 @@ module Toolshed
         self.validator.validate!(self)
 
         new_branch_name = Toolshed::Git::Base.clean_branch_name(self.to_remote_branch_name)
-        system("git remote update; git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name} #{Toolshed::Client.git_quiet}; #{Toolshed::Git::Base.git_submodule_command} git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.git_quiet};")
+        system("git remote update #{Toolshed::Client.git_quiet}; git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name} #{Toolshed::Client.git_quiet}; #{Toolshed::Git::Base.git_submodule_command} git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.git_quiet};")
       end
     end
   end
