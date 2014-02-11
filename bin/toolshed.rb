@@ -44,7 +44,7 @@ The following commands are available:
 help                                    # show this usage
 create_pull_request [                   # create a github pull request based on the branch you currently have checked out
   --tool "github",                      # Optionally pass in your specific tool this can also be set in your config as git_tool
-  --ticket_system "pivotal_tracker"]    # Optionally pass in your ticket system this can also be set in your config as ticket_tracking_tool
+  --ticket-system "pivotal_tracker"]    # Optionally pass in your ticket system this can also be set in your config as ticket_tracking_tool
 get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
@@ -52,6 +52,7 @@ create_git_branch                       # Create a git branch and push it to you
 checkout_git_branch                     # Checkout a git branch and update the submodules if you use them
 push_git_branch                         # Push your current working branch to your own repository
 get_daily_time_update                   # Get a daily update from your time tracking toolset currently harvest is supported
+list_branches                           # List branches for your remote repository
 EOF
 end
 
@@ -59,16 +60,16 @@ if $0.split("/").last == 'toolshed'
   options = {}
 
   global = OptionParser.new do |opts|
-    opts.on("-u", "--github_username [ARG]") do |username|
+    opts.on("-u", "--github-username [ARG]") do |username|
       Toolshed::Client.github_username = username
     end
-    opts.on("-p", "--github_password [ARG]") do |password|
+    opts.on("-p", "--github-password [ARG]") do |password|
       Toolshed::Client.github_password = password
     end
-    opts.on("-u", "--pivotal_tracker_username [ARG]") do |username|
+    opts.on("-u", "--pivotal-tracker-username [ARG]") do |username|
       Toolshed::Client.pivotal_tracker_username = username
     end
-    opts.on("-p", "--pivotal_tracker_password [ARG]") do |password|
+    opts.on("-p", "--pivotal-tracker-password [ARG]") do |password|
       Toolshed::Client.pivotal_tracker_password = password
     end
     opts.on("-d", "--debug [ARG]") do
@@ -84,13 +85,18 @@ if $0.split("/").last == 'toolshed'
       opts.on("--tool [ARG]") do |opt|
         Toolshed::Client.git_tool = opt.downcase
       end
-      opts.on("--ticket_system [ARG]") do |opt|
+      opts.on("--ticket-system [ARG]") do |opt|
         Toolshed::Client.ticket_tracking_tool = opt.downcase
       end
     end,
     'push_git_branch' => OptionParser.new do |opts|
       opts.on("--force [ARG]") do |opt|
         Toolshed::Client.git_force = true
+      end
+    end,
+    'list_branches' => OptionParser.new do |opts|
+      opts.on("--repository-name [ARG]") do |opt|
+        Toolshed::Client.branched_from_repo_name = opt
       end
     end,
   }
