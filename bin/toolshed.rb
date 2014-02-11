@@ -20,15 +20,18 @@ Note that it will only read one file which ever file is closest to the directory
   pivotal_tracker_username: [pivotal_tracker_username] (optional)
   pivotal_tracker_password: [pivotal_tracker_password] (optional)
   default_pivotal_tracker_project_id: [project_id] (optional)
+
   github_username: [github_username] (optional)
   github_password: [github_password] (optional)
+  git_tool: github (optional default `github`)
+  use_git_submodules: false (optional default `false`)
   pull_from_remote_name: [pull_from_remote_name] (required)
   pull_from_repository_user: [pull_from_repository_username] (required)
   pull_from_repository_name: [pull_from_repository_name] (required)
   push_to_repository_user: [push_to_repository_user] (required)
-  push_to_remote_name: [push_to_remote_name] (optional)
-  use_git_submodules: false (optional)
-  git_tool: github (optional default `github`)
+  push_to_repository_name: [push_to_repository_name] (required)
+  push_to_remote_name: [push_to_remote_name] (required)
+
   time_tracking_username: [username] (optional)
   time_tracking_password: [password] (optional)
   time_tracking_owner: [owner] (optional)
@@ -49,10 +52,12 @@ get_pivotal_tracker_story_information   # Get the ticket information from a Pivo
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
 create_git_branch                       # Create a git branch and push it to your local repository
-checkout_git_branch                     # Checkout a git branch and update the submodules if you use them
+checkout_branch                         # Checkout a branch [default git] and update the submodules if true
 push_git_branch                         # Push your current working branch to your own repository
 get_daily_time_update                   # Get a daily update from your time tracking toolset currently harvest is supported
-list_branches                           # List branches for your remote repository
+list_branches [                         # List branches for your remote repository
+  --repository-name "depot"             # The repository name you want to list branches for if not passed pull_from_repository_name is used
+]
 EOF
 end
 
