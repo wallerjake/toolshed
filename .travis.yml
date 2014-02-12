@@ -2,6 +2,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq freetds-dev
   - rm -f Gemfile.lock
+  - rm -r -f test/remote
+  - rm -r -f test/tmp
 before_script:
   - git config --global user.email "wallerjake@gmail.com"
   - git config --global user.name "wallerjake"

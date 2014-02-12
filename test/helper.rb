@@ -36,9 +36,9 @@ Test::Unit.at_start do
   Dir.mkdir(File.join(TEST_ROOT, "tmp"), 0777)
   Dir.chdir(File.join(TEST_ROOT, "tmp"))
 
+
   # setup the new repository with an empty set this is configured in the config.rb file
   system("git init &> /dev/null")
-  system("git remote rm origin &> /dev/null")
   system("git remote add origin #{File.join(TEST_ROOT, "remote")} &> /dev/null")
   system('git fetch &> /dev/null')
   system('git checkout -t origin/master &> /dev/null')
