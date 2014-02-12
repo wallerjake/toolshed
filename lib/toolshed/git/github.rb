@@ -4,6 +4,8 @@ module Toolshed
       extend Toolshed::Git
       include HTTParty
 
+      attr_accessor :default_options
+
       def initialize(options={})
         super(options)
 
@@ -19,7 +21,7 @@ module Toolshed
         end
 
         @auth = { username: username, password: password }
-        @default_options = {
+        self.default_options = {
           :headers => {
               "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17"
           },
@@ -28,7 +30,7 @@ module Toolshed
       end
 
       def create_pull_request(title, body, options={})
-        options.merge!(@default_options)
+        options.merge!(self.default_options)
         options.merge!({
           body: {
             title: title,
@@ -48,7 +50,7 @@ module Toolshed
       end
 
       def list_branches(options={})
-        options.merge!(@default_options)
+        options.merge!(self.default_options)
 
         response = HTTParty.get("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.github_username}/#{Toolshed::Client.pull_from_repository_name}/branches", options).response
         response = JSON.parse(response.body)
