@@ -1,6 +1,6 @@
 module Toolshed
   module Commands
-    class CheckoutGitBranch
+    class CheckoutBranch
       def execute(args, options = {})
         print "Ticket ID or Branch Name? "
         ticket_id = $stdin.gets.chomp

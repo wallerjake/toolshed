@@ -15,7 +15,6 @@ class GitTest < Test::Unit::TestCase
   end
 
   def test_checkout_branch
-    Toolshed::Client.use_git_submodules = false
     current_branch = Toolshed::Git::Base.branch_name
 
     new_branch_name = ::Faker::Lorem.word.downcase
@@ -29,7 +28,6 @@ class GitTest < Test::Unit::TestCase
   end
 
   def test_checkout_branch_by_id
-    Toolshed::Client.use_git_submodules = false
     current_branch = Toolshed::Git::Base.branch_name
 
     branch_id = "124233"
