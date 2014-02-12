@@ -4,12 +4,15 @@ require 'mocha/test_unit'
 require 'faker'
 require 'veto'
 require 'fileutils'
+require 'json'
 
 require 'toolshed'
 
 Test::Unit.at_start do
   Toolshed::Client.use_git_submodules = false
   Toolshed::Client.git_quiet = '&> /dev/null'
+
+  I18n.config.enforce_available_locales = true
 
   # setup a fake remote directory so we can reference everything locally
   if (Dir.exists? (File.join(TEST_ROOT, "remote")))
@@ -20,11 +23,11 @@ Test::Unit.at_start do
   Dir.chdir(File.join(TEST_ROOT, "remote"))
 
   # setup a couple of branches acting as the remote repository
-  system('git init > /dev/null')
+  system('git init &> /dev/null')
   FileUtils.touch('file.txt')
-  system('git add * > /dev/null')
-  system('git commit -m"Add empty file as commit" > /dev/null')
-  system('git checkout -b development master > /dev/null')
+  system('git add * &> /dev/null')
+  system('git commit -m"Add empty file as commit" &> /dev/null')
+  system('git checkout -b development master &> /dev/null')
 
   if (Dir.exists? (File.join(TEST_ROOT, "tmp")))
     Dir.rmdir(File.join(TEST_ROOT, "tmp"))
@@ -35,10 +38,10 @@ Test::Unit.at_start do
 
 
   # setup the new repository with an empty set this is configured in the config.rb file
-  system("git init > /dev/null")
-  system("git remote add origin #{File.join(TEST_ROOT, "remote")} > /dev/null")
-  system('git fetch > /dev/null')
-  system('git checkout -t origin/master > /dev/null')
+  system("git init &> /dev/null")
+  system("git remote add origin #{File.join(TEST_ROOT, "remote")} &> /dev/null")
+  system('git fetch &> /dev/null')
+  system('git checkout -t origin/master &> /dev/null')
 end
 
 Test::Unit.at_exit do

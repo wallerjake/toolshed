@@ -2,7 +2,7 @@ require 'helper'
 
 def create_and_checkout_branch(name, branch_from='master')
   save_stash
-  cb = `git checkout -b #{name} origin/#{branch_from} --quiet`
+  cb = `git checkout -b #{name} origin/#{branch_from} &> /dev/null`
 end
 
 def pop_stash
