@@ -1,6 +1,6 @@
 module Toolshed
   module Commands
-    class CreateGitBranch
+    class CreateBranch
       def execute(args, options = {})
         begin
           Toolshed::Git::Base.create_branch_command

@@ -51,7 +51,7 @@ create_pull_request [                   # create a github pull request based on 
 get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
-create_git_branch                       # Create a git branch and push it to your local repository
+create_branch                           # Create a branch default (git) and push it to your local repository
 checkout_branch                         # Checkout a branch [default git] and update the submodules if true
 push_git_branch                         # Push your current working branch to your own repository
 get_daily_time_update                   # Get a daily update from your time tracking toolset currently harvest is supported
