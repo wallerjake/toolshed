@@ -20,6 +20,11 @@ module Toolshed
       system("git checkout #{branch_name} #{Toolshed::Client.git_quiet}; #{Toolshed::Git::Base.git_submodule_command}")
     end
 
+    def delete(branch_name)
+      branch_name = Toolshed::Git::Base.branch_name_from_id(branch_name)
+      system("git push #{Toolshed::Client.push_to_remote_name} :#{branch_name}; git branch -D #{branch_name}")
+    end
+
     def git_submodule_command
       git_submodule_command = ''
       if (Toolshed::Client.use_git_submodules)

@@ -30,6 +30,7 @@ module Toolshed
         'push_git_branch'                       => Toolshed::Commands::PushGitBranch,
         'get_daily_time_update'                 => Toolshed::Commands::GetDailyTimeUpdate,
         'list_branches'                         => Toolshed::Commands::ListBranches,
+        'delete_branch'                         => Toolshed::Commands::DeleteBranch,
       }
     end
   end
@@ -45,3 +46,4 @@ require 'toolshed/commands/push_git_branch'
 require 'toolshed/commands/get_daily_time_update'
 require 'toolshed/commands/get_daily_time_update'
 require 'toolshed/commands/list_branches'
+require 'toolshed/commands/delete_branch'

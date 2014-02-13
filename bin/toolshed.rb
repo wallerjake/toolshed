@@ -58,6 +58,7 @@ get_daily_time_update                   # Get a daily update from your time trac
 list_branches [                         # List branches for your remote repository
   --repository-name "depot"             # The repository name you want to list branches for if not passed pull_from_repository_name is used
 ]
+delete_branch                           # Delete a branch both locally and to your push to remote
 EOF
 end
 

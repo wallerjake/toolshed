@@ -23,6 +23,14 @@ module Toolshed
       @git_quiet = git_quiet
     end
 
+    def self.use_defaults
+      @use_defaults
+    end
+
+    def self.use_defaults=(use_defaults)
+      @use_defaults = use_defaults
+    end
+
 
     # github config settings
     def self.github_username
@@ -231,6 +239,7 @@ module Toolshed
         self.time_tracking_default_project_id   ||= credentials['time_tracking_default_project_id']
         self.time_tracking_tool                 ||= credentials['time_tracking_tool']
         self.git_quiet                          ||= (credentials['git_quiet']) ? '&> /dev/null' : ''
+        self.use_defaults                       ||= credentials['use_defaults']
         @credentials_loaded = true
         puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
       rescue => error
