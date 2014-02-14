@@ -15,6 +15,7 @@ Test::Unit.at_start do
   I18n.config.enforce_available_locales = true
 
   # setup a fake remote directory so we can reference everything locally
+  system("rm -r -f #{File.join(TEST_ROOT, "remote")}")
   if (Dir.exists? (File.join(TEST_ROOT, "remote")))
     Dir.rmdir(File.join(TEST_ROOT, "remote"))
   end
@@ -29,6 +30,7 @@ Test::Unit.at_start do
   system('git commit -m"Add empty file as commit" &> /dev/null')
   system('git checkout -b development master &> /dev/null')
 
+  system("rm -r -f #{File.join(TEST_ROOT, "tmp")}")
   if (Dir.exists? (File.join(TEST_ROOT, "tmp")))
     Dir.rmdir(File.join(TEST_ROOT, "tmp"))
   end
