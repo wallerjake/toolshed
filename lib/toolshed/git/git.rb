@@ -17,7 +17,7 @@ module Toolshed
 
     def checkout(branch_name)
       branch_name = Toolshed::Git::Base.branch_name_from_id(branch_name)
-      until system("git checkout #{branch_name}")
+      until system("git checkout #{branch_name} #{Toolshed::Client.git_quiet}")
         sleep 1
       end
 
@@ -36,7 +36,7 @@ module Toolshed
     def git_submodule_command
       git_submodule_command = ''
       if (Toolshed::Client.use_git_submodules)
-        git_submodule_command = "git submodule update;"
+        git_submodule_command = "git submodule update #{Toolshed::Client.git_quiet}"
       end
 
       git_submodule_command
@@ -105,23 +105,23 @@ module Toolshed
         self.validator.validate!(self)
 
         new_branch_name = Toolshed::Git::Base.clean_branch_name(self.to_remote_branch_name)
-	until system("git remote update")
-	  sleep 1
-	end
+        until system("git remote update #{Toolshed::Client.git_quiet}")
+          sleep 1
+        end
 
-	until system("git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name}")
-	  sleep 1
-	end
+        until system("git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name} #{Toolshed::Client.git_quiet}")
+          sleep 1
+        end
 
-	unless (Toolshed::Git::Base.git_submodule_command.empty?)
-	  until system(Toolshed::Git::Base.git_submodule_command)
-	    sleep 1
-	  end
-	end
+        unless (Toolshed::Git::Base.git_submodule_command.empty?)
+          until system(Toolshed::Git::Base.git_submodule_command)
+            sleep 1
+          end
+        end
 
-	until system("git push #{self.to_remote_name} #{new_branch_name}")
-	  sleep 1
-	end
+        until system("git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.git_quiet}")
+          sleep 1
+        end
       end
     end
   end
