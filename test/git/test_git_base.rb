@@ -2,17 +2,22 @@ require 'helper'
 
 def create_and_checkout_branch(name, branch_from='master')
   save_stash
-  cb = `git checkout -b #{name} origin/#{branch_from} &> /dev/null`
+
+  until system("git checkout -b #{name} origin/#{branch_from}")
+    sleep 1
+  end
 end
 
 def pop_stash
-  stash = `git stash pop &> /dev/null`
+  system("git stash pop")
 end
 
 def save_stash
-  stash = `git stash save &> /dev/null`
+  system("git stash save")
 end
 
 def delete_branch(branch_name)
-  db = `git branch -D #{branch_name} --quiet`
+  until system("git branch -D #{branch_name} --quiet")
+    sleep 1
+  end
 end

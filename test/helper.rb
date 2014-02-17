@@ -23,11 +23,27 @@ Test::Unit.at_start do
   Dir.chdir(File.join(TEST_ROOT, "remote"))
 
   # setup a couple of branches acting as the remote repository
-  system('git init &> /dev/null')
+  until system('git init')
+    sleep 1
+  end
+
   FileUtils.touch('file.txt')
-  system('git add * &> /dev/null')
-  system('git commit -m"Add empty file as commit" &> /dev/null')
-  system('git checkout -b development master &> /dev/null')
+
+  until system('git add file.txt')
+    sleep 1
+  end
+
+  until system("git commit -m 'Add empty file as commit'")
+    sleep 1
+  end
+
+  until system("git checkout -b development master")
+    sleep 1
+  end
+
+  until system("git checkout master")
+    sleep 1
+  end
 
   if (Dir.exists? (File.join(TEST_ROOT, "tmp")))
     Dir.rmdir(File.join(TEST_ROOT, "tmp"))
@@ -36,12 +52,26 @@ Test::Unit.at_start do
   Dir.mkdir(File.join(TEST_ROOT, "tmp"), 0777)
   Dir.chdir(File.join(TEST_ROOT, "tmp"))
 
-
   # setup the new repository with an empty set this is configured in the config.rb file
-  system("git init &> /dev/null")
-  system("git remote add origin #{File.join(TEST_ROOT, "remote")} &> /dev/null")
-  system('git fetch &> /dev/null')
-  system('git checkout -t origin/master &> /dev/null')
+  until system("git init")
+    sleep 1
+  end
+
+  until system("git remote add origin #{File.join(TEST_ROOT, "remote")}")
+    sleep 1
+  end
+
+  until system("git remote update")
+    sleep 1
+  end
+
+  until system("git remote set-head origin -a")
+    sleep 1
+  end
+
+  until system("git checkout -b master origin/master")
+    sleep 1
+  end
 end
 
 Test::Unit.at_exit do
