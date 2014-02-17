@@ -65,10 +65,6 @@ Test::Unit.at_start do
     sleep 1
   end
 
-  until system("git remote set-head origin -a")
-    sleep 1
-  end
-
   until system("git checkout -b master origin/master")
     sleep 1
   end
