@@ -45,12 +45,12 @@ Test::Unit.at_start do
     sleep 1
   end
 
-  if (Dir.exists? (File.join(TEST_ROOT, "tmp")))
-    Dir.rmdir(File.join(TEST_ROOT, "tmp"))
+  if (Dir.exists? (File.join(TEST_ROOT, "local")))
+    Dir.rmdir(File.join(TEST_ROOT, "local"))
   end
 
-  Dir.mkdir(File.join(TEST_ROOT, "tmp"), 0777)
-  Dir.chdir(File.join(TEST_ROOT, "tmp"))
+  Dir.mkdir(File.join(TEST_ROOT, "local"), 0777)
+  Dir.chdir(File.join(TEST_ROOT, "local"))
 
   # setup the new repository with an empty set this is configured in the config.rb file
   until system("git init #{Toolshed::Client.git_quiet}")
@@ -72,5 +72,5 @@ end
 
 Test::Unit.at_exit do
   FileUtils.rm_rf(File.join(TEST_ROOT, "remote"))
-  FileUtils.rm_rf(File.join(TEST_ROOT, "tmp"))
+  FileUtils.rm_rf(File.join(TEST_ROOT, "local"))
 end
