@@ -10,3 +10,5 @@ before_script:
 language: ruby
 rvm:
 - 2.0.0
+env:
+  - RUNNING_ON_CI=true
