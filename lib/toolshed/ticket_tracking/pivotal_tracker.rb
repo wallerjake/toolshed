@@ -62,11 +62,12 @@ module Toolshed
       #
       def get_story_by_story_id
         # load up the story information from PivotalTracker
-        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
-        print "Story ID (Default: #{default_story_id})? "
-        story_id = $stdin.gets.chomp.strip
-        if (story_id == '')
-          story_id = default_story_id
+        story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
+        unless (Toolshed::Client.use_defaults)
+          print "Story ID (Default: #{default_story_id})? "
+          unless ($stdin.gets.chomp.strip.nil?)
+            story_id = $stdin.gets.chomp.strip
+          end
         end
 
         story_information = self.story_information(story_id)
@@ -105,10 +106,12 @@ module Toolshed
       #
       def self.get_pivotal_tracker_by_project_id_command
         # load up the project information for pivotal tracker
-        print "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id})? "
-        project_id = $stdin.gets.chomp.strip
-        if (project_id == '')
-          project_id = Toolshed::Client.default_pivotal_tracker_project_id
+        project_id = Toolshed::Client.default_pivotal_tracker_project_id
+        unless (Toolshed::Client.use_defaults)
+          print "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id})? "
+          unless ($stdin.gets.chomp.strip.nil?)
+            project_id = $stdin.gets.chomp.strip
+          end
         end
 
         pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({ project_id: project_id, username: Toolshed::TicketTracking::PivotalTracker.username, password: Toolshed::TicketTracking::PivotalTracker.password })

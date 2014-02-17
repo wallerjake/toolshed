@@ -5,6 +5,7 @@ module Toolshed
         # see what branch is checked out and where we are branched from
         puts "Current Branch: #{Toolshed::Git::Base.branch_name}"
         puts "Branched From: #{Toolshed::Git::Base.branched_from}"
+        puts "Using Defaults: #{(Toolshed::Client.use_defaults.nil?) ? 'No' : 'Yes'}"
 
         ticket_tracking_url = ''
         ticket_tracking_title = ''
@@ -17,6 +18,10 @@ module Toolshed
           ticket_tracking_url = pivotal_tracker_story_information.url
           ticket_tracking_title = Toolshed::TicketTracking::PivotalTracker.clean_title(pivotal_tracker_story_information.name)
           ticket_id = pivotal_tracker_story_information.id
+
+          puts "Ticket Tracking URL: #{ticket_tracking_url}"
+          puts "Ticket Tracking title: #{ticket_tracking_title}"
+          puts "Ticket ID: #{ticket_id}"
         end
 
         if (Toolshed::Client.git_tool == 'github')
@@ -28,8 +33,12 @@ module Toolshed
             pull_request_url = github_pull_request_result["html_url"]
 
             if (Toolshed::Client.ticket_tracking_tool == 'pivotal_tracker')
-              print "Would you like to add a note to PivotalTracker with the pull request URL(y/n)? "
-              update_pt_info = $stdin.gets.chomp.strip
+              if (Toolshed::Client.use_defaults)
+                update_pt_info = 'y'
+              else
+                print "Would you like to add a note to PivotalTracker with the pull request URL(y/n)? "
+                update_pt_info = $stdin.gets.chomp.strip
+              end
 
               if (update_pt_info == 'y')
                 result = pivotal_tracker.add_note(ticket_id, pull_request_url)

@@ -84,16 +84,20 @@ module Toolshed
       # Create a pull request with the given title and body
       #
       def create_pull_request_command(default_title, default_body)
-        print "Pull Request Title (Default: #{default_title})? "
-        title = $stdin.gets.chomp.strip
-        if (title == '')
-          title = default_title
-        end
+        title = default_title
+        body = default_body
+        unless (Toolshed::Client.use_defaults)
+          print "Pull Request Title (Default: #{default_title})? "
+          title = $stdin.gets.chomp.strip
+          if (title == '')
+            title = default_title
+          end
 
-        print "Pull Request Body (Default: #{default_body})? "
-        body = $stdin.gets.chomp.strip
-        if (body == '')
-          body = default_body
+          print "Pull Request Body (Default: #{default_body})? "
+          body = $stdin.gets.chomp.strip
+          if (body == '')
+            body = default_body
+          end
         end
 
         puts "Running Github Pull Request"
