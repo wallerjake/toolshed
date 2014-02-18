@@ -2,10 +2,13 @@ module Toolshed
   module Commands
     class CheckoutBranch
       def execute(args, options = {})
-        print "Ticket ID or Branch Name? "
-        ticket_id = $stdin.gets.chomp
+        branch_name = options[:branch_name]
+        unless (options[:branch_name])
+          print "Ticket ID or Branch Name? "
+          branch_name = $stdin.gets.chomp
+        end
 
-        Toolshed::Git::Base.checkout(ticket_id)
+        Toolshed::Git::Base.checkout(branch_name)
       end
     end
   end
