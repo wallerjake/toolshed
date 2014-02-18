@@ -1,4 +1,12 @@
 require 'config'
+require 'simplecov'
+
+if (ENV["COVERAGE"])
+  SimpleCov.start do
+    add_filter 'test/'
+  end
+end
+
 require 'test/unit'
 require 'mocha/test_unit'
 require 'faker'

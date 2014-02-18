@@ -6,6 +6,10 @@ def create_and_checkout_branch(name, branch_from='master')
   until system("git checkout -b #{name} origin/#{branch_from} #{Toolshed::Client.git_quiet}")
     sleep 1
   end
+
+  until system("git push origin #{name} #{Toolshed::Client.git_quiet}")
+    sleep 1
+  end
 end
 
 def pop_stash

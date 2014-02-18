@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'test-unit', '~> 2.5.5'
   spec.add_development_dependency 'debugger'
   spec.add_development_dependency 'ci_reporter'
+  spec.add_development_dependency 'simplecov'
 end

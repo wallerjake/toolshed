@@ -90,4 +90,26 @@ class GitTest < Test::Unit::TestCase
     exception = assert_raise(Veto::InvalidEntity) { git.create_branch }
     assert_equal 'from_remote_branch_name is not present', exception.message.first
   end
+
+  def test_delete_branch
+    current_branch = Toolshed::Git::Base.branch_name
+
+    new_branch_name = ::Faker::Lorem.word.downcase
+    create_and_checkout_branch(new_branch_name, 'master')
+
+    # go to the remote repo and verify it exists
+    Dir.chdir(File.join(TEST_ROOT, "remote"))
+    remote_current_branch = Toolshed::Git::Base.branch_name
+    Toolshed::Git::Base.checkout(new_branch_name)
+    assert_equal new_branch_name, Toolshed::Git::Base.branch_name
+    Toolshed::Git::Base.checkout(remote_current_branch)
+
+    Dir.chdir(File.join(TEST_ROOT, "local"))
+    Toolshed::Git::Base.checkout(current_branch)
+
+    Toolshed::Git::Base.delete(new_branch_name)
+
+    branch_found = `git branch | grep #{new_branch_name}`
+    assert_equal '', branch_found
+  end
 end
