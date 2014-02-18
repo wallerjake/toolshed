@@ -78,4 +78,14 @@ class GitHubTest < Test::Unit::TestCase
     Toolshed::Git::Base.checkout(current_branch)
     delete_branch(new_branch_name)
   end
+
+  def test_get_username
+    Toolshed::Client.github_username = 'tester'
+    assert_equal 'tester', Toolshed::Git::Github.username
+  end
+
+  def test_get_password
+    Toolshed::Client.github_password = 'tester1234'
+    assert_equal 'tester1234', Toolshed::Git::Github.password
+  end
 end
