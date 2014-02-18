@@ -52,7 +52,10 @@ create_pull_request [                   # create a github pull request based on 
 get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
-create_branch                           # Create a branch default (git) and push it to your local repository
+create_branch [                         # Create a branch default (git) and push it to your local repository
+  --branch-name "123_test"              # The branch name standard it [ticket_id]_description
+  --branch-from "master"                # What branch do you want to branch from
+]
 checkout_branch                         # Checkout a branch [default git] and update the submodules if true
 push_git_branch                         # Push your current working branch to your own repository
 get_daily_time_update                   # Get a daily update from your time tracking toolset currently harvest is supported
@@ -97,6 +100,14 @@ if $0.split("/").last == 'toolshed'
       end
       opts.on("--use-defaults [ARG]") do |opt|
         Toolshed::Client.use_defaults = opt
+      end
+    end,
+    'create_branch' => OptionParser.new do |opts|
+      opts.on("--branch-name [ARG]") do |opt|
+        options[:branch_name] = opt
+      end
+      opts.on("--branch-from [ARG]") do |opt|
+        options[:branch_from] = opt
       end
     end,
     'push_git_branch' => OptionParser.new do |opts|

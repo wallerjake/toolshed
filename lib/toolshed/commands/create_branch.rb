@@ -3,7 +3,7 @@ module Toolshed
     class CreateBranch
       def execute(args, options = {})
         begin
-          Toolshed::Git::Base.create_branch_command
+          Toolshed::Git::Base.create_branch_command(options)
         rescue Veto::InvalidEntity => e
           puts "Unable to create branch due to the following errors"
           e.message.each do |key, value|

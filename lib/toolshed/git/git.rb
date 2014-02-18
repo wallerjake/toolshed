@@ -47,19 +47,33 @@ module Toolshed
     end
 
     # code specific to commands prompts included
-    def create_branch_command
-      print "Branch text? "
-      branch_name = $stdin.gets.chomp
+    def create_branch_command(options={})
+      if (options[:branch_name])
+        puts "Branch Name: #{options[:branch_name]}"
+      end
 
-      print "Branch from? "
-      branch_from = $stdin.gets.chomp
+      if (options[:branch_from])
+        puts "Branch From: #{options[:branch_from]}"
+      end
+
+      branch_name = options[:branch_name]
+      unless (options[:branch_name])
+        print "Branch text? "
+        branch_name = $stdin.gets.chomp
+      end
+
+      branch_from = options[:branch_from]
+      unless (options[:branch_from])
+        print "Branch from? "
+        branch_from = $stdin.gets.chomp
+      end
 
       git = Toolshed::Git::Base.new({
         from_remote_branch_name: branch_from,
         to_remote_branch_name: branch_name,
       })
 
-      puts 'Creating Branch ...'
+      puts 'Creating Branch...'
       git.create_branch
     end
 

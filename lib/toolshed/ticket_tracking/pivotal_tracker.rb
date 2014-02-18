@@ -64,9 +64,10 @@ module Toolshed
         # load up the story information from PivotalTracker
         story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
         unless (Toolshed::Client.use_defaults)
-          print "Story ID (Default: #{default_story_id})? "
-          unless ($stdin.gets.chomp.strip.nil?)
-            story_id = $stdin.gets.chomp.strip
+          print "Story ID (Default: #{story_id})? "
+          in_story_id = $stdin.gets.chomp.strip
+          unless (in_story_id == '')
+            story_id = in_story_id
           end
         end
 
@@ -109,8 +110,9 @@ module Toolshed
         project_id = Toolshed::Client.default_pivotal_tracker_project_id
         unless (Toolshed::Client.use_defaults)
           print "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id})? "
-          unless ($stdin.gets.chomp.strip.nil?)
-            project_id = $stdin.gets.chomp.strip
+          in_project_id = $stdin.gets.chomp.strip
+          unless (in_project_id == '')
+            project_id = in_project_id
           end
         end
 
