@@ -82,3 +82,14 @@ Test::Unit.at_exit do
   FileUtils.rm_rf(File.join(TEST_ROOT, "remote"))
   FileUtils.rm_rf(File.join(TEST_ROOT, "local"))
 end
+
+def capture_stdout(&block)
+  original_stdout = $stdout
+  $stdout = fake = StringIO.new
+  begin
+    yield
+  ensure
+    $stdout = original_stdout
+  end
+  fake.string
+end

@@ -26,6 +26,8 @@ module Toolshed
           sleep 1
         end
       end
+
+      branch_name
     end
 
     def delete(branch_name)

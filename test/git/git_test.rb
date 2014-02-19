@@ -1,4 +1,4 @@
-require 'git/test_git_base'
+require 'git/git_base_test'
 
 class GitTest < Test::Unit::TestCase
   def test_get_branch_name
