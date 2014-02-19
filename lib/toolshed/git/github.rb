@@ -80,31 +80,8 @@ module Toolshed
         return password
       end
 
-      #
-      # Create a pull request with the given title and body
-      #
-      def create_pull_request_command(default_title, default_body)
-        title = default_title
-        body = default_body
-        unless (Toolshed::Client.use_defaults)
-          print "Pull Request Title (Default: #{default_title})? "
-          title = $stdin.gets.chomp.strip
-          if (title == '')
-            title = default_title
-          end
-
-          print "Pull Request Body (Default: #{default_body})? "
-          body = $stdin.gets.chomp.strip
-          if (body == '')
-            body = default_body
-          end
-        end
-
-        puts "Running Github Pull Request"
-        github_pull_request_result = self.create_pull_request(title, body)
-        puts "Github Pull Request URL: #{github_pull_request_result["html_url"]}"
-
-        return github_pull_request_result
+      def self.create_instance
+        Toolshed::Git::Github.new({ username: Toolshed::Git::Github.username, password: Toolshed::Git::Github.password })
       end
     end
   end

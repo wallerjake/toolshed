@@ -4,7 +4,7 @@ module Toolshed
       extend TicketTracking
       include HTTParty
 
-      STORY_STATUS_DEFAULT = 'finished'
+      DEFAULT_COMPLETED_STATUS = 'finished'
 
       attr_accessor :project_id, :token
 
@@ -35,7 +35,7 @@ module Toolshed
         results = story.notes.create(text: note_text)
       end
 
-      def update_story_state(story_id, current_state, options={})
+      def update_ticket_status(story_id, current_state, options={})
         options.merge!({
           :headers => {
               "X-TrackerToken"  => self.token,
@@ -60,7 +60,7 @@ module Toolshed
       #
       # Get the story id based on what the user enters
       #
-      def get_story_by_story_id
+      def get_ticket_information
         # load up the story information from PivotalTracker
         story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
         unless (Toolshed::Client.use_defaults)
@@ -105,7 +105,7 @@ module Toolshed
       #
       # Get the pivotal tracker object based off of the project_id
       #
-      def self.get_pivotal_tracker_by_project_id_command
+      def self.create_instance
         # load up the project information for pivotal tracker
         project_id = Toolshed::Client.default_pivotal_tracker_project_id
         unless (Toolshed::Client.use_defaults)
@@ -119,7 +119,7 @@ module Toolshed
         pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({ project_id: project_id, username: Toolshed::TicketTracking::PivotalTracker.username, password: Toolshed::TicketTracking::PivotalTracker.password })
       end
 
-      def self.clean_title(title)
+      def self.clean(title)
         title.gsub("'", "").gsub("\"", "")
       end
     end
