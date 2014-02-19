@@ -13,13 +13,14 @@ module Toolshed
           ticket_id = ''
 
           begin
-            ticket_tracker_class = "Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}".constantize
+            ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
+            puts ticket_tracker_class
             ticket_tracker = ticket_tracker_class.create_instance
-            ticket_information = pivotal_tracker.get_ticket_information
+            ticket_information = ticket_tracker.get_ticket_information
 
             ticket_tracking_url = ticket_information.url
             ticket_tracking_title = ticket_tracker_class.clean(ticket_information.name)
-            ticket_id = pivotal_tracker_story_information.id
+            ticket_id = ticket_information.id
 
             puts "Ticket Tracking URL: #{ticket_tracking_url}"
             puts "Ticket Tracking title: #{ticket_tracking_title}"
@@ -32,7 +33,7 @@ module Toolshed
 
         pull_request_url = ''
         begin
-          git_tool_class = "Toolshed::Git::#{Toolshed::Client.git_tool}".constantize
+          git_tool_class = Object.const_get("Toolshed::Git::#{Toolshed::Client.git_tool.camel_case}")
           git_tool = git_tool_class.create_instance
 
           # create the pull request prompt when needed
@@ -46,7 +47,7 @@ module Toolshed
           add_note_to_ticket = read_user_input_add_note_to_ticket("Would you like to add a note with the pull request url?")
           if (add_note_to_ticket)
             result = ticket_tracker.add_note(ticket_id, pull_request_url)
-            result = ticket_tracker.update_ticket_status(ticket_id, "#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS".constantize)
+            result = ticket_tracker.update_ticket_status(ticket_id, Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS"))
           end
 
           puts "Created Pull Request: #{pull_request_url}"
@@ -70,31 +71,31 @@ module Toolshed
 
         (value == 'y') ? true : false
       end
-    end
 
-    def read_user_input_pull_request_title(message, default)
-      return default if (Toolshed::Client.use_defaults)
+      def read_user_input_pull_request_title(message, default)
+        return default if (Toolshed::Client.use_defaults)
 
-      puts message
-      value = $stdin.gets.chomp
-      if (value.empty?)
-        value = default
+        puts message
+        value = $stdin.gets.chomp
+        if (value.empty?)
+          value = default
+        end
+
+        value
       end
 
-      value
-    end
+      def read_user_input_pull_request_body(message, default)
+        return default if (Toolshed::Client.use_defaults)
 
-    def read_user_input_pull_request_body(message, default)
-      return default if (Toolshed::Client.use_defaults)
+        puts message
+        value = $stdin.gets.chomp
 
-      puts message
-      value = $stdin.gets.chomp
+        if (value.empty?)
+          value = default
+        end
 
-      if (value.empty?)
-        value = default
+        value
       end
-
-      value
     end
   end
 end
