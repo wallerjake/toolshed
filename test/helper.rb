@@ -18,9 +18,12 @@ require 'toolshed'
 
 Test::Unit.at_start do
   Toolshed::Client.use_git_submodules = false
-  Toolshed::Client.git_quiet = '&> /dev/null' unless ENV['RUNNING_ON_CI']
+  #Toolshed::Client.git_quiet = '&> /dev/null' unless ENV['RUNNING_ON_CI']
 
   I18n.config.enforce_available_locales = true
+
+  FileUtils.rm_rf(File.join(TEST_ROOT, "remote"))
+  FileUtils.rm_rf(File.join(TEST_ROOT, "local"))
 
   # setup a fake remote directory so we can reference everything locally
   if (Dir.exists? (File.join(TEST_ROOT, "remote")))

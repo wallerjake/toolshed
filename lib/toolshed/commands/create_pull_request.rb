@@ -35,7 +35,7 @@ module Toolshed
             puts "Ticket ID: #{ticket_id}"
           rescue
             puts "Ticket tracking tool is not supported at this time"
-            exit
+            return
           end
         end
 

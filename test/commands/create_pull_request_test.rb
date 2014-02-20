@@ -119,7 +119,6 @@ class CreatePullRequestTest < Test::Unit::TestCase
   def test_create_github_pull_request_with_invalid_ticket_tracker
     Toolshed::Client.ticket_tracking_tool = 'unfuddle'
     Toolshed::Client.git_tool = 'github'
-
     output = capture_stdout { Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' }) }
     assert_match /Ticket tracking tool is not supported at this time/, output
   end
