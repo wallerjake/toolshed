@@ -48,7 +48,10 @@ help                                    # show this usage
 create_pull_request [                   # create a github pull request based on the branch you currently have checked out
   --tool "github",                      # Optionally pass in your specific tool this can also be set in your config as git_tool
   --ticket-system "pivotal_tracker"     # Optionally pass in your ticket system this can also be set in your config as ticket_tracking_tool
-  --use-defaults "true"]                # use defaults instead of getting prompts if you don't want to edit your body or title
+  --use-defaults "true"                 # use defaults instead of getting prompts if you don't want to edit your body or title
+  --title "Pull Request Title"          # Title you want to use with the pull request
+  --body "Pull Request Body"            # Body you want to use with the pull request
+]
 get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
@@ -102,6 +105,12 @@ if $0.split("/").last == 'toolshed'
       end
       opts.on("--use-defaults [ARG]") do |opt|
         Toolshed::Client.use_defaults = opt
+      end
+      opts.on("--title [ARG]") do |opt|
+        options[:title] = opt
+      end
+      opts.on("--body [ARG]") do |opt|
+        options[:body] = opt
       end
     end,
     'create_branch' => OptionParser.new do |opts|

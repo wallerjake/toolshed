@@ -1,4 +1,4 @@
-require 'git/git_base_test'
+require 'git/git_helper'
 
 class GitHubTest < Test::Unit::TestCase
   def test_list_branches

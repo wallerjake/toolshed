@@ -1,4 +1,4 @@
-require 'commands/commands_base'
+require 'commands/commands_helper'
 require 'toolshed/commands/checkout_branch'
 
 class CheckoutBranchTest < Test::Unit::TestCase
