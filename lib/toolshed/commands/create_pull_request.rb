@@ -33,7 +33,7 @@ module Toolshed
             puts "Ticket Tracking URL: #{ticket_tracking_url}"
             puts "Ticket Tracking title: #{ticket_tracking_title}"
             puts "Ticket ID: #{ticket_id}"
-          rescue
+          rescue Exception => e
             puts "Ticket tracking tool is not supported at this time"
             return
           end
@@ -45,8 +45,8 @@ module Toolshed
           git_tool = git_tool_class.create_instance
 
           # create the pull request prompt when needed
-          title = read_user_input_pull_request_title("Pull request title (Default: #{ticket_tracking_title}):", options.merge!({ :default => ticket_tracking_title }))
-          body = read_user_input_pull_request_body("Pull request body (Default: #{ticket_tracking_url}):", options.merge!({ :default => ticket_tracking_url }))
+          title = read_user_input_pull_request_title("Pull request title (Default: #{ticket_tracking_title}):", options.merge!({ default: ticket_tracking_title }))
+          body = read_user_input_pull_request_body("Pull request body (Default: #{ticket_tracking_url}):", options.merge!({ default: ticket_tracking_url }))
 
           puts "Pull request being created"
           git_pull_request_result = git_tool.create_pull_request(title, body)
@@ -87,7 +87,7 @@ module Toolshed
         puts message
         value = $stdin.gets.chomp
         if (value.empty?)
-          value = default
+          value = options[:default]
         end
 
         value
@@ -101,7 +101,7 @@ module Toolshed
         value = $stdin.gets.chomp
 
         if (value.empty?)
-          value = default
+          value = options[:default]
         end
 
         value
@@ -114,7 +114,7 @@ module Toolshed
         value = $stdin.gets.chomp
 
         if (value.empty?)
-          value = default
+          value = options[:default]
         end
 
         value
@@ -127,7 +127,7 @@ module Toolshed
         value = $stdin.gets.chomp
 
         if (value.empty?)
-          value = default
+          value = options[:default]
         end
 
         value
