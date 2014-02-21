@@ -67,7 +67,9 @@ get_daily_time_update                   # Get a daily update from your time trac
 list_branches [                         # List branches for your remote repository
   --repository-name "depot"             # The repository name you want to list branches for if not passed pull_from_repository_name is used
 ]
-delete_branch                           # Delete a branch both locally and to your push to remote
+delete_branch [                         # Delete a branch both locally and to your push to remote
+  --branch-name "134_mybranch" | "134"  # Either the full branch name or some unique string in the branch i.e. ticket id
+]
 EOF
 end
 
@@ -132,6 +134,11 @@ if $0.split("/").last == 'toolshed'
       end
     end,
     'checkout_branch' => OptionParser.new do |opts|
+      opts.on("--branch-name [ARG]") do |opt|
+        options[:branch_name] = opt
+      end
+    end,
+    'delete_branch' => OptionParser.new do |opts|
       opts.on("--branch-name [ARG]") do |opt|
         options[:branch_name] = opt
       end

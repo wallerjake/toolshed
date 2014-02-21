@@ -32,7 +32,17 @@ module Toolshed
 
     def delete(branch_name)
       branch_name = Toolshed::Git::Base.branch_name_from_id(branch_name)
-      system("git push #{Toolshed::Client.push_to_remote_name} :#{branch_name}; git branch -D #{branch_name}")
+
+      # if delete your current branch checkout master so it can be deleted
+      if (branch_name == Toolshed::Git::Base.branch_name)
+        Toolshed::Git::Base.checkout('master')
+      end
+
+      until system("git push #{Toolshed::Client.push_to_remote_name} :#{branch_name}; git branch -D #{branch_name}")
+        sleep 1
+      end
+
+      branch_name
     end
 
     def git_submodule_command
@@ -46,37 +56,6 @@ module Toolshed
 
     def clean_branch_name(branch_name)
       branch_name.strip.downcase.tr(" ", "_").gsub("-", "").gsub("&", "").gsub("/", "_").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "")
-    end
-
-    # code specific to commands prompts included
-    def create_branch_command(options={})
-      if (options[:branch_name])
-        puts "Branch Name: #{options[:branch_name]}"
-      end
-
-      if (options[:branch_from])
-        puts "Branch From: #{options[:branch_from]}"
-      end
-
-      branch_name = options[:branch_name]
-      unless (options[:branch_name])
-        print "Branch text? "
-        branch_name = $stdin.gets.chomp
-      end
-
-      branch_from = options[:branch_from]
-      unless (options[:branch_from])
-        print "Branch from? "
-        branch_from = $stdin.gets.chomp
-      end
-
-      git = Toolshed::Git::Base.new({
-        from_remote_branch_name: branch_from,
-        to_remote_branch_name: branch_name,
-      })
-
-      puts 'Creating Branch...'
-      git.create_branch
     end
 
     class GitValidator
