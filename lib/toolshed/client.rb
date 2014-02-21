@@ -105,15 +105,6 @@ module Toolshed
       @git_tool = git_tool
     end
 
-    def self.git_force
-      @git_force
-    end
-
-    def self.git_force=(git_force)
-      @git_force = git_force
-    end
-
-
 
     # pivotal tracker config
     def self.pivotal_tracker_username

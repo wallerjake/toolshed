@@ -58,6 +58,17 @@ module Toolshed
       branch_name.strip.downcase.tr(" ", "_").gsub("-", "").gsub("&", "").gsub("/", "_").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "")
     end
 
+    def push(options = {})
+      branch_name = (options.has_key?(:branch_name)) ? Toolshed::Git::Base.branch_name_from_id(options[:branch_name]) : Toolshed::Git::Base.branch_name
+      force_command = (options.has_key?(:force_command)) ? '--force' : ''
+
+      until system("git push #{Toolshed::Client.push_to_remote_name} #{branch_name} #{force_command}")
+        sleep 1
+      end
+
+      branch_name
+    end
+
     class GitValidator
       include Veto.validator
 

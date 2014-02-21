@@ -62,7 +62,10 @@ create_branch [                         # Create a branch default (git) and push
 checkout_branch [                       # Checkout a branch [default git] and update the submodules if true
   --branch-name "123"                   # Branch name or part of the branch name you want to checkout
 ]
-push_git_branch                         # Push your current working branch to your own repository
+push_branch [                           # Push your current working branch to your own repository
+  --force                               # Push your current working branch up with --force after
+  --branch-name "another"               # Push this specific branch up instead of your current working branch
+]
 get_daily_time_update                   # Get a daily update from your time tracking toolset currently harvest is supported
 list_branches [                         # List branches for your remote repository
   --repository-name "depot"             # The repository name you want to list branches for if not passed pull_from_repository_name is used
@@ -123,9 +126,12 @@ if $0.split("/").last == 'toolshed'
         options[:branch_from] = opt
       end
     end,
-    'push_git_branch' => OptionParser.new do |opts|
+    'push_branch' => OptionParser.new do |opts|
       opts.on("--force [ARG]") do |opt|
-        Toolshed::Client.git_force = true
+        options[:force_command] = true
+      end
+      opts.on("--branch-name [ARG]") do |opt|
+        options[:branch_name] = opt
       end
     end,
     'list_branches' => OptionParser.new do |opts|
