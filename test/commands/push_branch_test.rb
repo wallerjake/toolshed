@@ -7,7 +7,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
     output = capture_stdout { Toolshed::Commands::PushBranch.new.execute({}) }
@@ -22,7 +22,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = "555558_#{::Faker::Lorem.word.downcase}"
+    new_branch_name = "555558_#{random_branch_name}"
     create_and_checkout_branch(new_branch_name, 'master')
 
     output = capture_stdout { Toolshed::Commands::PushBranch.new.execute({}, { branch_name: '555558' }) }
@@ -37,7 +37,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
     output = capture_stdout { Toolshed::Commands::PushBranch.new.execute({}, { force: true }) }

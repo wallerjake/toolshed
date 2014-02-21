@@ -4,7 +4,7 @@ class GitTest < Test::Unit::TestCase
   def test_get_branch_name
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name)
 
     assert_equal new_branch_name, Toolshed::Git::Base.branch_name
@@ -17,7 +17,7 @@ class GitTest < Test::Unit::TestCase
   def test_checkout_branch
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name)
 
     Toolshed::Git::Base.checkout(current_branch)
@@ -32,7 +32,7 @@ class GitTest < Test::Unit::TestCase
 
     branch_id = "124233"
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     new_branch_name = "#{branch_id}_#{new_branch_name}"
     create_and_checkout_branch(new_branch_name)
 
@@ -50,7 +50,7 @@ class GitTest < Test::Unit::TestCase
     current_branch = Toolshed::Git::Base.branch_name
     current_branch_branched_from = Toolshed::Git::Base.branched_from
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'development')
 
     assert_equal 'development', Toolshed::Git::Base.branched_from
@@ -62,7 +62,7 @@ class GitTest < Test::Unit::TestCase
   def test_create_new_branch
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     git = Toolshed::Git::Base.new({
       from_remote_branch_name: 'development',
       to_remote_branch_name: new_branch_name,
@@ -79,7 +79,7 @@ class GitTest < Test::Unit::TestCase
   end
 
   def test_create_branch_from_remote_name_empty
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     git = Toolshed::Git::Base.new({
       from_remote_branch_name: '',
       to_remote_branch_name: new_branch_name,
@@ -94,7 +94,7 @@ class GitTest < Test::Unit::TestCase
   def test_delete_branch
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
     # go to the remote repo and verify it exists

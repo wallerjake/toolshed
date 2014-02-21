@@ -25,3 +25,7 @@ def delete_branch(branch_name)
     sleep 1
   end
 end
+
+def random_branch_name
+  "#{::Faker::Lorem.word.downcase}_#{Time.now.to_i}"
+end

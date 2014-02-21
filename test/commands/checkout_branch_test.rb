@@ -5,8 +5,8 @@ class CheckoutBranchTest < Test::Unit::TestCase
   def test_checkout_branch
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
-    create_and_checkout_branch(new_branch_name)   
+    new_branch_name = random_branch_name
+    create_and_checkout_branch(new_branch_name)
 
     output = capture_stdout { Toolshed::Commands::CheckoutBranch.new.execute({}, { branch_name: current_branch }) }
 
@@ -16,7 +16,7 @@ class CheckoutBranchTest < Test::Unit::TestCase
   def test_checkout_branch_prompt
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name)   
 
     # stub the possible input

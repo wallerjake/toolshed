@@ -5,7 +5,7 @@ class DeleteBranchTest < Test::Unit::TestCase
   def test_delete_branch_with_branch_name_passed
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
     # go to the remote repo and verify it exists
@@ -28,7 +28,7 @@ class DeleteBranchTest < Test::Unit::TestCase
   def test_delete_branch_with_ticket_id_only_passed
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = "1234333_#{::Faker::Lorem.word.downcase}"
+    new_branch_name = "1234333_#{random_branch_name}"
     create_and_checkout_branch(new_branch_name, 'master')
 
     # go to the remote repo and verify it exists
@@ -51,7 +51,7 @@ class DeleteBranchTest < Test::Unit::TestCase
   def test_delete_branch_without_branch_name_passed
     current_branch = Toolshed::Git::Base.branch_name
 
-    new_branch_name = ::Faker::Lorem.word.downcase
+    new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
     # go to the remote repo and verify it exists
