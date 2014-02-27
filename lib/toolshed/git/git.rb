@@ -17,14 +17,10 @@ module Toolshed
 
     def checkout(branch_name)
       branch_name = Toolshed::Git::Base.branch_name_from_id(branch_name)
-      until system("git checkout #{branch_name} #{Toolshed::Client.git_quiet}")
-        sleep 1
-      end
+      Toolshed::Base.wait_for_command("git checkout #{branch_name} #{Toolshed::Client.git_quiet}")
 
       unless (Toolshed::Git::Base.git_submodule_command.empty?)
-        until system(Toolshed::Git::Base.git_submodule_command)
-          sleep 1
-        end
+        Toolshed::Base.wait_for_command(Toolshed::Git::Base.git_submodule_command)
       end
 
       branch_name
@@ -38,9 +34,7 @@ module Toolshed
         Toolshed::Git::Base.checkout('master')
       end
 
-      until system("git push #{Toolshed::Client.push_to_remote_name} :#{branch_name}; git branch -D #{branch_name}")
-        sleep 1
-      end
+      Toolshed::Base.wait_for_command("git push #{Toolshed::Client.push_to_remote_name} :#{branch_name}; git branch -D #{branch_name}")
 
       branch_name
     end
@@ -62,9 +56,7 @@ module Toolshed
       branch_name = (options.has_key?(:branch_name)) ? Toolshed::Git::Base.branch_name_from_id(options[:branch_name]) : Toolshed::Git::Base.branch_name
       force_command = (options.has_key?(:force_command)) ? '--force' : ''
 
-      until system("git push #{Toolshed::Client.push_to_remote_name} #{branch_name} #{force_command}")
-        sleep 1
-      end
+      Toolshed::Base.wait_for_command("git push #{Toolshed::Client.push_to_remote_name} #{branch_name} #{force_command}")
 
       branch_name
     end
@@ -111,23 +103,15 @@ module Toolshed
         self.validator.validate!(self)
 
         new_branch_name = Toolshed::Git::Base.clean_branch_name(self.to_remote_branch_name)
-        until system("git remote update #{Toolshed::Client.git_quiet}")
-          sleep 1
-        end
+        Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.git_quiet}")
 
-        until system("git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name} #{Toolshed::Client.git_quiet}")
-          sleep 1
-        end
+        Toolshed::Base.wait_for_command("git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name} #{Toolshed::Client.git_quiet}")
 
         unless (Toolshed::Git::Base.git_submodule_command.empty?)
-          until system(Toolshed::Git::Base.git_submodule_command)
-            sleep 1
-          end
+          Toolshed::Base.wait_for_command(Toolshed::Git::Base.git_submodule_command)
         end
 
-        until system("git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.git_quiet}")
-          sleep 1
-        end
+        Toolshed::Base.wait_for_command("git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.git_quiet}")
       end
     end
   end
