@@ -66,7 +66,9 @@ push_branch [                           # Push your current working branch to yo
   --force                               # Push your current working branch up with --force after
   --branch-name "another"               # Push this specific branch up instead of your current working branch
 ]
-get_daily_time_update                   # Get a daily update from your time tracking toolset currently harvest is supported
+get_daily_time_update [                 # Get a daily update from your time tracking toolset currently harvest is supported
+  --format="html|text"                  # Format you want if you want html it will open html page in broswer otherwise puts out plain text
+]
 list_branches [                         # List branches for your remote repository
   --repository-name "depot"             # The repository name you want to list branches for if not passed pull_from_repository_name is used
 ]
@@ -147,6 +149,11 @@ if $0.split("/").last == 'toolshed'
     'delete_branch' => OptionParser.new do |opts|
       opts.on("--branch-name [ARG]") do |opt|
         options[:branch_name] = opt
+      end
+    end,
+    'get_daily_time_update' => OptionParser.new do |opts|
+      opts.on("--format [ARG]") do |opt|
+        options[:format] = opt
       end
     end,
   }
