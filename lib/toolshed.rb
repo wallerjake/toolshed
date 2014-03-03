@@ -4,6 +4,7 @@ require 'pivotal-tracker'
 require 'harvested'
 require 'veto'
 require 'launchy'
+require 'clipboard'
 
 module Toolshed
   BLANK_REGEX = /\S+/

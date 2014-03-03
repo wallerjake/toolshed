@@ -23,7 +23,7 @@ module Toolshed
       {
         'create_pull_request'                   => Toolshed::Commands::CreatePullRequest,
         'create_pivotal_tracker_note'           => Toolshed::Commands::CreatePivotalTrackerNote,
-        'get_pivotal_tracker_story_information' => Toolshed::Commands::GetPivotalTrackerStoryInformation,
+        'ticket_information'                    => Toolshed::Commands::TicketInformation,
         'update_pivotal_tracker_story_status'   => Toolshed::Commands::UpdatePivotalTrackerStoryStatus,
         'create_branch'                         => Toolshed::Commands::CreateBranch,
         'checkout_branch'                       => Toolshed::Commands::CheckoutBranch,
@@ -38,7 +38,7 @@ end
 
 require 'toolshed/commands/create_pull_request'
 require 'toolshed/commands/create_pivotal_tracker_note'
-require 'toolshed/commands/get_pivotal_tracker_story_information'
+require 'toolshed/commands/ticket_information'
 require 'toolshed/commands/update_pivotal_tracker_story_status'
 require 'toolshed/commands/create_branch'
 require 'toolshed/commands/checkout_branch'

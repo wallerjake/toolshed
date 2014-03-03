@@ -52,7 +52,11 @@ create_pull_request [                   # create a github pull request based on 
   --title "Pull Request Title"          # Title you want to use with the pull request
   --body "Pull Request Body"            # Body you want to use with the pull request
 ]
-get_pivotal_tracker_story_information   # Get the ticket information from a PivotalTracker story based on project_id and story_id
+ticket_information [                    # Get the ticket information from a story based on ticket system configuration
+  --use-defaults="true|false"           # If you want to use defaults ticket_id is taken from branch_name otherwise configuration is used
+  --clipboard="true|false"              # Copy the output to the system clipboard (Mac OSx) tested
+  --field="field_name"                  # The field you want to either output or copy to your clipboard 
+]
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
 create_branch [                         # Create a branch default (git) and push it to your local repository
@@ -154,6 +158,17 @@ if $0.split("/").last == 'toolshed'
     'get_daily_time_update' => OptionParser.new do |opts|
       opts.on("--format [ARG]") do |opt|
         options[:format] = opt
+      end
+    end,
+    'ticket_information' => OptionParser.new do |opts|
+      opts.on("--use-defaults [ARG]") do |opt|
+        options[:use_defaults] = opt
+      end
+      opts.on("--clipboard [ARG]") do |opt|
+        options[:clipboard] = opt
+      end
+      opts.on("--field [ARG]") do |opt|
+        options[:field] = opt
       end
     end,
   }
