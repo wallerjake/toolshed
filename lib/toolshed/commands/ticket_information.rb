@@ -29,6 +29,13 @@ module Toolshed
             end
 
             puts field_value
+          elsif(options[:formatted_string])
+            formatted_string = options[:formatted_string].gsub(/\{(.*?)\}/) { |m| result.send(m.gsub("{", "").gsub("}", "")) }
+            if (options[:clipboard])
+              Clipboard.copy formatted_string
+            end
+
+            puts formatted_string
           else
             result.instance_variables.each do |name, value|
               puts "#{name}: #{result.instance_variable_get(name).inspect}"

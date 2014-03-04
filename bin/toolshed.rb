@@ -55,7 +55,8 @@ create_pull_request [                   # create a github pull request based on 
 ticket_information [                    # Get the ticket information from a story based on ticket system configuration
   --use-defaults="true|false"           # If you want to use defaults ticket_id is taken from branch_name otherwise configuration is used
   --clipboard="true|false"              # Copy the output to the system clipboard (Mac OSx) tested
-  --field="field_name"                  # The field you want to either output or copy to your clipboard 
+  --field="field_name"                  # The field you want to either output or copy to your clipboard
+  --formatted-string="{name} - {url}    # Pass a formatted string in ticket name and url and it will return that string replaced by the actual value
 ]
 create_pivotal_tracker_note             # Create a note for a specific PivotalTracker story based on project_id and story_id
 update_pivotal_tracker_story_status     # Update the status of PivotalTracker story
@@ -169,6 +170,9 @@ if $0.split("/").last == 'toolshed'
       end
       opts.on("--field [ARG]") do |opt|
         options[:field] = opt
+      end
+      opts.on("--formatted-string [ARG]") do |opt|
+        options[:formatted_string] = opt
       end
     end,
   }
