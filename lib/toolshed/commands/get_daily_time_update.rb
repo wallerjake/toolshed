@@ -2,29 +2,32 @@ module Toolshed
   module Commands
     class GetDailyTimeUpdate
       def execute(args, options = {})
-        if (Toolshed::Client.time_tracking_tool == 'harvest')
-          harvest = Toolshed::TimeTracking::Harvest.new(options)
+        begin
+          time_tracking_class =  Object.const_get("Toolshed::TimeTracking::#{Toolshed::Client.time_tracking_tool.camel_case}")
+
+          time_tracking_project_id = read_user_input_project_id("Project ID (Default: #{Toolshed::Client.time_tracking_default_project_id}):", options.merge!({ default: Toolshed::Client.time_tracking_default_project_id }))
+          options.merge!({ project_id: time_tracking_project_id })
+          time_tracker = time_tracking_class.create_instance(options)
 
           puts "Getting time entries:"
-          
-          notes = harvest.previous
-          notes = "#{notes}#{harvest.line_break}#{harvest.line_break}#{harvest.today}"
-          notes = "#{notes}#{harvest.brought_to_you_by_message}"
-
-          if (harvest.format == 'html')
-            FileUtils.rm_rf(Toolshed::TimeTracking::Harvest::GENERATED_HTML_FILE_LOCATION)
-            File.open(Toolshed::TimeTracking::Harvest::GENERATED_HTML_FILE_LOCATION, 'w') {|f| f.write(notes) }
-            Launchy.open( Toolshed::TimeTracking::Harvest::GENERATED_HTML_FILE_LOCATION ) do |exception|
-              puts "Attempted to open #{uri} and failed because #{exception}"
-            end
-            puts "Checkout out your default or open browser!"
-          else
-            puts notes
-          end
-        else
-          puts "Time tracking tool is undefined implementation needed"
-          exit
+          time_tracker.display
+        rescue Exception => e
+          puts "Time tracking tool is undefined implementation needed or an error occured #{e.inspect}"
+          return
         end
+      end
+
+      def read_user_input_project_id(message, options)
+        return options[:project_id] if (options.has_key?(:project_id))
+        return options[:default] if (Toolshed::Client.use_defaults)
+
+        puts message
+        value = $stdin.gets.chomp
+        if (value.empty?)
+          value = options[:default]
+        end
+
+        value
       end
     end
   end

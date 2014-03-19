@@ -73,6 +73,8 @@ push_branch [                           # Push your current working branch to yo
 ]
 get_daily_time_update [                 # Get a daily update from your time tracking toolset currently harvest is supported
   --format="html|text"                  # Format you want if you want html it will open html page in broswer otherwise puts out plain text
+  --use-defaults="true|false"           # If you want to use your default project_id instead of entering it
+  --project-id="1234"                   # If you want to use a project id other than your defaults
 ]
 list_branches [                         # List branches for your remote repository
   --repository-name "depot"             # The repository name you want to list branches for if not passed pull_from_repository_name is used
@@ -159,6 +161,12 @@ if $0.split("/").last == 'toolshed'
     'get_daily_time_update' => OptionParser.new do |opts|
       opts.on("--format [ARG]") do |opt|
         options[:format] = opt
+      end
+      opts.on("--use-defaults [ARG]") do |opt|
+        Toolshed::Client.use_defaults = opt
+      end
+      opts.on("--project-id [ARG]") do |opt|
+        options[:project_id] = opt
       end
     end,
     'ticket_information' => OptionParser.new do |opts|
