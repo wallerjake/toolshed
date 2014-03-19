@@ -36,7 +36,7 @@ Note that it will only read one file which ever file is closest to the directory
   time_tracking_password: [password] (optional)
   time_tracking_owner: [owner] (optional)
   time_tracking_default_project_id: [project_id] (optional)
-  time_tracking_tool: [tool] (optional)
+  time_tracking_tool: [tool] (required unless you are not going to be doing time tracking)
 
 == Commands
 
