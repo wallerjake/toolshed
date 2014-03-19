@@ -1,6 +1,7 @@
 module Toolshed
   module Git
-    DEFAULT_GIT_TOOL = 'github'
+    DEFAULT_GIT_TOOL    = 'github'
+    DEFAULT_BRANCH_FROM = 'master'
 
     def branch_name
       # branch information

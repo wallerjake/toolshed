@@ -44,6 +44,11 @@ module Toolshed
       def read_user_input_branch_from(message, options)
         return options[:branch_from] if (options.has_key?(:branch_from))
 
+        # if branch-name was supplied then default to master if not supplied
+        if (options.has_key?(:branch_name))
+          return Toolshed::Git::DEFAULT_BRANCH_FROM
+        end
+
         puts message
         value = $stdin.gets.chomp
 
