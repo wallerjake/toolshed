@@ -6,12 +6,12 @@ module Toolshed
 
       USE_PROJECT_NAME = true
 
-      attr_accessor :project, :client
+      attr_accessor :project, :client, :owner, :issue
 
       def initialize(options={})
-        username  = Toolshed::Client::ticket_tracker_username
-        password  = Toolshed::Client::ticket_tracker_password
-        owner     = Toolshed::Client::ticket_tracker_owner
+        username        = Toolshed::Client::ticket_tracker_username
+        password        = Toolshed::Client::ticket_tracker_password
+        self.owner      = Toolshed::Client::ticket_tracker_owner
 
         unless (options[:username].nil?)
           username = options[:username]
@@ -24,7 +24,7 @@ module Toolshed
         self.client = JIRA::Client.new({
           username:     username,
           password:     password,
-          site:         "https://#{owner}.atlassian.net",
+          site:         "https://#{self.owner}.atlassian.net",
           context_path: '',
           auth_type:    :basic,
           use_ssl:      true,
@@ -66,6 +66,16 @@ module Toolshed
         end
 
         raise "Unable to find available status"
+      end
+
+      def title(ticket_id)
+        issue = self.story_information(ticket_id)
+        issue.summary
+      end
+
+      def url(ticket_id)
+        issue = self.story_information(ticket_id)
+        return "https://#{self.owner}.atlassian.net/browse/#{issue.key}"
       end
 
       #

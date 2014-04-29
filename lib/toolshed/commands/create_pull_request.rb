@@ -15,25 +15,36 @@ module Toolshed
           begin
             ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
 
-            if Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID")
-              ticket_tracker_project_id = read_user_input_ticket_tracker_project_id("Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):", { default: Toolshed::Client.default_pivotal_tracker_project_id })
+            use_project_id = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID") rescue false
+            if use_project_id
+              ticket_tracker_project_id = read_user_input_project("Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):", options.merge!({ default: Toolshed::Client.default_pivotal_tracker_project_id }))
               options.merge!({ project_id: ticket_tracker_project_id })
+            end
+
+            use_project_name = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_NAME") rescue false
+            if use_project_name
+              ticket_tracker_project_name = read_user_input_project("Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):", options.merge!({ default: Toolshed::Client.default_ticket_tracker_project }))
+              options.merge!({ project: ticket_tracker_project_name })
             end
 
             ticket_tracker = ticket_tracker_class.create_instance(options)
 
             # @TODO - refactor this code into the git module seems more appropriate since it's performing git functions
-            ticket_id = read_user_input_ticket_tracker_ticket_id("Ticket ID (Default: #{Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)}):", { default: Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name) })
-            ticket_information = ticket_tracker.story_information(ticket_id)
+            ticket_id = read_user_input_ticket_tracker_ticket_id(
+              "Ticket ID (Default: #{Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)}):", {
+                default: Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name),
+              }
+            )
 
-            ticket_tracking_url = ticket_information.url
-            ticket_tracking_title = ticket_tracker_class.clean(ticket_information.name)
-            ticket_id = ticket_information.id
+            ticket_tracking_url = ticket_tracker.url(ticket_id)
+            ticket_tracking_title = ticket_tracker.title(ticket_id)
+            ticket_id = ticket_id
 
             puts "Ticket Tracking URL: #{ticket_tracking_url}"
             puts "Ticket Tracking title: #{ticket_tracking_title}"
             puts "Ticket ID: #{ticket_id}"
           rescue Exception => e
+            puts e.inspect
             puts "Ticket tracking tool is not supported at this time"
             return
           end
@@ -56,7 +67,12 @@ module Toolshed
             add_note_to_ticket = read_user_input_add_note_to_ticket("Would you like to add a note with the pull request url?")
             if (add_note_to_ticket)
               result = ticket_tracker.add_note(ticket_id, pull_request_url)
-              result = ticket_tracker.update_ticket_status(ticket_id, Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS"))
+
+              default_completed_status = Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS") rescue false
+              unless (default_completed_status)
+                default_completed_status = Toolshed::Client.ticket_status_for_complete
+              end
+              result = ticket_tracker.update_ticket_status(ticket_id, default_completed_status)
             end
           end
 
@@ -109,7 +125,7 @@ module Toolshed
         value
       end
 
-      def read_user_input_ticket_tracker_project_id(message, options)
+      def read_user_input_project(message, options)
         return options[:default] if (Toolshed::Client.use_defaults)
 
         puts message

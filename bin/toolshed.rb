@@ -20,6 +20,7 @@ Note that it will only read one file which ever file is closest to the directory
   pivotal_tracker_username: [pivotal_tracker_username] (optional)
   pivotal_tracker_password: [pivotal_tracker_password] (optional)
   default_pivotal_tracker_project_id: [project_id] (optional)
+  ticket_status_for_complete: [status] (required (only if using pull requests)) example: "Code Review"
 
   github_username:  [github_username] (optional)
   github_password:  [github_password] (optional)

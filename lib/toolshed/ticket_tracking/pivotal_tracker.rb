@@ -61,6 +61,14 @@ module Toolshed
         end
       end
 
+      def title
+        self.clean(self.story_information(ticket_id).name)
+      end
+
+      def url
+        self.story_information(ticket_id).url
+      end
+
       #
       # Class methods
       #

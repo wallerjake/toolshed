@@ -180,6 +180,14 @@ module Toolshed
       @ticket_tracker_owner = owner
     end
 
+    def self.ticket_status_for_complete
+      @ticket_status_for_complete
+    end
+
+    def self.ticket_status_for_complete=(status)
+      @ticket_status_for_complete = status
+    end
+
     # time tracking configuration
 
     def self.time_tracking_tool
@@ -258,6 +266,7 @@ module Toolshed
         self.ticket_tracker_username            ||= credentials['ticket_tracker_username']
         self.ticket_tracker_password            ||= credentials['ticket_tracker_password']
         self.ticket_tracker_owner               ||= credentials['ticket_tracker_owner']
+        self.ticket_status_for_complete         ||= credentials['ticket_status_for_complete']
         self.default_ticket_tracker_project     ||= credentials['default_ticket_tracker_project']
         self.pull_from_remote_name              ||= credentials['pull_from_remote_name']
         self.pull_from_repository_user          ||= credentials['pull_from_repository_user']
