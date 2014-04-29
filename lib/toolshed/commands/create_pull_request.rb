@@ -7,7 +7,7 @@ module Toolshed
         puts "Branched From: #{Toolshed::Git::Base.branched_from}"
         puts "Using Defaults: #{(Toolshed::Client.use_defaults.nil?) ? 'No' : 'Yes'}"
 
-        unless (Toolshed::Client.ticket_tracking_tool.empty?)
+        unless (Toolshed::Client.ticket_tracking_tool.nil? || Toolshed::Client.ticket_tracking_tool.empty?)
           ticket_tracking_url = ''
           ticket_tracking_title = ''
           ticket_id = ''
@@ -52,10 +52,12 @@ module Toolshed
           git_pull_request_result = git_tool.create_pull_request(title, body)
           pull_request_url = git_pull_request_result["html_url"]
 
-          add_note_to_ticket = read_user_input_add_note_to_ticket("Would you like to add a note with the pull request url?")
-          if (add_note_to_ticket)
-            result = ticket_tracker.add_note(ticket_id, pull_request_url)
-            result = ticket_tracker.update_ticket_status(ticket_id, Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS"))
+          unless (Toolshed::Client.ticket_tracking_tool.nil? || Toolshed::Client.ticket_tracking_tool.empty?)
+            add_note_to_ticket = read_user_input_add_note_to_ticket("Would you like to add a note with the pull request url?")
+            if (add_note_to_ticket)
+              result = ticket_tracker.add_note(ticket_id, pull_request_url)
+              result = ticket_tracker.update_ticket_status(ticket_id, Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS"))
+            end
           end
 
           puts "Created Pull Request: #{pull_request_url}"

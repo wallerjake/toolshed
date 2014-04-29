@@ -9,8 +9,9 @@ module Toolshed
       def initialize(options={})
         super(options)
 
-        username = Toolshed::Client::github_username
-        password = Toolshed::Client::github_password
+        username  = Toolshed::Client::github_username
+        password  = Toolshed::Client::github_password
+        token     = Toolshed::Client::github_token
 
         unless (options[:username].nil?)
           username = options[:username]
@@ -20,10 +21,20 @@ module Toolshed
            password = options[:password]
         end
 
+        unless (token.nil?)
+          username = token
+          password = nil
+        end
+
+        unless (options[:token].nil?)
+          username = options[:token]
+          password = nil
+        end
+
         @auth = { username: username, password: password }
         self.default_options = {
           :headers => {
-              "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17"
+              "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17",
           },
           basic_auth: @auth,
         }

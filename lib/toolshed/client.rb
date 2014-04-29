@@ -49,6 +49,14 @@ module Toolshed
       @github_password = password
     end
 
+    def self.github_token
+      @github_token
+    end
+
+    def self.github_token=(token)
+      @github_token = token
+    end
+
     def self.pull_from_remote_name
       @pull_from_remote_name
     end
@@ -213,6 +221,7 @@ module Toolshed
         credentials = YAML.load_file(File.expand_path(loaded_from_path))
         self.github_username                    ||= credentials['github_username']
         self.github_password                    ||= credentials['github_password']
+        self.github_token                       ||= credentials['github_token']
         self.pivotal_tracker_username           ||= credentials['pivotal_tracker_username']
         self.pivotal_tracker_password           ||= credentials['pivotal_tracker_password']
         self.default_pivotal_tracker_project_id ||= credentials['default_pivotal_tracker_project_id']

@@ -21,8 +21,9 @@ Note that it will only read one file which ever file is closest to the directory
   pivotal_tracker_password: [pivotal_tracker_password] (optional)
   default_pivotal_tracker_project_id: [project_id] (optional)
 
-  github_username: [github_username] (optional)
-  github_password: [github_password] (optional)
+  github_username:  [github_username] (optional)
+  github_password:  [github_password] (optional)
+  github_token:     [github_token] (optional) - create the token if your account require two factor you can disable token or enable through Github. See https://github.com/settings/tokens/new for details.
   git_tool: github (optional default `github`)
   use_git_submodules: false (optional default `false`)
   pull_from_remote_name: [pull_from_remote_name] (required)
@@ -94,6 +95,9 @@ if $0.split("/").last == 'toolshed'
     end
     opts.on("-p", "--github-password [ARG]") do |password|
       Toolshed::Client.github_password = password
+    end
+    opts.on("-t", "--github-token [ARG]") do |token|
+      Toolshed::Client.github_token = token
     end
     opts.on("-u", "--pivotal-tracker-username [ARG]") do |username|
       Toolshed::Client.pivotal_tracker_username = username
