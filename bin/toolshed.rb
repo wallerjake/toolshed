@@ -83,8 +83,10 @@ list_branches [                         # List branches for your remote reposito
 delete_branch [                         # Delete a branch both locally and to your push to remote
   --branch-name "134_mybranch" | "134"  # Either the full branch name or some unique string in the branch i.e. ticket id
 ]
-create_ticket_comment [
+create_ticket_comment [                 # Add a comment to a specific ticket
   --use-defaults "true"                 # use defaults instead of getting prompts if you don't want to supply project name
+]
+update_ticket_status [                  # Update a specific tickets status
 ]
 EOF
 end

@@ -36,7 +36,10 @@ module Toolshed
       # Instance methods
       #
       def story_information(ticket_id)
-        self.client.Issue.find(ticket_id)
+        unless (@issue.nil?)
+          return @issue
+        end
+        @issue = self.client.Issue.find(ticket_id)
       end
 
       def add_note(ticket_id, note_text)
@@ -45,8 +48,24 @@ module Toolshed
       end
 
       def update_ticket_status(ticket_id, status, options={})
-        issue = self.story_information(ticket_id).status.build
-        issue.save({ 'body' => status })
+        available_statuses(ticket_id)
+
+        transition = self.story_information(ticket_id).transitions.build
+        transition.save({ 'transition' => { "id" => transition_status_id_by_status(ticket_id, status) } })
+      end
+
+      def available_statuses(ticket_id)
+        self.client.Transition.all(issue: story_information(ticket_id))
+      end
+
+      def transition_status_id_by_status(ticket_id, status)
+        self.available_statuses(ticket_id).each do |transition_status|
+          if (status == transition_status.name)
+            return transition_status.id
+          end
+        end
+
+        raise "Unable to find available status"
       end
 
       #

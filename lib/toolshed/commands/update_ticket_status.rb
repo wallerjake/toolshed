@@ -1,6 +1,6 @@
 module Toolshed
   module Commands
-    class CreateTicketComment
+    class UpdateTicketStatus
       def execute(args, options = {})
         ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
 
@@ -21,21 +21,11 @@ module Toolshed
         default_ticket_id = ticket_tracker_class.send("story_id_from_branch_name", Toolshed::Git::Base.branch_name)
         ticket_id = read_user_input_ticket_id("Ticket ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
 
-        if use_project_id
-          puts "Using Project: #{ticket_tracker_project_id}"
-        end
-        puts "Using Ticket: #{ticket_id}"
-
-        puts "Note? "
-        note_text = $stdin.gets.chomp.strip
+        status = read_user_input_status("Status:")
 
         begin
-          result = ticket_tracker.add_note(ticket_id, note_text)
-          if (result)
-            puts "Comment has been added to ticket"
-          else
-            puts "Unable to add comment #{result.inspect}"
-          end
+          result = ticket_tracker.update_ticket_status(ticket_id, status)
+          puts result
         rescue => e
           puts e.message
           exit
@@ -66,6 +56,17 @@ module Toolshed
         end
 
         value
+      end
+
+      def read_user_input_status(message)
+        puts message
+        value = $stdin.gets.chomp
+
+        until (!value.blank?)
+          puts "Status must be passed in"
+          puts message
+          value = $stdin.gets.chomp
+        end
       end
     end
   end
