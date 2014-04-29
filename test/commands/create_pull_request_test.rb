@@ -86,7 +86,6 @@ class CreatePullRequestTest < Test::Unit::TestCase
       with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.pull_from_repository_user}/#{Toolshed::Client.pull_from_repository_name}/pulls", github_default_options).
       returns(http_party_mock)
 
-
     # mock up the pivotal_tracker stuff
     PivotalTracker::Client.expects(:token).
     with(Toolshed::TicketTracking::PivotalTracker.username, Toolshed::TicketTracking::PivotalTracker.password).
@@ -104,9 +103,13 @@ class CreatePullRequestTest < Test::Unit::TestCase
     pivotal_tracker_story_mock = mock('PivotalTracker::Story')
     pivotal_tracker_story_mock.stubs(:url => 'http://www.example.com', :id => '1', :name => "Test Title")
 
-    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:story_information).
+    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:title).
     with('1').
-    returns(pivotal_tracker_story_mock)
+    returns("Sample")
+
+    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:url).
+    with('1').
+    returns("github.com/pulls/1")
 
     # stub the possible input
     Toolshed::Commands::CreatePullRequest.any_instance.stubs(:read_user_input_ticket_tracker_ticket_id).returns('1')

@@ -61,11 +61,11 @@ module Toolshed
         end
       end
 
-      def title
+      def title(ticket_id)
         self.clean(self.story_information(ticket_id).name)
       end
 
-      def url
+      def url(ticket_id)
         self.story_information(ticket_id).url
       end
 
