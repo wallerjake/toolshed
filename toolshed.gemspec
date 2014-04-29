@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "veto"
   spec.add_dependency "launchy"
   spec.add_dependency "clipboard"
+  spec.add_dependency "jira-ruby"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"

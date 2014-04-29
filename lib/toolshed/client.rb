@@ -114,7 +114,8 @@ module Toolshed
     end
 
 
-    # pivotal tracker config
+    # ticket tracking information
+
     def self.pivotal_tracker_username
       @pivotal_tracker_username
     end
@@ -139,8 +140,29 @@ module Toolshed
       @default_pivotal_tracker_project_id = default_pivotal_tracker_project_id
     end
 
+    def self.ticket_tracker_username
+      @ticket_tracker_username
+    end
 
-    # ticket tracking configuration
+    def self.ticket_tracker_username=(username)
+      @ticket_tracker_username = username
+    end
+
+    def self.ticket_tracker_password
+      @ticket_tracker_password
+    end
+
+    def self.ticket_tracker_password=(password)
+      @ticket_tracker_password = password
+    end
+
+    def self.default_ticket_tracker_project
+      @default_ticket_tracker_project
+    end
+
+    def self.default_ticket_tracker_project=(default_ticket_tracker_project)
+      @default_ticket_tracker_project = default_ticket_tracker_project
+    end
 
     def self.ticket_tracking_tool
       @ticket_tracking_tool
@@ -148,6 +170,14 @@ module Toolshed
 
     def self.ticket_tracking_tool=(ticket_tracking_tool)
       @ticket_tracking_tool = ticket_tracking_tool
+    end
+
+    def self.ticket_tracker_owner
+      @ticket_tracker_owner
+    end
+
+    def self.ticket_tracker_owner=(owner)
+      @ticket_tracker_owner = owner
     end
 
     # time tracking configuration
@@ -225,6 +255,10 @@ module Toolshed
         self.pivotal_tracker_username           ||= credentials['pivotal_tracker_username']
         self.pivotal_tracker_password           ||= credentials['pivotal_tracker_password']
         self.default_pivotal_tracker_project_id ||= credentials['default_pivotal_tracker_project_id']
+        self.ticket_tracker_username            ||= credentials['ticket_tracker_username']
+        self.ticket_tracker_password            ||= credentials['ticket_tracker_password']
+        self.ticket_tracker_owner               ||= credentials['ticket_tracker_owner']
+        self.default_ticket_tracker_project     ||= credentials['default_ticket_tracker_project']
         self.pull_from_remote_name              ||= credentials['pull_from_remote_name']
         self.pull_from_repository_user          ||= credentials['pull_from_repository_user']
         self.pull_from_repository_name          ||= credentials['pull_from_repository_name']

@@ -1,0 +1,72 @@
+module Toolshed
+  module Commands
+    class CreateTicketComment
+      def execute(args, options = {})
+        ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
+
+        use_project_id = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID") rescue false
+        if use_project_id
+          ticket_tracker_project_id = read_user_input_project("Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):", options.merge!({ default: Toolshed::Client.default_pivotal_tracker_project_id }))
+          options.merge!({ project_id: ticket_tracker_project_id })
+        end
+
+        use_project_name = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_NAME") rescue false
+        if use_project_name
+          ticket_tracker_project_name = read_user_input_project("Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):", options.merge!({ default: Toolshed::Client.default_ticket_tracker_project }))
+          options.merge!({ project: ticket_tracker_project_name })
+        end
+
+        ticket_tracker = ticket_tracker_class.create_instance(options)
+
+        default_ticket_id = ticket_tracker_class.send("story_id_from_branch_name", Toolshed::Git::Base.branch_name)
+        ticket_id = read_user_input_ticket_id("Ticket ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
+
+        if use_project_id
+          puts "Using Project: #{ticket_tracker_project_id}"
+        end
+        puts "Using Ticket: #{ticket_id}"
+
+        print "Note? "
+        note_text = $stdin.gets.chomp.strip
+
+        begin
+          result = ticket_tracker.add_note(ticket_id, note_text)
+          if (result)
+            puts "Comment has been added to ticket"
+          else
+            puts "Unable to add comment #{result.inspect}"
+          end
+        rescue => e
+          puts e.message
+          exit
+        end
+      end
+
+      def read_user_input_project(message, options)
+        return options[:default] if (options.has_key?(:use_defaults))
+
+        puts message
+        value = $stdin.gets.chomp
+
+        if (value.empty?)
+          value = options[:default]
+        end
+
+        value
+      end
+
+      def read_user_input_ticket_id(message, options)
+        return options[:default] if (options.has_key?(:use_defaults))
+
+        puts message
+        value = $stdin.gets.chomp
+
+        if (value.empty?)
+          value = options[:default]
+        end
+
+        value
+      end
+    end
+  end
+end

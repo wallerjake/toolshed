@@ -31,6 +31,7 @@ module Toolshed
         'get_daily_time_update'                 => Toolshed::Commands::GetDailyTimeUpdate,
         'list_branches'                         => Toolshed::Commands::ListBranches,
         'delete_branch'                         => Toolshed::Commands::DeleteBranch,
+        'create_ticket_comment'                 => Toolshed::Commands::CreateTicketComment,
       }
     end
   end
@@ -47,3 +48,4 @@ require 'toolshed/commands/get_daily_time_update'
 require 'toolshed/commands/get_daily_time_update'
 require 'toolshed/commands/list_branches'
 require 'toolshed/commands/delete_branch'
+require 'toolshed/commands/create_ticket_comment'

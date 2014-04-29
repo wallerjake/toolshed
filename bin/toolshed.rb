@@ -83,6 +83,9 @@ list_branches [                         # List branches for your remote reposito
 delete_branch [                         # Delete a branch both locally and to your push to remote
   --branch-name "134_mybranch" | "134"  # Either the full branch name or some unique string in the branch i.e. ticket id
 ]
+create_ticket_comment [
+  --use-defaults "true"                 # use defaults instead of getting prompts if you don't want to supply project name
+]
 EOF
 end
 
@@ -185,6 +188,11 @@ if $0.split("/").last == 'toolshed'
       end
       opts.on("--formatted-string [ARG]") do |opt|
         options[:formatted_string] = opt
+      end
+    end,
+    'create_ticket_comment' => OptionParser.new do |opts|
+      opts.on("--use-defaults [ARG]") do |opt|
+        Toolshed::Client.use_defaults = opt
       end
     end,
   }
