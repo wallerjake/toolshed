@@ -16,15 +16,16 @@ module Toolshed
           options.merge!({ project: ticket_tracker_project_name })
         end
 
-        ticket_tracker = ticket_tracker_class.create_instance(options)
-
-        default_ticket_id = ticket_tracker_class.send("story_id_from_branch_name", Toolshed::Git::Base.branch_name)
+        default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
         ticket_id = read_user_input_ticket_id("Ticket ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
+        options.merge!({ ticket_id: ticket_id })
+
+        ticket_tracker = ticket_tracker_class.create_instance(options)
 
         status = read_user_input_status("Status:")
 
         begin
-          result = ticket_tracker.update_ticket_status(ticket_id, status)
+          result = ticket_tracker.update_ticket_status(status)
           puts result
         rescue => e
           puts e.message

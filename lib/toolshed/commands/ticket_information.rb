@@ -17,17 +17,18 @@ module Toolshed
             options.merge!({ project: ticket_tracker_project_name })
           end
 
-          ticket_tracker = ticket_tracker_class.create_instance(options)
-
-          default_ticket_id = ticket_tracker_class.send("story_id_from_branch_name", Toolshed::Git::Base.branch_name)
+          default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
           ticket_id = read_user_input_ticket_id("Story ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
+          options.merge!({ ticket_id: ticket_id })
+
+          ticket_tracker = ticket_tracker_class.create_instance(options)
 
           if use_project_id
             puts "Using Project: #{ticket_tracker_project_id}"
           end
           puts "Using Ticket: #{ticket_id}"
 
-          result = ticket_tracker.story_information(ticket_id)
+          result = ticket_tracker.ticket
 
           if (options[:field])
             field_value = result.send(options[:field])

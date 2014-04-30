@@ -101,7 +101,7 @@ module Toolshed
         end
 
         unless (options.has_key?(:ticket_id))
-          raise 'Unable to use Jira as project name was not supplied'
+          raise 'Unable to use Jira as ticket id was not supplied'
         end
 
         jira = Toolshed::TicketTracking::Jira.new({

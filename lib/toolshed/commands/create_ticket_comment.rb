@@ -16,10 +16,11 @@ module Toolshed
           options.merge!({ project: ticket_tracker_project_name })
         end
 
-        ticket_tracker = ticket_tracker_class.create_instance(options)
-
-        default_ticket_id = ticket_tracker_class.send("story_id_from_branch_name", Toolshed::Git::Base.branch_name)
+        default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
         ticket_id = read_user_input_ticket_id("Ticket ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
+        options.merge!({ ticket_id: ticket_id })
+
+        ticket_tracker = ticket_tracker_class.create_instance(options)
 
         if use_project_id
           puts "Using Project: #{ticket_tracker_project_id}"
@@ -30,7 +31,7 @@ module Toolshed
         note_text = $stdin.gets.chomp.strip
 
         begin
-          result = ticket_tracker.add_note(ticket_id, note_text)
+          result = ticket_tracker.add_note(note_text)
           if (result)
             puts "Comment has been added to ticket"
           else

@@ -28,6 +28,10 @@ module Toolshed
         self.story = @pt_project.stories.find(options[:ticket_id])
       end
 
+      def ticket
+        self.story
+      end
+
       def add_note(note_text)
         results = self.story.notes.create(text: note_text)
       end
