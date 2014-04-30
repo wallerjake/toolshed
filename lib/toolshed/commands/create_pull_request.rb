@@ -17,27 +17,43 @@ module Toolshed
 
             use_project_id = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID") rescue false
             if use_project_id
-              ticket_tracker_project_id = read_user_input_project("Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):", options.merge!({ default: Toolshed::Client.default_pivotal_tracker_project_id }))
-              options.merge!({ project_id: ticket_tracker_project_id })
+              ticket_tracker_project_id = read_user_input_project(
+                "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):",
+                options.merge!({
+                  default: Toolshed::Client.default_pivotal_tracker_project_id,
+                })
+              )
+              options.merge!({
+                project_id: ticket_tracker_project_id,
+              })
             end
 
             use_project_name = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_NAME") rescue false
             if use_project_name
-              ticket_tracker_project_name = read_user_input_project("Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):", options.merge!({ default: Toolshed::Client.default_ticket_tracker_project }))
-              options.merge!({ project: ticket_tracker_project_name })
+              ticket_tracker_project_name = read_user_input_project(
+                "Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):", options.merge!({
+                  default: Toolshed::Client.default_ticket_tracker_project,
+                })
+              )
+              options.merge!({
+                project: ticket_tracker_project_name,
+              })
             end
-
-            ticket_tracker = ticket_tracker_class.create_instance(options)
 
             # @TODO - refactor this code into the git module seems more appropriate since it's performing git functions
             ticket_id = read_user_input_ticket_tracker_ticket_id(
-              "Ticket ID (Default: #{Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name)}):", {
-                default: Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(Toolshed::Git::Base.branch_name),
+              "Ticket ID (Default: #{Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name)}):", {
+                default: Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name),
               }
             )
+            options.merge!({
+              ticket_id: ticket_id,
+            })
 
-            ticket_tracking_url = ticket_tracker.url(ticket_id)
-            ticket_tracking_title = ticket_tracker.title(ticket_id)
+            ticket_tracker = ticket_tracker_class.create_instance(options)
+
+            ticket_tracking_url = ticket_tracker.url
+            ticket_tracking_title = ticket_tracker.title
             ticket_id = ticket_id
 
             puts "Ticket Tracking URL: #{ticket_tracking_url}"
@@ -56,8 +72,18 @@ module Toolshed
           git_tool = git_tool_class.create_instance
 
           # create the pull request prompt when needed
-          title = read_user_input_pull_request_title("Pull request title (Default: #{ticket_tracking_title}):", options.merge!({ default: ticket_tracking_title }))
-          body = read_user_input_pull_request_body("Pull request body (Default: #{ticket_tracking_url}):", options.merge!({ default: ticket_tracking_url }))
+          title = read_user_input_pull_request_title(
+            "Pull request title (Default: #{ticket_tracking_title}):",
+            options.merge!({
+              default: ticket_tracking_title,
+            })
+          )
+          body = read_user_input_pull_request_body(
+            "Pull request body (Default: #{ticket_tracking_url}):",
+            options.merge!({
+              default: ticket_tracking_url
+            })
+          )
 
           puts "Pull request being created"
           git_pull_request_result = git_tool.create_pull_request(title, body)

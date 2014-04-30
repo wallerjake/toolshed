@@ -7,7 +7,7 @@ module Toolshed
       DEFAULT_COMPLETED_STATUS = 'finished'
       USE_PROJECT_ID = true
 
-      attr_accessor :project_id, :token
+      attr_accessor :project_id, :token, :story
 
       def initialize(options={})
         username = Toolshed::Client::pivotal_tracker_username
@@ -25,21 +25,14 @@ module Toolshed
 
         self.project_id = (options[:project_id].nil?) ? Toolshed::Client.default_pivotal_tracker_project_id : options[:project_id]
         @pt_project = ::PivotalTracker::Project.find(self.project_id)
+        self.story = @pt_project.stories.find(options[:ticket_id])
       end
 
-      #
-      # Instance methods
-      #
-      def story_information(story_id)
-        return @pt_project.stories.find(story_id)
+      def add_note(note_text)
+        results = self.story.notes.create(text: note_text)
       end
 
-      def add_note(story_id, note_text)
-        story = @pt_project.stories.find(story_id)
-        results = story.notes.create(text: note_text)
-      end
-
-      def update_ticket_status(story_id, current_state, options={})
+      def update_ticket_status(current_state, options={})
         options.merge!({
           :headers => {
               "X-TrackerToken"  => self.token,
@@ -51,7 +44,7 @@ module Toolshed
           }.to_json
         })
 
-        response = HTTParty.put("#{Toolshed::Client::PIVOTAL_TRACKER_BASE_API_URL}projects/#{self.project_id}/stories/#{story_id}", options).response
+        response = HTTParty.put("#{Toolshed::Client::PIVOTAL_TRACKER_BASE_API_URL}projects/#{self.project_id}/stories/#{self.story.id}", options).response
         response = JSON.parse(response.body)
 
         if (response["error"].nil?)
@@ -61,58 +54,55 @@ module Toolshed
         end
       end
 
-      def title(ticket_id)
-        self.clean(self.story_information(ticket_id).name)
+      def title
+        self.clean(self.story.name)
       end
 
       def url(ticket_id)
-        self.story_information(ticket_id).url
+        self.story.url
       end
 
-      #
-      # Class methods
-      #
-      def self.story_id_from_branch_name(branch_name)
-        story_id = branch_name.split("_")[0]
-      end
+      class << self
+        def username
+          username = Toolshed::Client::pivotal_tracker_username
+          if (username.nil?)
+            # prompt to ask for username
+            puts "PivotalTracker username? "
+            username = $stdin.gets.chomp.strip
+          end
 
-      def self.username
-        username = Toolshed::Client::pivotal_tracker_username
-        if (username.nil?)
-          # prompt to ask for username
-          puts "PivotalTracker username? "
-          username = $stdin.gets.chomp.strip
+          return username
         end
 
-        return username
-      end
+        def password
+          password = Toolshed::Client::pivotal_tracker_password
+          if (password.nil?)
+            # prompt to ask for password
+            system "stty -echo"
+            puts "PivotalTracker password? "
+            password = $stdin.gets.chomp.strip
+            system "stty echo"
+          end
 
-      def self.password
-        password = Toolshed::Client::pivotal_tracker_password
-        if (password.nil?)
-          # prompt to ask for password
-          system "stty -echo"
-          puts "PivotalTracker password? "
-          password = $stdin.gets.chomp.strip
-          system "stty echo"
+          return password
         end
 
-        return password
-      end
+        def create_instance(options={})
+          unless (options.has_key?(:project_id))
+            raise 'Unable to use PivotalTracker as project id was not supplied'
+          end
 
-      #
-      # Get the pivotal tracker object based off of the project_id
-      #
-      def self.create_instance(options={})
-        unless (options.has_key?(:project_id))
-          raise 'Unable to use PivotalTracker as project id was not supplied'
+          unless (options.has_key?(:ticket_id))
+            raise 'Unable to use PivotalTracker as story id was not supplied'
+          end
+
+          Toolshed::TicketTracking::PivotalTracker.new({
+            project_id: options[:project_id],
+            username:   Toolshed::TicketTracking::PivotalTracker.username,
+            password:   Toolshed::TicketTracking::PivotalTracker.password,
+            ticket_id:   options[:ticket_id],
+          })
         end
-
-        pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({ project_id: options[:project_id], username: Toolshed::TicketTracking::PivotalTracker.username, password: Toolshed::TicketTracking::PivotalTracker.password })
-      end
-
-      def self.clean(title)
-        title.gsub("'", "").gsub("\"", "")
       end
     end
   end

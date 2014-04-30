@@ -6,7 +6,7 @@ module Toolshed
 
       USE_PROJECT_NAME = true
 
-      attr_accessor :project, :client, :owner, :issue
+      attr_accessor :project, :client, :owner, :ticket
 
       def initialize(options={})
         username        = Toolshed::Client::ticket_tracker_username
@@ -29,37 +29,31 @@ module Toolshed
           auth_type:    :basic,
           use_ssl:      true,
         })
-        self.project = self.client.Project.find(options[:project])
+        self.project  = self.client.Project.find(options[:project])
+        self.ticket   = self.client.Issue.find(options[:ticket_id])
       end
 
       #
       # Instance methods
       #
-      def story_information(ticket_id)
-        unless (@issue.nil?)
-          return @issue
-        end
-        @issue = self.client.Issue.find(ticket_id)
-      end
-
-      def add_note(ticket_id, note_text)
-        issue = self.story_information(ticket_id).comments.build
+      def add_note(note_text)
+        issue = self.ticket.comments.build
         issue.save({ 'body' => note_text })
       end
 
-      def update_ticket_status(ticket_id, status, options={})
-        available_statuses(ticket_id)
+      def update_ticket_status(status, options={})
+        available_statuses
 
-        transition = self.story_information(ticket_id).transitions.build
-        transition.save({ 'transition' => { "id" => transition_status_id_by_status(ticket_id, status) } })
+        transition = self.ticket.transitions.build
+        transition.save({ 'transition' => { "id" => transition_status_id_by_status(status) } })
       end
 
-      def available_statuses(ticket_id)
-        self.client.Transition.all(issue: story_information(ticket_id))
+      def available_statuses
+        self.client.Transition.all(issue: self.ticket)
       end
 
       def transition_status_id_by_status(ticket_id, status)
-        self.available_statuses(ticket_id).each do |transition_status|
+        self.available_statuses.each do |transition_status|
           if (status == transition_status.name)
             return transition_status.id
           end
@@ -68,23 +62,17 @@ module Toolshed
         raise "Unable to find available status"
       end
 
-      def title(ticket_id)
-        issue = self.story_information(ticket_id)
-        issue.summary
+      def title
+        self.ticket.summary
       end
 
-      def url(ticket_id)
-        issue = self.story_information(ticket_id)
-        return "https://#{self.owner}.atlassian.net/browse/#{issue.key}"
+      def url
+        "https://#{self.owner}.atlassian.net/browse/#{self.ticket.key}"
       end
 
       #
       # Class methods
       #
-      def self.story_id_from_branch_name(branch_name)
-        branch_name.split("_")[0]
-      end
-
       def self.username
         username = Toolshed::Client::ticket_tracker_username
         if (username.nil?)
@@ -107,23 +95,21 @@ module Toolshed
         password
       end
 
-      #
-      # Get the pivotal tracker object based off of the project_id
-      #
       def self.create_instance(options={})
         unless (options.has_key?(:project))
           raise 'Unable to use Jira as project name was not supplied'
         end
 
-        jira = Toolshed::TicketTracking::Jira.new({
-          project: options[:project],
-          username: Toolshed::TicketTracking::Jira.username,
-          password: Toolshed::TicketTracking::Jira.password,
-        })
-      end
+        unless (options.has_key?(:ticket_id))
+          raise 'Unable to use Jira as project name was not supplied'
+        end
 
-      def self.clean(title)
-        title.gsub("'", "").gsub("\"", "")
+        jira = Toolshed::TicketTracking::Jira.new({
+          project:    options[:project],
+          username:   Toolshed::TicketTracking::Jira.username,
+          password:   Toolshed::TicketTracking::Jira.password,
+          ticket_id:  options[:ticket_id]
+        })
       end
     end
   end
