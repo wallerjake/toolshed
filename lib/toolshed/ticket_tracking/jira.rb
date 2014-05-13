@@ -52,7 +52,7 @@ module Toolshed
         self.client.Transition.all(issue: self.ticket)
       end
 
-      def transition_status_id_by_status(ticket_id, status)
+      def transition_status_id_by_status(status)
         self.available_statuses.each do |transition_status|
           if (status == transition_status.name)
             return transition_status.id

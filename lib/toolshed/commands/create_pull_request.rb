@@ -92,13 +92,14 @@ module Toolshed
           unless (Toolshed::Client.ticket_tracking_tool.nil? || Toolshed::Client.ticket_tracking_tool.empty?)
             add_note_to_ticket = read_user_input_add_note_to_ticket("Would you like to add a note with the pull request url?")
             if (add_note_to_ticket)
-              result = ticket_tracker.add_note(ticket_id, pull_request_url)
+              result = ticket_tracker.add_note(pull_request_url)
 
               default_completed_status = Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS") rescue false
               unless (default_completed_status)
                 default_completed_status = Toolshed::Client.ticket_status_for_complete
               end
-              result = ticket_tracker.update_ticket_status(ticket_id, default_completed_status)
+
+              result = ticket_tracker.update_ticket_status(default_completed_status)
             end
           end
 
