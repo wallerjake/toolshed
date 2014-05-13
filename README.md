@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wallerjake/toolshed.svg?branch=master)](https://travis-ci.org/wallerjake/toolshed)
+
 # Toolshed
 
 Toolshed is a utility gem meant to make small tasks faster. This includes things like making a pull request up to Github all the way to creating a branch. This gem can be extended to used else where also.
