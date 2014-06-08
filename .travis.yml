@@ -10,5 +10,8 @@ before_script:
 language: ruby
 rvm:
 - 2.0.0
+addons:
+  code_climate:
+    repo_token: c94c0c00c0b1bf210f41515822ea072c639ccdb86b7debabc9c60572ce4f39f0
 env:
   - RUNNING_ON_CI=true
