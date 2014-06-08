@@ -9,17 +9,10 @@ module Toolshed
       attr_accessor :project, :client, :owner, :ticket
 
       def initialize(options={})
-        username        = Toolshed::Client::ticket_tracker_username
-        password        = Toolshed::Client::ticket_tracker_password
+        username = (options[:username].nil?) ? Toolshed::Client::ticket_tracker_username : options[:username]
+        password = (options[:password].nil?) ? Toolshed::Client::ticket_tracker_password : options[:password]
+
         self.owner      = Toolshed::Client::ticket_tracker_owner
-
-        unless (options[:username].nil?)
-          username = options[:username]
-        end
-
-        unless (options[:password].nil?)
-           password = options[:password]
-        end
 
         self.client = JIRA::Client.new({
           username:     username,
@@ -29,8 +22,9 @@ module Toolshed
           auth_type:    :basic,
           use_ssl:      true,
         })
-        self.project  = self.client.Project.find(options[:project])
-        self.ticket   = self.client.Issue.find(options[:ticket_id])
+
+        self.project = self.client.Project.find(options[:project])
+        self.ticket = self.client.Issue.find(options[:ticket_id])
       end
 
       #
@@ -74,25 +68,21 @@ module Toolshed
       # Class methods
       #
       def self.username
-        username = Toolshed::Client::ticket_tracker_username
-        if (username.nil?)
-          # prompt to ask for username
-          puts "Jira username? "
-          username = $stdin.gets.chomp.strip
-        end
+        return Toolshed::Client::ticket_tracker_username unless Toolshed::Client::ticket_tracker_username.nil?
+
+        # prompt to ask for username
+        puts "Jira username? "
+        username = $stdin.gets.chomp.strip
       end
 
       def self.password
-        password = Toolshed::Client::ticket_tracker_password
-        if (password.nil?)
-          # prompt to ask for password
-          system "stty -echo"
-          puts "Jira password? "
-          password = $stdin.gets.chomp.strip
-          system "stty echo"
-        end
+        return Toolshed::Client::ticket_tracker_password unless Toolshed::Client::ticket_tracker_password.nil?
 
-        password
+        # prompt to ask for password
+        system "stty -echo"
+        puts "Jira password? "
+        password = $stdin.gets.chomp.strip
+        system "stty echo"
       end
 
       def self.create_instance(options={})

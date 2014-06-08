@@ -19,6 +19,7 @@ require 'toolshed'
 Test::Unit.at_start do
   Toolshed::Client.use_git_submodules = false
   #Toolshed::Client.git_quiet = '&> /dev/null' unless ENV['RUNNING_ON_CI']
+  Toolshed::Client.git_quiet = ''
 
   I18n.config.enforce_available_locales = true
 

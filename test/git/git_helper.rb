@@ -21,7 +21,7 @@ def save_stash
 end
 
 def delete_branch(branch_name)
-  until system("git branch -D #{branch_name} --quiet")
+  until system("git branch -D #{branch_name} #{Toolshed::Client.git_quiet}")
     sleep 1
   end
 end
