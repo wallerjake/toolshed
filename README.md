@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/wallerjake/toolshed.svg?branch=master)](https://travis-ci.org/wallerjake/toolshed)
+[![Code Climate](https://codeclimate.com/github/wallerjake/toolshed.png)](https://codeclimate.com/github/wallerjake/toolshed)
 
 # Toolshed
 
