@@ -25,7 +25,7 @@ module Toolshed
 
                 channel.on_data do |ch, data|
                   puts "#{data}"
-                  channel.send_data "#{read_user_input_password('Password:')}\n" if data =~ /password/
+                  channel.send_data "#{read_user_input_sudo_password(options)}\n" if data =~ /password/
                 end
 
                 channel.on_extended_data do |ch, type, data|
@@ -57,6 +57,23 @@ module Toolshed
       def add_in_ssh_options(options={})
         @ssh_options.merge!({ keys: [options[:keys]] }) unless options[:keys].nil?
         @ssh_options.merge!({ password: read_user_input_password('Password:') }) if options[:keys].nil?
+      end
+
+      def read_user_input_sudo_password(options)
+        if options[:sudo_password]
+          read_sudo_password(options)
+        else
+          read_user_input_password('Password:')
+        end
+      end
+
+      def read_sudo_password(options)
+        credentials = Toolshed::Client.read_credenials
+        if credentials[options[:sudo_password]]
+          credentials[options[:sudo_password]]
+        else
+          options[:sudo_password]
+        end
       end
     end
   end

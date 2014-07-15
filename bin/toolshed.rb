@@ -98,6 +98,7 @@ ssh [
   --prompt-for-password "true|false"        # If you want to be more secure and just prompt for passwords
   --user "username"                         # The user you want to connect with
   --keys "path/to/file"                     # IdentityFile you want to use for authentication if passed no password will be asked
+  --sudo-password "password1"               # If you need to use sudo provide a sudo password this can be taken from toolshedrc file also
 ]
 EOF
 end
@@ -232,6 +233,9 @@ if $0.split("/").last == 'toolshed'
       end
       opts.on("--keys [ARG]") do |opt|
         options[:keys] = opt
+      end
+      opts.on("--sudo-password [ARG]") do |opt|
+        options[:sudo_password] = opt
       end
     end,
   }
