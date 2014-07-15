@@ -89,6 +89,16 @@ create_ticket_comment [                 # Add a comment to a specific ticket
 ]
 update_ticket_status [                  # Update a specific tickets status
 ]
+ssh [
+  --use-sudo "true|false"                   # If you want the command to run under sudo i.e. sudo ssh ..
+  --host "ip_address"                       # The host you want to connect to
+  --connection-string-options "-p 4000"     # A string of options that will be added onto the command
+  --commands 'command1;command2'            # A list of commands either a string array "["command1", "command2"]" or "command1;command2" or put string into toolshedrc file and call it "main_server_commands"
+  --passwords "password1;password2"         # A list of passwords either a string array "["password1", "password2"]" or "password1" or put string into toolshedrc file and call it "main_server_commands_passwords"
+  --prompt-for-password "true|false"        # If you want to be more secure and just prompt for passwords
+  --user "username"                         # The user you want to connect with
+  --keys "path/to/file"                     # IdentityFile you want to use for authentication if passed no password will be asked
+]
 EOF
 end
 
@@ -196,6 +206,32 @@ if $0.split("/").last == 'toolshed'
     'create_ticket_comment' => OptionParser.new do |opts|
       opts.on("--use-defaults [ARG]") do |opt|
         Toolshed::Client.use_defaults = opt
+      end
+    end,
+    'ssh' => OptionParser.new do |opts|
+      opts.on("--use-sudo [ARG]") do |opt|
+        options[:use_sudo] = opt
+      end
+      opts.on("--host [ARG]") do |opt|
+        options[:host] = opt
+      end
+      opts.on("--connection-string-options [ARG]") do |opt|
+        options[:connection_string_options] = opt
+      end
+      opts.on("--commands [ARG]") do |opt|
+        options[:commands] = opt
+      end
+      opts.on("--passwords [ARG]") do |opt|
+        options[:passwords] = opt
+      end
+      opts.on("--prompt-for-password [ARG]") do |opt|
+        options[:prompt_for_password] = opt
+      end
+      opts.on("--user [ARG]") do |opt|
+        options[:user] = opt
+      end
+      opts.on("--keys [ARG]") do |opt|
+        options[:keys] = opt
       end
     end,
   }

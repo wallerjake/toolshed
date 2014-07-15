@@ -33,6 +33,7 @@ module Toolshed
         'delete_branch'                         => Toolshed::Commands::DeleteBranch,
         'create_ticket_comment'                 => Toolshed::Commands::CreateTicketComment,
         'update_ticket_status'                  => Toolshed::Commands::UpdateTicketStatus,
+        'ssh'                                   => Toolshed::Commands::SSH,
       }
     end
   end
@@ -51,3 +52,4 @@ require 'toolshed/commands/list_branches'
 require 'toolshed/commands/delete_branch'
 require 'toolshed/commands/create_ticket_comment'
 require 'toolshed/commands/update_ticket_status'
+require 'toolshed/commands/ssh'
