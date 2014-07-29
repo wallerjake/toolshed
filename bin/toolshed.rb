@@ -94,7 +94,7 @@ ssh [
   --host "ip_address"                       # The host you want to connect to
   --connection-string-options "-p 4000"     # A string of options that will be added onto the command
   --commands 'command1;command2'            # A list of commands either a string array "["command1", "command2"]" or "command1;command2" or put string into toolshedrc file and call it "main_server_commands"
-  --passwords "password1;password2"         # A list of passwords either a string array "["password1", "password2"]" or "password1" or put string into toolshedrc file and call it "main_server_commands_passwords"
+  --password "password1"                    # The password you are using to login to the server
   --prompt-for-password "true|false"        # If you want to be more secure and just prompt for passwords
   --user "username"                         # The user you want to connect with
   --keys "path/to/file"                     # IdentityFile you want to use for authentication if passed no password will be asked
@@ -222,8 +222,8 @@ if $0.split("/").last == 'toolshed'
       opts.on("--commands [ARG]") do |opt|
         options[:commands] = opt
       end
-      opts.on("--passwords [ARG]") do |opt|
-        options[:passwords] = opt
+      opts.on("--password [ARG]") do |opt|
+        options[:password] = opt
       end
       opts.on("--prompt-for-password [ARG]") do |opt|
         options[:prompt_for_password] = opt

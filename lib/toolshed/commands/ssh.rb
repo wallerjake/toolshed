@@ -6,9 +6,11 @@ module Toolshed
       def execute(args, options = {})
         puts "running ssh command with options #{options.inspect}"
         @ssh_options = {}
+        @password = Toolshed::Password.new(options)
 
         begin
           add_in_ssh_options(options)
+
           Net::SSH.start(options[:host], options[:user], @ssh_options) do |ssh|
             ssh.open_channel do |channel|
               channel.request_pty do |ch, success|
@@ -25,7 +27,7 @@ module Toolshed
 
                 channel.on_data do |ch, data|
                   puts "#{data}"
-                  channel.send_data "#{read_user_input_sudo_password(options)}\n" if data =~ /password/
+                  send_data(channel, data, options)
                 end
 
                 channel.on_extended_data do |ch, type, data|
@@ -45,35 +47,25 @@ module Toolshed
         end
       end
 
-      def read_user_input_password(message)
-        system "stty -echo"
-        puts message
-        value = $stdin.gets.chomp.strip
-        system "stty echo"
-
-        value
-      end
-
       def add_in_ssh_options(options={})
         @ssh_options.merge!({ keys: [options[:keys]] }) unless options[:keys].nil?
-        @ssh_options.merge!({ password: read_user_input_password('Password:') }) if options[:keys].nil?
+        @ssh_options.merge!({ password: @password.read_user_input_password('password') }) if options[:keys].nil?
       end
 
-      def read_user_input_sudo_password(options)
-        if options[:sudo_password]
-          read_sudo_password(options)
-        else
-          read_user_input_password('Password:')
+      def send_data(channel, data, options={})
+        if data =~ /password/
+          send_password_data(channel, options)
+        elsif data =~ /Do you want to continue \[Y\/n\]?/
+          send_yes_no_data(channel)
         end
       end
 
-      def read_sudo_password(options)
-        credentials = Toolshed::Client.read_credenials
-        if credentials[options[:sudo_password]]
-          credentials[options[:sudo_password]]
-        else
-          options[:sudo_password]
-        end
+      def send_password_data(channel, options={})
+        channel.send_data "#{@password.read_user_input_password('sudo_password')}\n"
+      end
+
+      def send_yes_no_data(channel)
+        channel.send_data "Y\n"
       end
     end
   end
