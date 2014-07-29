@@ -99,6 +99,7 @@ ssh [
   --user "username"                         # The user you want to connect with
   --keys "path/to/file"                     # IdentityFile you want to use for authentication if passed no password will be asked
   --sudo-password "password1"               # If you need to use sudo provide a sudo password this can be taken from toolshedrc file also
+  --verbose-output "true|flase"             # If you want to see commands being ran and other verbose output set this flag to true
 ]
 EOF
 end
@@ -236,6 +237,9 @@ if $0.split("/").last == 'toolshed'
       end
       opts.on("--sudo-password [ARG]") do |opt|
         options[:sudo_password] = opt
+      end
+      opts.on("--verbose-output [ARG]") do |opt|
+        options[:verbose_output] = opt
       end
     end,
   }
