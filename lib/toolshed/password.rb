@@ -11,7 +11,7 @@ module Toolshed
       unless self.send(type).blank?
         read_password_from_configuration(type)
       else
-        prompt_user_input_password(prompt_message)
+        prompt_user_to_input_password(prompt_message)
       end
     end
 
@@ -20,10 +20,14 @@ module Toolshed
       def prompt_user_to_input_password(message)
         system "stty -echo"
         puts message
-        value = $stdin.gets.chomp.strip
+        value = get_password_input
         system "stty echo"
 
         value
+      end
+
+      def get_password_input
+        $stdin.gets.chomp.strip
       end
 
       def read_password_from_configuration(type)
