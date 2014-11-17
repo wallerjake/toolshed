@@ -25,7 +25,7 @@ module Toolshed
            owner = options[:sub_domain]
         end
 
-        self.harvest_client = ::Harvest.client(owner, username, password)
+        self.harvest_client = ::Harvest.client(subdomain: owner, username: username, password: password)
         self.project_id = options[:project_id] unless !options.has_key?(:project_id)
 
         # setup formatting

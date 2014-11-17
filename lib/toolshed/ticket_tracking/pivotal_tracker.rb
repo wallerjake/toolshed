@@ -1,17 +1,17 @@
 module Toolshed
   module TicketTracking
-    class PivotalTracker
-      extend TicketTracking
+    class PivotalTracker < Base
       include HTTParty
 
       DEFAULT_COMPLETED_STATUS = 'finished'
       USE_PROJECT_ID = true
 
-      attr_accessor :project_id, :token, :story
+      attr_accessor :project_id, :token, :story, :default_pull_request_title_format
 
       def initialize(options={})
         username = Toolshed::Client::pivotal_tracker_username
         password = Toolshed::Client::pivotal_tracker_password
+        self.default_pull_request_title_format = Toolshed::Client.default_pull_request_title_format ||= "[title]"
 
         unless (options[:username].nil?)
           username = options[:username]
@@ -58,12 +58,18 @@ module Toolshed
         end
       end
 
-      def title
-        self.clean(self.story.name)
+      def default_title
+        default_title_text = self.default_pull_request_title_format
+        self.default_pull_request_title_format.scan(/(\[\w*\])/).each do |replacement_element|
+          default_title_text = default_title_text.gsub(replacement_element.first.to_s, self.send(replacement_element.first.to_s.gsub("[", "").gsub("]", "")))
+        end
+        default_title_text
       end
 
-      def url(ticket_id)
-        self.story.url
+      def attribute_value(attribute)
+        value = self.story.send(attribute)
+        self.clean(value) if attribute == 'title'
+        value
       end
 
       class << self

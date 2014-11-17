@@ -188,6 +188,14 @@ module Toolshed
       @ticket_status_for_complete = status
     end
 
+    def self.default_pull_request_title_format
+      @default_pull_request_title_format
+    end
+
+    def self.default_pull_request_title_format=(default_pull_request_title_format)
+      @default_pull_request_title_format = default_pull_request_title_format
+    end
+
     # time tracking configuration
 
     def self.time_tracking_tool
@@ -266,6 +274,7 @@ module Toolshed
       self.time_tracking_tool                 ||= credentials['time_tracking_tool']
       self.git_quiet                          ||= (credentials['git_quiet']) ? '&> /dev/null' : ''
       self.use_defaults                       ||= credentials['use_defaults']
+      self.default_pull_request_title_format  ||= credentials['default_pull_request_title_format']
       @credentials_loaded = true
     end
 

@@ -5,6 +5,7 @@ class JiraTest < Test::Unit::TestCase
     Toolshed::Client::ticket_tracker_username = 'sample'
     Toolshed::Client::ticket_tracker_password = 'sample'
     Toolshed::Client::ticket_tracker_owner = 'sample'
+    Toolshed::Client::default_pull_request_title_format = '[id] - [summary]'
   end
 
   def test_add_note
@@ -136,6 +137,21 @@ class JiraTest < Test::Unit::TestCase
 
   def test_create_instance_raise_ticket_id
     assert_raise('Unable to use Jira as ticket id was not supplied') { Toolshed::TicketTracking::Jira.create_instance({ project: 11 }) }
+  end
+
+  def test_default_pull_request_format_is_correct
+    mock_init
+    jira_init
+
+    @jira_issue_mock.expects(:id).returns(
+      '10'
+    )
+
+    @jira_issue_mock.expects(:summary).returns(
+      'testing this out'
+    )
+
+    assert_equal "10 - testing this out", @jira.default_title
   end
 
   private

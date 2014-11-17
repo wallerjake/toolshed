@@ -12,7 +12,7 @@ class GetDailyTimeUpdateTest < Test::Unit::TestCase
 
   def test_get_daily_time_update_with_defaults
     ::Harvest.expects(:client).
-    with(Toolshed::Client.time_tracking_owner, Toolshed::Client.time_tracking_username, Toolshed::Client.time_tracking_password).
+    with(subdomain: Toolshed::Client.time_tracking_owner, username: Toolshed::Client.time_tracking_username, password: Toolshed::Client.time_tracking_password).
     returns('')
 
     harvest_mock = mock('Harvest::TimeEntry')
@@ -36,7 +36,7 @@ class GetDailyTimeUpdateTest < Test::Unit::TestCase
     Toolshed::Client.use_defaults                     = true
 
     ::Harvest.expects(:client).
-    with(Toolshed::Client.time_tracking_owner, Toolshed::Client.time_tracking_username, Toolshed::Client.time_tracking_password).
+    with(subdomain: Toolshed::Client.time_tracking_owner, username: Toolshed::Client.time_tracking_username, password: Toolshed::Client.time_tracking_password).
     returns('')
 
     harvest_mock = mock('Harvest::TimeEntry')

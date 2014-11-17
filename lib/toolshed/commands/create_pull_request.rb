@@ -53,7 +53,7 @@ module Toolshed
             ticket_tracker = ticket_tracker_class.create_instance(options)
 
             ticket_tracking_url = ticket_tracker.url
-            ticket_tracking_title = ticket_tracker.title
+            ticket_tracking_title = ticket_tracker.default_title
             ticket_id = ticket_id
 
             puts "Ticket Tracking URL: #{ticket_tracking_url}"

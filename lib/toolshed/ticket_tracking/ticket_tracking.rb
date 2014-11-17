@@ -1,6 +1,13 @@
 module Toolshed
   module TicketTracking
-    def initialize(options={})
+    class Base
+      def initialize(options={})
+      end
+
+      def method_missing(name, *args)
+        string_name = name.to_s
+        attribute_value(string_name)
+      end
     end
 
     class << self

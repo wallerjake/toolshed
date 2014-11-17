@@ -33,6 +33,7 @@ Note that it will only read one file which ever file is closest to the directory
   push_to_repository_user: [push_to_repository_user] (required)
   push_to_repository_name: [push_to_repository_name] (required)
   push_to_remote_name: [push_to_remote_name] (required)
+  default_pull_request_title_format: [id] - [summary] (optional)
 
   time_tracking_username: [username] (optional)
   time_tracking_password: [password] (optional)

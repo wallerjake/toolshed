@@ -6,8 +6,8 @@ require 'toolshed/version'
 Gem::Specification.new do |spec|
   spec.name          = "toolshed"
   spec.version       = Toolshed::VERSION
-  spec.authors       = ["test"]
-  spec.email         = ["test@gmail.com"]
+  spec.authors       = ["Jake Waller"]
+  spec.email         = ["wallerjake@gmail.com"]
   spec.description   = %q{Utility that will automate simple daily tasks developers perform like creating a Github pull request}
   spec.summary       = %q{Create a Github pull request with minimal work. Will automatically read ticket information from pivotal tracker if you use that.}
   spec.homepage      = ""

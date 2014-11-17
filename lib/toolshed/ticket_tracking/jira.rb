@@ -1,18 +1,18 @@
 module Toolshed
   module TicketTracking
-    class Jira
-      extend TicketTracking
+    class Jira < Base
       include HTTParty
 
       USE_PROJECT_NAME = true
 
-      attr_accessor :project, :client, :owner, :ticket
+      attr_accessor :project, :client, :owner, :ticket, :default_pull_request_title_format
 
       def initialize(options={})
         username = (options[:username].nil?) ? Toolshed::Client::ticket_tracker_username : options[:username]
         password = (options[:password].nil?) ? Toolshed::Client::ticket_tracker_password : options[:password]
 
-        self.owner      = Toolshed::Client::ticket_tracker_owner
+        self.owner      = Toolshed::Client.ticket_tracker_owner
+        self.default_pull_request_title_format = Toolshed::Client.default_pull_request_title_format ||= "[summary]"
 
         self.client = JIRA::Client.new({
           username:     username,
@@ -27,9 +27,6 @@ module Toolshed
         self.ticket = self.client.Issue.find(options[:ticket_id])
       end
 
-      #
-      # Instance methods
-      #
       def add_note(note_text)
         issue = self.ticket.comments.build
         issue.save({ 'body' => note_text })
@@ -56,50 +53,52 @@ module Toolshed
         raise "Unable to find available status"
       end
 
-      def title
-        self.ticket.summary
+      def default_title
+        default_title_text = self.default_pull_request_title_format
+        self.default_pull_request_title_format.scan(/(\[\w*\])/).each do |replacement_element|
+          default_title_text = default_title_text.gsub(replacement_element.first.to_s, self.send(replacement_element.first.to_s.gsub("[", "").gsub("]", "")))
+        end
+        default_title_text
+      end
+
+      def attribute_value(attribute)
+        self.ticket.send(attribute)
       end
 
       def url
         "https://#{self.owner}.atlassian.net/browse/#{self.ticket.key}"
       end
 
-      #
-      # Class methods
-      #
-      def self.username
-        return Toolshed::Client::ticket_tracker_username unless Toolshed::Client::ticket_tracker_username.nil?
+      class << self
+        def username
+          return Toolshed::Client::ticket_tracker_username unless Toolshed::Client::ticket_tracker_username.nil?
 
-        # prompt to ask for username
-        puts "Jira username? "
-        username = $stdin.gets.chomp.strip
-      end
-
-      def self.password
-        return Toolshed::Client::ticket_tracker_password unless Toolshed::Client::ticket_tracker_password.nil?
-
-        # prompt to ask for password
-        system "stty -echo"
-        puts "Jira password? "
-        password = $stdin.gets.chomp.strip
-        system "stty echo"
-      end
-
-      def self.create_instance(options={})
-        unless (options.has_key?(:project))
-          raise 'Unable to use Jira as project name was not supplied'
+          # prompt to ask for username
+          puts "Jira username? "
+          username = $stdin.gets.chomp.strip
         end
 
-        unless (options.has_key?(:ticket_id))
-          raise 'Unable to use Jira as ticket id was not supplied'
+        def password
+          return Toolshed::Client::ticket_tracker_password unless Toolshed::Client::ticket_tracker_password.nil?
+
+          # prompt to ask for password
+          system "stty -echo"
+          puts "Jira password? "
+          password = $stdin.gets.chomp.strip
+          system "stty echo"
         end
 
-        jira = Toolshed::TicketTracking::Jira.new({
-          project:    options[:project],
-          username:   Toolshed::TicketTracking::Jira.username,
-          password:   Toolshed::TicketTracking::Jira.password,
-          ticket_id:  options[:ticket_id]
-        })
+        def create_instance(options={})
+          raise 'Unable to use Jira as project name was not supplied' unless (options.has_key?(:project))
+          raise 'Unable to use Jira as ticket id was not supplied' unless (options.has_key?(:ticket_id))
+
+          jira = Toolshed::TicketTracking::Jira.new({
+            project:    options[:project],
+            username:   Toolshed::TicketTracking::Jira.username,
+            password:   Toolshed::TicketTracking::Jira.password,
+            ticket_id:  options[:ticket_id]
+          })
+        end
       end
     end
   end

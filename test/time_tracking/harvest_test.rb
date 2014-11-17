@@ -9,7 +9,7 @@ class HarvestTest < Test::Unit::TestCase
     Toolshed::Client.time_tracking_owner              = 'me'
 
     ::Harvest.expects(:client).
-    with(Toolshed::Client.time_tracking_owner, Toolshed::Client.time_tracking_username, Toolshed::Client.time_tracking_password).
+    with(subdomain: Toolshed::Client.time_tracking_owner, username: Toolshed::Client.time_tracking_username, password: Toolshed::Client.time_tracking_password).
     returns('')
   end
 
