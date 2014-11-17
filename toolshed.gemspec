@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'mocha'
   spec.add_development_dependency 'faker'
   spec.add_development_dependency 'test-unit', '~> 2.5.5'
-  spec.add_development_dependency 'debugger'
+  spec.add_development_dependency 'pry-byebug'
   spec.add_development_dependency 'ci_reporter'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'codeclimate-test-reporter'
