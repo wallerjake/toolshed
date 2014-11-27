@@ -57,32 +57,32 @@ module Toolshed
         end
 
         def use_ticket_tracker_project_id(options)
-          use_project_id = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID") rescue false
-          if use_project_id
-            ticket_tracker_project_id = read_user_input(
-              "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):",
-              options.merge!({
-                default: Toolshed::Client.default_pivotal_tracker_project_id,
-              })
-            )
-            options.merge!({
-              project_id: ticket_tracker_project_id,
-            })
-          end
           options
+          options.merge!({
+            ticket_tracker_const: 'USE_PROJECT_ID',
+            type: :project_id,
+            default_method: 'default_pivotal_tracker_project_id',
+          })
+          options = use_ticket_tracker_by_type(options)
         end
 
         def use_ticket_tracker_project_name(options)
-          use_project_name = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_NAME") rescue false
-          if use_project_name
-            ticket_tracker_project_name = read_user_input(
-              "Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):", options.merge!({
-                default: Toolshed::Client.default_ticket_tracker_project,
-              })
+          options.merge!({
+            ticket_tracker_const: 'USE_PROJECT_NAME',
+            type: :project,
+            default_method: 'default_ticket_tracker_project',
+          })
+          options = use_ticket_tracker_by_type(options)
+        end
+
+        def use_ticket_tracker_by_type(options)
+          use_field = Object.const_get("#{ticket_tracker_class}::#{options[:ticket_tracker_const]}") rescue false
+          if use_field
+            ticket_tracker_response = read_user_input(
+              "Project Name (Default: #{Toolshed::Client.send(options[:default_method])}):",
+              options.merge!({ default: Toolshed::Client.send(options[:default_method]) })
             )
-            options.merge!({
-              project: ticket_tracker_project_name,
-            })
+            options.merge!({ options[:type] => ticket_tracker_response })
           end
           options
         end
@@ -109,13 +109,9 @@ module Toolshed
           unless Toolshed::Client.ticket_tracking_tool.nil? || Toolshed::Client.ticket_tracking_tool.empty?
             begin
               self.ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
+              options = get_ticket_project_information(options)
+              initialize_ticket_tracker_properties(options)
 
-              options = use_ticket_tracker_project_id(options)
-              options = use_ticket_tracker_project_name(options)
-              options = get_ticket_id(options)
-              self.ticket_tracker = ticket_tracker_class.create_instance(options)
-              self.ticket_tracking_url = ticket_tracker.url
-              self.ticket_tracking_title = ticket_tracker.default_title
               output_ticket_information
             rescue Exception => e
               puts e.inspect
@@ -183,6 +179,19 @@ module Toolshed
           puts "Pull request being created"
           git_pull_request_result = self.git_tool.create_pull_request('Sample', 'Sample Body')
           self.pull_request_url = git_pull_request_result["html_url"]
+        end
+
+        def get_ticket_project_information(options)
+          options = use_ticket_tracker_project_id(options)
+          options = use_ticket_tracker_project_name(options)
+          options = get_ticket_id(options)
+          options
+        end
+
+        def initialize_ticket_tracker_properties(options)
+          self.ticket_tracker = ticket_tracker_class.create_instance(options)
+          self.ticket_tracking_url = ticket_tracker.url
+          self.ticket_tracking_title = ticket_tracker.default_title
         end
     end
   end
