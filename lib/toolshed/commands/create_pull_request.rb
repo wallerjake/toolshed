@@ -1,6 +1,8 @@
+require 'toolshed/commands/base'
+
 module Toolshed
   module Commands
-    class CreatePullRequest
+    class CreatePullRequest < Base
       attr_accessor :ticket_tracking_url, :ticket_tracking_title,
                     :ticket_id, :ticket_tracker,
                     :ticket_tracker_class, :ticket_tracker_project_id,
@@ -8,6 +10,7 @@ module Toolshed
                     :pull_request_title, :pull_request_body
 
       def initialize(options={})
+        super(options)
         self.ticket_tracker_class = nil
         self.pull_request_url = ''
       end
@@ -21,7 +24,7 @@ module Toolshed
       private
 
         def read_user_input_add_note_to_ticket(message)
-          return true if (Toolshed::Client.use_defaults)
+          return true if Toolshed::Client.use_defaults
 
           puts message
           value = $stdin.gets.chomp
@@ -35,17 +38,6 @@ module Toolshed
           (value == 'y') ? true : false
         end
 
-        def read_user_input(message, options)
-          return options[:default] if Toolshed::Client.use_defaults
-          return options[:title] if options.has_key?(:title)
-          return options[:body] if options.has_key?(:body)
-
-          puts message
-          value = $stdin.gets.chomp
-          value = options[:default] if value.empty?
-          value
-        end
-
         def read_user_input_ticket_tracker_ticket_id(message, options)
           read_user_input(message, options)
         end
@@ -54,38 +46,6 @@ module Toolshed
           puts "Current Branch: #{Toolshed::Git::Base.branch_name}"
           puts "Branched From: #{Toolshed::Git::Base.branched_from}"
           puts "Using Defaults: #{(Toolshed::Client.use_defaults.nil?) ? 'No' : 'Yes'}"
-        end
-
-        def use_ticket_tracker_project_id(options)
-          options
-          options.merge!({
-            ticket_tracker_const: 'USE_PROJECT_ID',
-            type: :project_id,
-            default_method: 'default_pivotal_tracker_project_id',
-            default_message: "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):",
-          })
-          options = use_ticket_tracker_by_type(options)
-        end
-
-        def use_ticket_tracker_project_name(options)
-          options.merge!({
-            ticket_tracker_const: 'USE_PROJECT_NAME',
-            type: :project,
-            default_method: 'default_ticket_tracker_project',
-            default_message: "Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):",
-          })
-          options = use_ticket_tracker_by_type(options)
-        end
-
-        def use_ticket_tracker_by_type(options)
-          use_field = Object.const_get("#{ticket_tracker_class}::#{options[:ticket_tracker_const]}") rescue false
-          if use_field
-            ticket_tracker_response = read_user_input(options[:default_message],
-              options.merge!({ default: Toolshed::Client.send(options[:default_method]) })
-            )
-            options.merge!({ options[:type] => ticket_tracker_response })
-          end
-          options
         end
 
         def get_ticket_id(options)

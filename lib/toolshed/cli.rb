@@ -39,6 +39,7 @@ module Toolshed
   end
 end
 
+require 'toolshed/commands/base'
 require 'toolshed/commands/create_pull_request'
 require 'toolshed/commands/create_pivotal_tracker_note'
 require 'toolshed/commands/ticket_information'
