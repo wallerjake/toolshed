@@ -117,7 +117,7 @@ module Toolshed
         end
 
         def set_pull_request_title(options)
-          self.pull_request_title = read_user_input(
+          self.pull_request_title = read_user_input_title(
             "Pull request title (Default: #{self.ticket_tracking_title}):",
             options.merge!({
               default: self.ticket_tracking_title,
@@ -127,7 +127,7 @@ module Toolshed
         end
 
         def set_pull_request_body(options)
-          self.pull_request_body = read_user_input(
+          self.pull_request_body = read_user_input_body(
             "Pull request body (Default: #{self.ticket_tracking_url}):",
             options.merge!({
               default: self.ticket_tracking_url
@@ -138,7 +138,7 @@ module Toolshed
 
         def send_pull_request
           puts "Pull request being created"
-          git_pull_request_result = self.git_tool.create_pull_request('Sample', 'Sample Body')
+          git_pull_request_result = self.git_tool.create_pull_request(pull_request_title, pull_request_body)
           self.pull_request_url = git_pull_request_result["html_url"]
         end
 

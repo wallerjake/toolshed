@@ -4,15 +4,19 @@ module Toolshed
       def initialize(options={})
       end
 
-      def read_user_input(message, options)
+      def read_user_input(message, options={})
         return options[:default] if Toolshed::Client.use_defaults
-        return options[:title] if options.has_key?(:title)
-        return options[:body] if options.has_key?(:body)
+        prompt_user_input(message, options)
+      end
 
-        puts message
-        value = $stdin.gets.chomp
-        value = options[:default] if value.empty?
-        value
+      def read_user_input_title(message, options={})
+        return options[:title] if options.has_key?(:title)
+        prompt_user_input(message, options)
+      end
+
+      def read_user_input_body(message, options={})
+        return options[:body] if options.has_key?(:body)
+        prompt_user_input(message, options)
       end
 
       def use_ticket_tracker_project_id(options)
@@ -50,6 +54,15 @@ module Toolshed
       def use_project_id
         Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID") rescue false
       end
+
+      private
+
+        def prompt_user_input(message, options)
+          puts message
+          value = $stdin.gets.chomp
+          value = options[:default] if value.empty?
+          value
+        end
     end
   end
 end
