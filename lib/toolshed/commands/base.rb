@@ -11,12 +11,12 @@ module Toolshed
 
       def read_user_input_title(message, options={})
         return options[:title] if options.has_key?(:title)
-        prompt_user_input(message, options)
+        read_user_input(message, options)
       end
 
       def read_user_input_body(message, options={})
         return options[:body] if options.has_key?(:body)
-        prompt_user_input(message, options)
+        read_user_input(message, options)
       end
 
       def use_ticket_tracker_project_id(options)
