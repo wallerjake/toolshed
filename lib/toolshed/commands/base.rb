@@ -37,7 +37,7 @@ module Toolshed
           default_method: 'default_ticket_tracker_project',
           default_message: "Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):",
         })
-        options = use_ticket_tracker_by_type(options)
+        use_ticket_tracker_by_type(options)
       end
 
       def use_ticket_tracker_by_type(options)
@@ -60,8 +60,7 @@ module Toolshed
         def prompt_user_input(message, options)
           puts message
           value = $stdin.gets.chomp
-          value = options[:default] if value.empty?
-          value
+          value.empty? ? options[:default] : value
         end
     end
   end
