@@ -60,8 +60,7 @@ module Toolshed
         def prompt_user_input(message, options)
           puts message
           value = $stdin.gets.chomp
-          value = options[:default] if value.empty?
-          value
+          value.empty? ? options[:default] : value
         end
     end
   end
