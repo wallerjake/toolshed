@@ -3,7 +3,7 @@
 
 # Toolshed
 
-Toolshed is a utility gem meant to make small tasks faster. This includes things like making a pull request up to Github all the way to creating a branch. This gem can be extended to used else where also.
+Toolshed is a utility gem. The purpose of toolshed is to make small to complex command line tasks easier. This includes tasks related to Git like creating a pull request or creating a branch. It also includes tasks like ticket tracking. Currently only a limited set of products is supported but this can be expanded over time as needed.
 
 ## Installation
 
@@ -21,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-After install the gem run toolshed for help menu. It will list the available commands.
+After installing the gem run toolshed from the command line for help menu. It will list the available commands.
 
 ## Contributing
 
