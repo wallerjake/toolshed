@@ -23,6 +23,61 @@ Or install it yourself as:
 
 After installing the gem run toolshed from the command line for help menu.
 
+### .toolshedrc
+
+The .toolshedrc file is the configuration file for toolshed. This file shall never be committed to version control as you are storing password and other secure data inside of it. The purpose of this file is to store configuration per project or globally. You can store this file in your projects directory or store it in any below directories. For example it could be stored at /home/sample/.toolshedrc for a global configuration. Otherwise it can be stored at /home/sample/projects/sample_project/.toolshedrc for configuration specific to that project. Once it finds a configuration file it will no longer look down the chain. So if you use a project specific .toolshedrc file that is the only configuration file it will look at.
+
+#### Options
+
+* Required
+  * ticket_tracking_tool: github
+    * Options: github, jira and pivital_tracker
+  * pull_from_remote_name: origin
+    * This is where pulling will come from. This is the name you call the remote locally. By default of course it's origin but you can change this.
+  * pull_from_repository_user: origin
+    * This is the repository name you are pulling from. By default it's called origin.
+  * pull_from_repository_name: origin
+    * This is the repository name you are pulling from. By default it's called origin.
+  * push_to_repository_name: origin
+    * This is where pushing will come from. This is the name you call the remote locally. By default of course it's origin but you can change this.
+  * push_to_repository_user: origin
+    * This is the repository name you are pushing from. By default it's called origin.
+  * push_to_remote_name: sample
+    * This is the repository name you are pushing from. By default it's called origin.
+
+* Optional
+  * git_tool: github
+    * This is not required but should be provided if using a different tool than Github.
+  * github_username: sample_user
+  * github_password: sample_password
+  * github_token: token_123
+    * Create the token if your account require's two factor authentication. You can disable this token or enable it through Github. See https://github.com/settings/tokens/new for details.
+  * use_git_submodules: false
+    * If you are using Git submodules you may want to turn this option on. By default it's off and not in use.
+  * default_pull_request_title_format: [id] - [title]
+    * If you want to provide formatting for the pull request title. The default is just to provide the title of the ticket. But you can add this line to format it to include other fields like id. You will need to figure out what the ticket system calls it. For example Pivital Tracker may call it a story_name while Jira may call it a title.
+  * pivotal_tracker_username: sample_user
+  * pivotal_tracker_password: sample_password
+  * default_pivotal_tracker_project_id: 123
+    * If no project_id is pass in on commands this will be used by default.
+  * ticket_status_for_complete: 'Complete'
+    * This is only used when creating a pull request. This will allow the tool to flip the status of a ticket to the next stage. Allows you to automate creating a pull request.
+  * time_tracking_username: sample_username
+    * If you are using a time tracking system you can use this to set it up. Currently only Harvest is supported.
+  * time_tracking_password: sample_password
+    * Same as time_tracking_username just for the password field.
+  * time_tracking_owner: owner_name
+    * Some time tracking systems require an owner to be set. This is probably the company name if using Harvest.
+  * time_tracking_default_project_id: 123
+    * If the time tracking system has project_ids you can set the default here.
+  * time_tracking_tool: harvest
+    * Options: harvest
+      * Additional time tracking tools could be supported in the future.
+  * home_server_password: "sample1234"
+    * You can provide a name for reference when using the SSH command.
+    * Example: toolshed ssh --user="sample" --host="localhost" --commands="sudo apt-get update;sudo apt-get dist-upgrade;" --password="home_server_password" --sudo-password="home_server_password"
+      * This command will allow you to automate updates on an Ubuntu server. This should really only be used for small commands that do not require a lot of logic.
+
 ### Available Commands
 
 * **help**
