@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "httparty"
   spec.add_dependency "json"
   spec.add_dependency "pivotal-tracker"
-  spec.add_dependency "harvested"
+  spec.add_dependency 'harvested', '3.1.1'
   spec.add_dependency "veto"
   spec.add_dependency "launchy"
   spec.add_dependency "clipboard"

@@ -13,17 +13,9 @@ module Toolshed
         password = Toolshed::Client.instance.time_tracking_password
         owner = Toolshed::Client.instance.time_tracking_owner
 
-        unless (options[:username].nil?)
-          username = options[:username]
-        end
-
-        unless (options[:password].nil?)
-           password = options[:password]
-        end
-
-        unless (options[:sub_domain].nil?)
-           owner = options[:sub_domain]
-        end
+        username = options[:username] unless options[:username].nil?
+        password = options[:password] unless options[:password].nil?
+        owner = options[:sub_domain] unless options[:sub_domain].nil?
 
         self.harvest_client = ::Harvest.client(subdomain: owner, username: username, password: password)
         self.project_id = options[:project_id] unless !options.has_key?(:project_id)
