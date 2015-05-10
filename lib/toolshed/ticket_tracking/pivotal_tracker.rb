@@ -9,9 +9,9 @@ module Toolshed
       attr_accessor :project_id, :token, :story, :default_pull_request_title_format
 
       def initialize(options={})
-        username = Toolshed::Client::pivotal_tracker_username
-        password = Toolshed::Client::pivotal_tracker_password
-        self.default_pull_request_title_format = Toolshed::Client.default_pull_request_title_format ||= "[title]"
+        username = Toolshed::Client.instance.pivotal_tracker_username
+        password = Toolshed::Client.instance.pivotal_tracker_password
+        self.default_pull_request_title_format = Toolshed::Client.instance.default_pull_request_title_format ||= "[title]"
 
         unless (options[:username].nil?)
           username = options[:username]
@@ -23,7 +23,7 @@ module Toolshed
 
         self.token = ::PivotalTracker::Client.token(username, password)
 
-        self.project_id = (options[:project_id].nil?) ? Toolshed::Client.default_pivotal_tracker_project_id : options[:project_id]
+        self.project_id = (options[:project_id].nil?) ? Toolshed::Client.instance.default_pivotal_tracker_project_id : options[:project_id]
         @pt_project = ::PivotalTracker::Project.find(self.project_id)
         self.story = @pt_project.stories.find(options[:ticket_id])
       end
@@ -74,7 +74,7 @@ module Toolshed
 
       class << self
         def username
-          username = Toolshed::Client::pivotal_tracker_username
+          username = Toolshed::Client.instance.pivotal_tracker_username
           if (username.nil?)
             # prompt to ask for username
             puts "PivotalTracker username? "
@@ -85,7 +85,7 @@ module Toolshed
         end
 
         def password
-          password = Toolshed::Client::pivotal_tracker_password
+          password = Toolshed::Client.instance.pivotal_tracker_password
           if (password.nil?)
             # prompt to ask for password
             system "stty -echo"

@@ -2,14 +2,14 @@ require 'helper'
 
 class HarvestTest < Test::Unit::TestCase
   def self.startup
-    Toolshed::Client.time_tracking_tool               = 'harvest'
-    Toolshed::Client.time_tracking_default_project_id = '1234'
-    Toolshed::Client.time_tracking_username           = 'sample_username'
-    Toolshed::Client.time_tracking_password           = 'sample1234'
-    Toolshed::Client.time_tracking_owner              = 'me'
+    Toolshed::Client.instance.time_tracking_tool               = 'harvest'
+    Toolshed::Client.instance.time_tracking_default_project_id = '1234'
+    Toolshed::Client.instance.time_tracking_username           = 'sample_username'
+    Toolshed::Client.instance.time_tracking_password           = 'sample1234'
+    Toolshed::Client.instance.time_tracking_owner              = 'me'
 
     ::Harvest.expects(:client).
-    with(subdomain: Toolshed::Client.time_tracking_owner, username: Toolshed::Client.time_tracking_username, password: Toolshed::Client.time_tracking_password).
+    with(subdomain: Toolshed::Client.instance.time_tracking_owner, username: Toolshed::Client.instance.time_tracking_username, password: Toolshed::Client.instance.time_tracking_password).
     returns('')
   end
 

@@ -4,7 +4,7 @@ module Toolshed
 
   class CLI
     def execute(command_name, args, options={})
-      Toolshed::Client.load_credentials_if_necessary
+      Toolshed::Client.load_credentials
       command = commands[command_name]
       if command
         begin

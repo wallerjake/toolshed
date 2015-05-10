@@ -3,16 +3,16 @@ require 'toolshed/commands/get_daily_time_update'
 
 class GetDailyTimeUpdateTest < Test::Unit::TestCase
   def self.startup
-    Toolshed::Client.time_tracking_tool               = 'harvest'
-    Toolshed::Client.time_tracking_default_project_id = '1234'
-    Toolshed::Client.time_tracking_username           = 'sample_username'
-    Toolshed::Client.time_tracking_password           = 'sample1234'
-    Toolshed::Client.time_tracking_owner              = 'me'
+    Toolshed::Client.instance.time_tracking_tool               = 'harvest'
+    Toolshed::Client.instance.time_tracking_default_project_id = '1234'
+    Toolshed::Client.instance.time_tracking_username           = 'sample_username'
+    Toolshed::Client.instance.time_tracking_password           = 'sample1234'
+    Toolshed::Client.instance.time_tracking_owner              = 'me'
   end
 
   def test_get_daily_time_update_with_defaults
     ::Harvest.expects(:client).
-    with(subdomain: Toolshed::Client.time_tracking_owner, username: Toolshed::Client.time_tracking_username, password: Toolshed::Client.time_tracking_password).
+    with(subdomain: Toolshed::Client.instance.time_tracking_owner, username: Toolshed::Client.instance.time_tracking_username, password: Toolshed::Client.instance.time_tracking_password).
     returns('')
 
     harvest_mock = mock('Harvest::TimeEntry')
@@ -33,10 +33,10 @@ class GetDailyTimeUpdateTest < Test::Unit::TestCase
   end
 
   def test_get_daily_time_update_with_use_defaults_on
-    Toolshed::Client.use_defaults                     = true
+    Toolshed::Client.instance.use_defaults                     = true
 
     ::Harvest.expects(:client).
-    with(subdomain: Toolshed::Client.time_tracking_owner, username: Toolshed::Client.time_tracking_username, password: Toolshed::Client.time_tracking_password).
+    with(subdomain: Toolshed::Client.instance.time_tracking_owner, username: Toolshed::Client.instance.time_tracking_username, password: Toolshed::Client.instance.time_tracking_password).
     returns('')
 
     harvest_mock = mock('Harvest::TimeEntry')

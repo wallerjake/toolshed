@@ -9,9 +9,9 @@ module Toolshed
       def initialize(options={})
         super(options)
 
-        username  = Toolshed::Client::github_username
-        password  = Toolshed::Client::github_password
-        token     = Toolshed::Client::github_token
+        username  = Toolshed::Client.instance.github_username
+        password  = Toolshed::Client.instance.github_password
+        token     = Toolshed::Client.instance.github_token
 
         unless (options[:username].nil?)
           username = options[:username]
@@ -46,12 +46,12 @@ module Toolshed
           body: {
             title: title,
              body: body,
-             head: "#{Toolshed::Client.github_username}:#{Toolshed::Git::Base.branch_name}",
+             head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
              base: Toolshed::Git::Base.branched_from
           }.to_json
         })
 
-        response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.pull_from_repository_user}/#{Toolshed::Client.pull_from_repository_name}/pulls", options).response
+        response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.pull_from_repository_user}/#{Toolshed::Client.instance.pull_from_repository_name}/pulls", options).response
         response = JSON.parse(response.body)
         if (response["errors"].nil?)
           response
@@ -63,12 +63,12 @@ module Toolshed
       def list_branches(options={})
         options.merge!(self.default_options)
 
-        response = HTTParty.get("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.github_username}/#{Toolshed::Client.pull_from_repository_name}/branches", options).response
+        response = HTTParty.get("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.github_username}/#{Toolshed::Client.instance.pull_from_repository_name}/branches", options).response
         response = JSON.parse(response.body)
       end
 
       def self.username
-        username = Toolshed::Client::github_username
+        username = Toolshed::Client.instance.github_username
         if (username.nil?)
           # prompt to ask for username
           puts "Github username? "
@@ -79,7 +79,7 @@ module Toolshed
       end
 
       def self.password
-        password = Toolshed::Client::github_password
+        password = Toolshed::Client.instance.github_password
         if (password.nil?)
           # prompt to ask for password
           system "stty -echo"

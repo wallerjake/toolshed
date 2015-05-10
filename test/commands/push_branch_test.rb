@@ -3,7 +3,7 @@ require 'toolshed/commands/push_branch'
 
 class PushBranchTest < Test::Unit::TestCase
   def test_push_branch_current_working_branch
-    Toolshed::Client.push_to_remote_name = 'origin'
+    Toolshed::Client.instance.push_to_remote_name = 'origin'
 
     current_branch = Toolshed::Git::Base.branch_name
 
@@ -18,7 +18,7 @@ class PushBranchTest < Test::Unit::TestCase
   end
 
   def test_push_branch_by_ticket_id
-    Toolshed::Client.push_to_remote_name = 'origin'
+    Toolshed::Client.instance.push_to_remote_name = 'origin'
 
     current_branch = Toolshed::Git::Base.branch_name
 
@@ -33,7 +33,7 @@ class PushBranchTest < Test::Unit::TestCase
   end
 
   def test_push_branch_current_working_branch_with_force
-    Toolshed::Client.push_to_remote_name = 'origin'
+    Toolshed::Client.instance.push_to_remote_name = 'origin'
 
     current_branch = Toolshed::Git::Base.branch_name
 

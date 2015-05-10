@@ -24,7 +24,7 @@ module Toolshed
       private
 
         def read_user_input_add_note_to_ticket(message)
-          return true if Toolshed::Client.use_defaults
+          return true if Toolshed::Client.instance.use_defaults
 
           puts message
           value = $stdin.gets.chomp
@@ -45,7 +45,7 @@ module Toolshed
         def output_begining_messages
           puts "Current Branch: #{Toolshed::Git::Base.branch_name}"
           puts "Branched From: #{Toolshed::Git::Base.branched_from}"
-          puts "Using Defaults: #{(Toolshed::Client.use_defaults.nil?) ? 'No' : 'Yes'}"
+          puts "Using Defaults: #{(Toolshed::Client.instance.use_defaults.nil?) ? 'No' : 'Yes'}"
         end
 
         def get_ticket_id(options)
@@ -67,9 +67,9 @@ module Toolshed
         end
 
         def execute_ticket_tracking(options)
-          unless Toolshed::Client.ticket_tracking_tool.nil? || Toolshed::Client.ticket_tracking_tool.empty?
+          unless Toolshed::Client.instance.ticket_tracking_tool.nil? || Toolshed::Client.instance.ticket_tracking_tool.empty?
             begin
-              self.ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
+              self.ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.instance.ticket_tracking_tool.camel_case}")
               options = get_ticket_project_information(options)
               initialize_ticket_tracker_properties(options)
 
@@ -92,7 +92,7 @@ module Toolshed
           if add_note_to_ticket_response
             result = self.ticket_tracker.add_note(pull_request_url)
             default_completed_status = Object.const_get("#{ticket_tracker_class}::DEFAULT_COMPLETED_STATUS") rescue false
-            default_completed_status = Toolshed::Client.ticket_status_for_complete unless default_completed_status
+            default_completed_status = Toolshed::Client.instance.ticket_status_for_complete unless default_completed_status
             ticket_tracker.update_ticket_status(default_completed_status)
           end
         end
@@ -103,7 +103,7 @@ module Toolshed
 
         def execute_pull_request(options)
           begin
-            self.git_tool = Object.const_get("Toolshed::Git::#{Toolshed::Client.git_tool.camel_case}").create_instance
+            self.git_tool = Object.const_get("Toolshed::Git::#{Toolshed::Client.instance.git_tool.camel_case}").create_instance
 
             options = set_pull_request_title(options)
             options = set_pull_request_body(options)

@@ -3,13 +3,13 @@ require 'toolshed/commands/create_pull_request'
 
 class CreatePullRequestTest < Test::Unit::TestCase
   def test_create_github_pull_request_no_ticket_tracking
-    Toolshed::Client.ticket_tracking_tool = ''
-    Toolshed::Client.git_tool = 'github'
-    Toolshed::Client.github_username = 'sample'
-    Toolshed::Client.github_password = 'sample'
+    Toolshed::Client.instance.ticket_tracking_tool = ''
+    Toolshed::Client.instance.git_tool = 'github'
+    Toolshed::Client.instance.github_username = 'sample'
+    Toolshed::Client.instance.github_password = 'sample'
 
-    Toolshed::Client.pull_from_repository_user = 'sample'
-    Toolshed::Client.pull_from_repository_name = 'sample_repo'
+    Toolshed::Client.instance.pull_from_repository_user = 'sample'
+    Toolshed::Client.instance.pull_from_repository_name = 'sample_repo'
 
     # mock up the pull request
     expected_result = {
@@ -29,14 +29,14 @@ class CreatePullRequestTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.github_username}:#{Toolshed::Git::Base.branch_name}",
+         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
          base: Toolshed::Git::Base.branched_from
       }.to_json
     })
 
     HTTParty.
       expects(:post).
-      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.pull_from_repository_user}/#{Toolshed::Client.pull_from_repository_name}/pulls", github_default_options).
+      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.pull_from_repository_user}/#{Toolshed::Client.instance.pull_from_repository_name}/pulls", github_default_options).
       returns(http_party_mock)
 
     # stub the possible input
@@ -47,16 +47,16 @@ class CreatePullRequestTest < Test::Unit::TestCase
   end
 
   def test_create_github_pull_request_with_pivotal_tracker
-    Toolshed::Client.ticket_tracking_tool = 'pivotal_tracker'
-    Toolshed::Client.git_tool = 'github'
-    Toolshed::Client.github_username = 'sample'
-    Toolshed::Client.github_password = 'sample'
-    Toolshed::Client.pivotal_tracker_username = 'ptusername'
-    Toolshed::Client.pivotal_tracker_password = 'ptpassword'
-    Toolshed::Client.default_pivotal_tracker_project_id = '1234'
-    Toolshed::Client.pull_from_repository_user = 'sample'
-    Toolshed::Client.pull_from_repository_name = 'sample_repo'
-    Toolshed::Client.use_defaults = true
+    Toolshed::Client.instance.ticket_tracking_tool = 'pivotal_tracker'
+    Toolshed::Client.instance.git_tool = 'github'
+    Toolshed::Client.instance.github_username = 'sample'
+    Toolshed::Client.instance.github_password = 'sample'
+    Toolshed::Client.instance.pivotal_tracker_username = 'ptusername'
+    Toolshed::Client.instance.pivotal_tracker_password = 'ptpassword'
+    Toolshed::Client.instance.default_pivotal_tracker_project_id = '1234'
+    Toolshed::Client.instance.pull_from_repository_user = 'sample'
+    Toolshed::Client.instance.pull_from_repository_name = 'sample_repo'
+    Toolshed::Client.instance.use_defaults = true
 
     # mock up the pull request
     expected_result = {
@@ -76,14 +76,14 @@ class CreatePullRequestTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.github_username}:#{Toolshed::Git::Base.branch_name}",
+         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
          base: Toolshed::Git::Base.branched_from
       }.to_json
     })
 
     HTTParty.
       expects(:post).
-      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.pull_from_repository_user}/#{Toolshed::Client.pull_from_repository_name}/pulls", github_default_options).
+      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.pull_from_repository_user}/#{Toolshed::Client.instance.pull_from_repository_name}/pulls", github_default_options).
       returns(http_party_mock)
 
     # mock up the pivotal_tracker stuff
@@ -96,7 +96,7 @@ class CreatePullRequestTest < Test::Unit::TestCase
     pivotal_tracker_mock.stubs(:id => '1')
 
     PivotalTracker::Project.expects(:find).
-    with(Toolshed::Client.default_pivotal_tracker_project_id).
+    with(Toolshed::Client.instance.default_pivotal_tracker_project_id).
     returns(pivotal_tracker_mock)
 
     # mock up the story information
@@ -125,8 +125,8 @@ class CreatePullRequestTest < Test::Unit::TestCase
   end
 
   def test_create_github_pull_request_with_invalid_ticket_tracker
-    Toolshed::Client.ticket_tracking_tool = 'unfuddle'
-    Toolshed::Client.git_tool = 'github'
+    Toolshed::Client.instance.ticket_tracking_tool = 'unfuddle'
+    Toolshed::Client.instance.git_tool = 'github'
     output = capture_stdout { Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' }) }
     assert_match /Ticket tracking tool is not supported at this time/, output
   end

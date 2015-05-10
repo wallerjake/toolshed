@@ -9,9 +9,9 @@ module Toolshed
       attr_accessor :harvest_client, :project_id, :line_break, :start_list_item, :end_list_item, :start_unorder_list, :end_unorder_list, :format
 
       def initialize(options={})
-        username = Toolshed::Client::time_tracking_username
-        password = Toolshed::Client::time_tracking_password
-        owner = Toolshed::Client.time_tracking_owner
+        username = Toolshed::Client.instance.time_tracking_username
+        password = Toolshed::Client.instance.time_tracking_password
+        owner = Toolshed::Client.instance.time_tracking_owner
 
         unless (options[:username].nil?)
           username = options[:username]

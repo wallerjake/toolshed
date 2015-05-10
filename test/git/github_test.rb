@@ -2,8 +2,8 @@ require 'git/git_helper'
 
 class GitHubTest < Test::Unit::TestCase
   def test_list_branches
-    Toolshed::Client.github_username = 'sample'
-    Toolshed::Client.pull_from_repository_name = 'sample'
+    Toolshed::Client.instance.github_username = 'sample'
+    Toolshed::Client.instance.pull_from_repository_name = 'sample'
 
     expected_result = [
       {
@@ -32,7 +32,7 @@ class GitHubTest < Test::Unit::TestCase
 
     HTTParty.
       expects(:get).
-      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.github_username}/#{Toolshed::Client.pull_from_repository_name}/branches", github.default_options).
+      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.github_username}/#{Toolshed::Client.instance.pull_from_repository_name}/branches", github.default_options).
       returns(http_party_mock)
 
     assert_equal JSON.parse(expected_result), github.list_branches
@@ -42,8 +42,8 @@ class GitHubTest < Test::Unit::TestCase
     current_branch = Toolshed::Git::Base.branch_name
     new_branch_name = '1234_testing'
 
-    Toolshed::Client.pull_from_repository_user = 'sample'
-    Toolshed::Client.pull_from_repository_name = 'sample_repo'
+    Toolshed::Client.instance.pull_from_repository_user = 'sample'
+    Toolshed::Client.instance.pull_from_repository_name = 'sample_repo'
     create_and_checkout_branch(new_branch_name)
 
     expected_result = {
@@ -63,14 +63,14 @@ class GitHubTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.github_username}:#{Toolshed::Git::Base.branch_name}",
+         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
          base: Toolshed::Git::Base.branched_from
       }.to_json
     })
 
     HTTParty.
       expects(:post).
-      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.pull_from_repository_user}/#{Toolshed::Client.pull_from_repository_name}/pulls", github_default_options).
+      with("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.pull_from_repository_user}/#{Toolshed::Client.instance.pull_from_repository_name}/pulls", github_default_options).
       returns(http_party_mock)
 
     assert_equal JSON.parse(expected_result), github.create_pull_request('Sample', 'Sample Body')
@@ -80,12 +80,12 @@ class GitHubTest < Test::Unit::TestCase
   end
 
   def test_get_username
-    Toolshed::Client.github_username = 'tester'
+    Toolshed::Client.instance.github_username = 'tester'
     assert_equal 'tester', Toolshed::Git::Github.username
   end
 
   def test_get_password
-    Toolshed::Client.github_password = 'tester1234'
+    Toolshed::Client.instance.github_password = 'tester1234'
     assert_equal 'tester1234', Toolshed::Git::Github.password
   end
 end

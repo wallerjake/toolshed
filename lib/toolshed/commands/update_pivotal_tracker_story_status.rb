@@ -4,10 +4,10 @@ module Toolshed
       STORY_STATUS_DEFAULT = 'finished'
 
       def execute(args, options = {})
-        print "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id})? "
+        print "Project ID (Default: #{Toolshed::Client.instance.default_pivotal_tracker_project_id})? "
         project_id = $stdin.gets.chomp.strip
         if (project_id == '')
-          project_id = Toolshed::Client.default_pivotal_tracker_project_id
+          project_id = Toolshed::Client.instance.default_pivotal_tracker_project_id
         end
 
         pivotal_tracker = Toolshed::TicketTracking::PivotalTracker.new({

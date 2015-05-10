@@ -3,9 +3,9 @@ module Toolshed
     class GetDailyTimeUpdate
       def execute(args, options = {})
         begin
-          time_tracking_class =  Object.const_get("Toolshed::TimeTracking::#{Toolshed::Client.time_tracking_tool.camel_case}")
+          time_tracking_class =  Object.const_get("Toolshed::TimeTracking::#{Toolshed::Client.instance.time_tracking_tool.camel_case}")
 
-          time_tracking_project_id = read_user_input_project_id("Project ID (Default: #{Toolshed::Client.time_tracking_default_project_id}):", options.merge!({ default: Toolshed::Client.time_tracking_default_project_id }))
+          time_tracking_project_id = read_user_input_project_id("Project ID (Default: #{Toolshed::Client.instance.time_tracking_default_project_id}):", options.merge!({ default: Toolshed::Client.instance.time_tracking_default_project_id }))
           options.merge!({ project_id: time_tracking_project_id })
           time_tracker = time_tracking_class.create_instance(options)
 
@@ -19,7 +19,7 @@ module Toolshed
 
       def read_user_input_project_id(message, options)
         return options[:project_id] if (options.has_key?(:project_id))
-        return options[:default] if (Toolshed::Client.use_defaults)
+        return options[:default] if (Toolshed::Client.instance.use_defaults)
 
         puts message
         value = $stdin.gets.chomp
