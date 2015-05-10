@@ -5,7 +5,7 @@ module Toolshed
       end
 
       def read_user_input(message, options={})
-        return options[:default] if Toolshed::Client.use_defaults
+        return options[:default] if Toolshed::Client.instance.use_defaults
         prompt_user_input(message, options)
       end
 
@@ -25,7 +25,7 @@ module Toolshed
           ticket_tracker_const: 'USE_PROJECT_ID',
           type: :project_id,
           default_method: 'default_pivotal_tracker_project_id',
-          default_message: "Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):",
+          default_message: "Project ID (Default: #{Toolshed::Client.instance.default_pivotal_tracker_project_id}):",
         })
         options = use_ticket_tracker_by_type(options)
       end
@@ -35,7 +35,7 @@ module Toolshed
           ticket_tracker_const: 'USE_PROJECT_NAME',
           type: :project,
           default_method: 'default_ticket_tracker_project',
-          default_message: "Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):",
+          default_message: "Project Name (Default: #{Toolshed::Client.instance.default_ticket_tracker_project}):",
         })
         use_ticket_tracker_by_type(options)
       end
@@ -44,7 +44,7 @@ module Toolshed
         use_field = Object.const_get("#{ticket_tracker_class}::#{options[:ticket_tracker_const]}") rescue false
         if use_field
           ticket_tracker_response = read_user_input(options[:default_message],
-            options.merge!({ default: Toolshed::Client.send(options[:default_method]) })
+            options.merge!({ default: Toolshed::Client.instance.send(options[:default_method]) })
           )
           options.merge!({ options[:type] => ticket_tracker_response })
         end

@@ -8,11 +8,11 @@ module Toolshed
       attr_accessor :project, :client, :owner, :ticket, :default_pull_request_title_format
 
       def initialize(options={})
-        username = (options[:username].nil?) ? Toolshed::Client::ticket_tracker_username : options[:username]
-        password = (options[:password].nil?) ? Toolshed::Client::ticket_tracker_password : options[:password]
+        username = (options[:username].nil?) ? Toolshed::Client.instance.ticket_tracker_username : options[:username]
+        password = (options[:password].nil?) ? Toolshed::Client.instance.ticket_tracker_password : options[:password]
 
-        self.owner      = Toolshed::Client.ticket_tracker_owner
-        self.default_pull_request_title_format = Toolshed::Client.default_pull_request_title_format ||= "[summary]"
+        self.owner      = Toolshed::Client.instance.ticket_tracker_owner
+        self.default_pull_request_title_format = Toolshed::Client.instance.default_pull_request_title_format ||= "[summary]"
 
         self.client = JIRA::Client.new({
           username:     username,
@@ -71,7 +71,7 @@ module Toolshed
 
       class << self
         def username
-          return Toolshed::Client::ticket_tracker_username unless Toolshed::Client::ticket_tracker_username.nil?
+          return Toolshed::Client.instance.ticket_tracker_username unless Toolshed::Client.instance.ticket_tracker_username.nil?
 
           # prompt to ask for username
           puts "Jira username? "
@@ -79,7 +79,7 @@ module Toolshed
         end
 
         def password
-          return Toolshed::Client::ticket_tracker_password unless Toolshed::Client::ticket_tracker_password.nil?
+          return Toolshed::Client.instance.ticket_tracker_password unless Toolshed::Client.instance.ticket_tracker_password.nil?
 
           # prompt to ask for password
           system "stty -echo"

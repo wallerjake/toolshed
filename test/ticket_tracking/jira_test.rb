@@ -2,10 +2,10 @@ require 'helper'
 
 class JiraTest < Test::Unit::TestCase
   def self.startup
-    Toolshed::Client::ticket_tracker_username = 'sample'
-    Toolshed::Client::ticket_tracker_password = 'sample'
-    Toolshed::Client::ticket_tracker_owner = 'sample'
-    Toolshed::Client::default_pull_request_title_format = '[id] - [summary]'
+    Toolshed::Client.instance.ticket_tracker_username = 'sample'
+    Toolshed::Client.instance.ticket_tracker_password = 'sample'
+    Toolshed::Client.instance.ticket_tracker_owner = 'sample'
+    Toolshed::Client.instance.default_pull_request_title_format = '[id] - [summary]'
   end
 
   def test_add_note
@@ -120,15 +120,15 @@ class JiraTest < Test::Unit::TestCase
       '11'
     )
 
-    assert_equal("https://#{Toolshed::Client::ticket_tracker_owner}.atlassian.net/browse/11", @jira.url)
+    assert_equal("https://#{Toolshed::Client.instance.ticket_tracker_owner}.atlassian.net/browse/11", @jira.url)
   end
 
   def test_username
-    assert_equal(Toolshed::TicketTracking::Jira.username, Toolshed::Client::ticket_tracker_username)
+    assert_equal(Toolshed::TicketTracking::Jira.username, Toolshed::Client.instance.ticket_tracker_username)
   end
 
   def test_password
-    assert_equal(Toolshed::TicketTracking::Jira.password, Toolshed::Client::ticket_tracker_password)
+    assert_equal(Toolshed::TicketTracking::Jira.password, Toolshed::Client.instance.ticket_tracker_password)
   end
 
   def test_create_instance_raise_project_name
@@ -158,9 +158,9 @@ class JiraTest < Test::Unit::TestCase
 
     def jira_init
       @jira = Toolshed::TicketTracking::Jira.create_instance({
-        username: Toolshed::Client::ticket_tracker_username,
-        password: Toolshed::Client::ticket_tracker_password,
-        owner:    Toolshed::Client::ticket_tracker_owner,
+        username: Toolshed::Client.instance.ticket_tracker_username,
+        password: Toolshed::Client.instance.ticket_tracker_password,
+        owner:    Toolshed::Client.instance.ticket_tracker_owner,
         project:  'project',
         ticket_id: '11',
       })
@@ -180,9 +180,9 @@ class JiraTest < Test::Unit::TestCase
 
       JIRA::Client.expects(:new).
       with({
-        username: Toolshed::Client::ticket_tracker_username,
-        password: Toolshed::Client::ticket_tracker_password,
-        site: "https://#{Toolshed::Client::ticket_tracker_owner}.atlassian.net",
+        username: Toolshed::Client.instance.ticket_tracker_username,
+        password: Toolshed::Client.instance.ticket_tracker_password,
+        site: "https://#{Toolshed::Client.instance.ticket_tracker_owner}.atlassian.net",
         context_path: '',
         auth_type: :basic,
         use_ssl: true
@@ -233,9 +233,9 @@ class JiraTest < Test::Unit::TestCase
     def jira_http_mock_attributes
       {
         options: {
-          username:         Toolshed::Client::ticket_tracker_username,
-          password:         Toolshed::Client::ticket_tracker_password,
-          site:             "https://#{Toolshed::Client::ticket_tracker_owner}.atlassian.net",
+          username:         Toolshed::Client.instance.ticket_tracker_username,
+          password:         Toolshed::Client.instance.ticket_tracker_password,
+          site:             "https://#{Toolshed::Client.instance.ticket_tracker_owner}.atlassian.net",
           context_path:     "",
           rest_base_path:   "/rest/api/2",
           ssl_verify_mode:  1,
