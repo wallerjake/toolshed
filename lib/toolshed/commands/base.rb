@@ -1,7 +1,33 @@
+require 'toolshed/cli'
+require 'optparse'
+
 module Toolshed
   module Commands
     class Base
       def initialize(options={})
+      end
+
+      def self.parse(command, cli_options = {})
+        options = {}
+        options_parser = OptionParser.new do |opts|
+          cli_options.each do |option, option_params|
+            opts.on(option_params[:on]) do |opt|
+              value = (option_params[:default].nil?) ? opt : option_params[:default]
+              options.merge!(option_params[:name] => value)
+            end
+          end
+        end
+        options_parser.order! if options_parser
+        begin
+          cli = Toolshed::CLI.new
+          cli.execute(command, ARGV, options)
+        rescue Toolshed::CommandNotFound => e
+          puts e.message
+        end
+      end
+
+      def parse(options = {})
+
       end
 
       def read_user_input(message, options={})

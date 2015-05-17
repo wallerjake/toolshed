@@ -19,18 +19,19 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "httparty"
-  spec.add_dependency "json"
-  spec.add_dependency "pivotal-tracker"
+  spec.add_dependency 'httparty'
+  spec.add_dependency 'json'
+  spec.add_dependency 'pivotal-tracker'
   spec.add_dependency 'harvested', '3.1.1'
-  spec.add_dependency "veto"
-  spec.add_dependency "launchy"
-  spec.add_dependency "clipboard"
-  spec.add_dependency "jira-ruby"
-  spec.add_dependency "net-ssh"
+  spec.add_dependency 'veto'
+  spec.add_dependency 'launchy'
+  spec.add_dependency 'clipboard'
+  spec.add_dependency 'jira-ruby'
+  spec.add_dependency 'net-ssh'
+  spec.add_dependency 'trollop'
 
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'mocha'
   spec.add_development_dependency 'faker'
   spec.add_development_dependency 'test-unit'

@@ -3,6 +3,7 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'toolshed'
 require 'toolshed/cli'
+require 'toolshed/base'
 
 cli = Toolshed::CLI.new
 
@@ -161,14 +162,7 @@ if $0.split("/").last == 'toolshed'
         options[:branch_from] = opt
       end
     end,
-    'push_branch' => OptionParser.new do |opts|
-      opts.on("--force [ARG]") do |opt|
-        options[:force_command] = true
-      end
-      opts.on("--branch-name [ARG]") do |opt|
-        options[:branch_name] = opt
-      end
-    end,
+    #'push_branch' => Toolshed::Commands::PushBranch.cli_options,
     'list_branches' => OptionParser.new do |opts|
       opts.on("--repository-name [ARG]") do |opt|
         Toolshed::Client.pull_from_repository_name = opt
@@ -255,12 +249,22 @@ if $0.split("/").last == 'toolshed'
   elsif command == 'version'
     Toolshed::Version.banner
   else
-    options_parser = subcommands[command]
-    options_parser.order! if options_parser
-    begin
-      cli.execute(command, ARGV, options)
-    rescue Toolshed::CommandNotFound => e
-      puts e.message
+    Dir.foreach("#{File.dirname(__FILE__)}/../lib/toolshed/commands") do |file_name|
+      next if %w(base.rb .. .).include?(file_name)
+      next unless file_name == 'push_branch.rb'
+      class_name = file_name.gsub('.rb', '').split('_').collect(&:capitalize).join
+      cli_options = eval("Toolshed::Commands::#{class_name}.cli_options")
+      "Toolshed::Commands::Base".constantize.parse(command, cli_options)
+    end
+    #Toolshed::Commands::PushBranch.parse('push_branch', Toolshed::Commands::PushBranch.cli_options)
+    unless command == 'push_branch'
+      options_parser = subcommands[command]
+      options_parser.order! if options_parser
+      begin
+        cli.execute(command, ARGV, options)
+      rescue Toolshed::CommandNotFound => e
+        puts e.message
+      end
     end
   end
 end
