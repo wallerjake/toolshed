@@ -130,6 +130,9 @@ if $0.split("/").last == 'toolshed'
     opts.on("-h", "--help", "Help") do
       usage
     end
+    opts.on('-v', '--version', 'Version') do
+      Toolshed::Version.banner
+    end
   end
 
   subcommands = {
@@ -249,6 +252,8 @@ if $0.split("/").last == 'toolshed'
   command = ARGV.shift
   if command.nil? || command == 'help'
     usage
+  elsif command == 'version'
+    Toolshed::Version.banner
   else
     options_parser = subcommands[command]
     options_parser.order! if options_parser
