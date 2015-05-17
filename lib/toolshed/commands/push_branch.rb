@@ -3,14 +3,15 @@ module Toolshed
     class PushBranch
       def self.cli_options
         {
-          force: {
-            on: '--force',
-            name: :force_command,
-            default: true
-          },
-          branch_name: {
-            on: '--branch-name [ARGV]',
-            name: :branch_name
+          banner: 'Usage: push_branch [options]',
+          options: {
+            force_command: {
+              short_on: '-f',
+              default: true
+            },
+            branch_name: {
+              short_on: '-b'
+            }
           }
         }
       end

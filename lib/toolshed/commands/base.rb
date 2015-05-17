@@ -10,10 +10,14 @@ module Toolshed
       def self.parse(command, cli_options = {})
         options = {}
         options_parser = OptionParser.new do |opts|
-          cli_options.each do |option, option_params|
-            opts.on(option_params[:on]) do |opt|
-              value = (option_params[:default].nil?) ? opt : option_params[:default]
-              options.merge!(option_params[:name] => value)
+          opts.banner = cli_options[:banner] if cli_options[:banner]
+          cli_options[:options].each do |option_name, option_variables|
+            letter_map = ('a'..'z').map { |letter| letter }
+            short_on = (option_variables[:short_on]) ? option_variables[:short_on] : letter_map[rand(letter_map.length)]
+            on = (option_variables[:on]) ? option_variables[:on] : "#{option_name.to_s.split('_').join('-')} [ARG]"
+            opts.on(short_on, on) do |opt|
+              value = (option_variables[:default].nil?) ? opt : option_variables[:default]
+              options.merge!(option_name => value)
             end
           end
         end
@@ -24,10 +28,6 @@ module Toolshed
         rescue Toolshed::CommandNotFound => e
           puts e.message
         end
-      end
-
-      def parse(options = {})
-
       end
 
       def read_user_input(message, options={})

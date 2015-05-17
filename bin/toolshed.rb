@@ -208,38 +208,6 @@ if $0.split("/").last == 'toolshed'
         Toolshed::Client.use_defaults = opt
       end
     end,
-    'ssh' => OptionParser.new do |opts|
-      opts.on("--use-sudo [ARG]") do |opt|
-        options[:use_sudo] = opt
-      end
-      opts.on("--host [ARG]") do |opt|
-        options[:host] = opt
-      end
-      opts.on("--connection-string-options [ARG]") do |opt|
-        options[:connection_string_options] = opt
-      end
-      opts.on("--commands [ARG]") do |opt|
-        options[:commands] = opt
-      end
-      opts.on("--password [ARG]") do |opt|
-        options[:password] = opt
-      end
-      opts.on("--prompt-for-password [ARG]") do |opt|
-        options[:prompt_for_password] = opt
-      end
-      opts.on("--user [ARG]") do |opt|
-        options[:user] = opt
-      end
-      opts.on("--keys [ARG]") do |opt|
-        options[:keys] = opt
-      end
-      opts.on("--sudo-password [ARG]") do |opt|
-        options[:sudo_password] = opt
-      end
-      opts.on("--verbose-output [ARG]") do |opt|
-        options[:verbose_output] = opt
-      end
-    end,
   }
 
   global.order!
@@ -249,15 +217,23 @@ if $0.split("/").last == 'toolshed'
   elsif command == 'version'
     Toolshed::Version.banner
   else
-    Dir.foreach("#{File.dirname(__FILE__)}/../lib/toolshed/commands") do |file_name|
-      next if %w(base.rb .. .).include?(file_name)
-      next unless file_name == 'push_branch.rb'
-      class_name = file_name.gsub('.rb', '').split('_').collect(&:capitalize).join
-      cli_options = eval("Toolshed::Commands::#{class_name}.cli_options")
-      "Toolshed::Commands::Base".constantize.parse(command, cli_options)
+    # command = 'SSH' if command == 'ssh'
+    #Dir.foreach("#{File.dirname(__FILE__)}/../lib/toolshed/commands") do |file_name|
+      #next if %w(base.rb .. .).include?(file_name)
+      #next unless %w(push_branch.rb ssh.rb).include?(file_name)
+      #class_name = file_name.gsub('.rb', '').split('_').collect(&:capitalize).join
+      #cli_options = eval("Toolshed::Commands::#{class_name}.cli_options")
+    command_class = nil
+    command_class_name = command.camel_case
+    begin
+      command_class = "Toolshed::Commands::#{command_class_name}".split('::').inject(Object) { |o,c| o.const_get c }
+    rescue NameError
+      command_class = "Toolshed::Commands::#{command_class_name.upcase}".split('::').inject(Object) { |o,c| o.const_get c }
     end
-    #Toolshed::Commands::PushBranch.parse('push_branch', Toolshed::Commands::PushBranch.cli_options)
-    unless command == 'push_branch'
+    Toolshed::Commands::Base.parse(command, command_class.cli_options)
+    #end
+
+    unless %w(push_branch ssh).include?(command)
       options_parser = subcommands[command]
       options_parser.order! if options_parser
       begin
