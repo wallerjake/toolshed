@@ -50,7 +50,7 @@ module Toolshed
     end
 
     def clean_branch_name(branch_name)
-      branch_name.strip.downcase.tr(" ", "_").gsub("&", "").gsub("/", "_").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "").gsub(",", "")
+      branch_name.strip.downcase.tr(" ", "_").gsub("&", "").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "").gsub(",", "")
     end
 
     def push(options = {})
