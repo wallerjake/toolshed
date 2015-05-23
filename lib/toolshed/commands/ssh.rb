@@ -6,22 +6,22 @@ module Toolshed
           banner: 'Usage: ssh [options]',
           options: {
             use_sudo: {
-              short_on: '-s'
+              short_on: '-e'
             },
             host: {
               short_on: '-o'
             },
             connection_string_options: {
-              short_on: '-o'
+              short_on: '-n'
             },
             commands: {
-              short_on: '-conn'
+              short_on: '-c'
             },
             password: {
               short_on: '-p'
             },
             prompt_for_password: {
-              short_on: '-pfp'
+              short_on: '-r'
             },
             user: {
               short_on: '-u'
@@ -30,7 +30,7 @@ module Toolshed
               short_on: '-k'
             },
             sudo_password: {
-              short_on: '-sp'
+              short_on: '-s'
             },
             verbose_output: {
               short_on: '-v'
