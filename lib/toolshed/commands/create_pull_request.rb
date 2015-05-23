@@ -15,6 +15,29 @@ module Toolshed
         self.pull_request_url = ''
       end
 
+      def self.cli_options
+        {
+          banner: 'Usage: push_branch [options]',
+          options: {
+            tool: {
+              short_on: '-to',
+            },
+            ticket_system: {
+              short_on: '-s'
+            },
+            use_defaults: {
+              short_on: '-d'
+            },
+            title: {
+              short_on: '-t'
+            },
+            body: {
+              short_on: '-b'
+            }
+          }
+        }
+      end
+
       def execute(args, options = {})
         output_begining_messages
         options = execute_ticket_tracking(options)

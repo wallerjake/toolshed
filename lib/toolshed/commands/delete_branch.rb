@@ -1,6 +1,17 @@
 module Toolshed
   module Commands
     class DeleteBranch
+      def self.cli_options
+        {
+          banner: 'Usage: delete_branch [options]',
+          options: {
+            branch_name: {
+              short_on: '-b',
+            }
+          }
+        }
+      end
+
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or branch name:", options)
         branch_name = Toolshed::Git::Base.delete(branch_name)

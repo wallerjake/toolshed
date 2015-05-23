@@ -7,5 +7,9 @@ begin
 rescue LoadError
 end
 
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+
 require 'rake'
-require File.dirname(__FILE__) + '/toolshed'
+require 'toolshed/entry_point'
+
+EntryPoint.instance.execute

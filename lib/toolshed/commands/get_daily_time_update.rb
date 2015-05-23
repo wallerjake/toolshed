@@ -1,6 +1,23 @@
 module Toolshed
   module Commands
     class GetDailyTimeUpdate
+      def self.cli_options
+        {
+          banner: 'Usage: get_daily_time_update [options]',
+          options: {
+            format: {
+              short_on: '-f',
+            },
+            use_defaults: {
+              short_on: '-d'
+            },
+            project_id: {
+              short_on: '-p',
+            }
+          }
+        }
+      end
+
       def execute(args, options = {})
         begin
           time_tracking_class =  Object.const_get("Toolshed::TimeTracking::#{Toolshed::Client.instance.time_tracking_tool.camel_case}")

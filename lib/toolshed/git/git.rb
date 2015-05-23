@@ -56,7 +56,6 @@ module Toolshed
     def push(options = {})
       branch_name = (options.has_key?(:branch_name)) ? Toolshed::Git::Base.branch_name_from_id(options[:branch_name]) : Toolshed::Git::Base.branch_name
       force_command = (options.has_key?(:force_command)) ? '--force' : ''
-
       Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force_command}")
 
       branch_name

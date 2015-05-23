@@ -8,6 +8,17 @@ module Toolshed
         super(options)
       end
 
+      def self.cli_options
+        {
+          banner: 'Usage: create_ticket_comment [options]',
+          options: {
+            use_defaults: {
+              short_on: '-d'
+            }
+          }
+        }
+      end
+
       def execute(args, options = {})
         ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
 

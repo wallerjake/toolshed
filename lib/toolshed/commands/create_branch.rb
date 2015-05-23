@@ -1,6 +1,20 @@
 module Toolshed
   module Commands
     class CreateBranch
+      def self.cli_options
+        {
+          banner: 'Usage: create_branch [options]',
+          options: {
+            branch_name: {
+              short_on: '-b',
+            },
+            branch_from: {
+              short_on: '-f'
+            }
+          }
+        }
+      end
+
       def execute(args, options = {})
         begin
           branch_name = read_user_input_branch_name("Branch name:", options)

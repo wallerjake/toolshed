@@ -1,6 +1,26 @@
 module Toolshed
   module Commands
     class TicketInformation
+      def self.cli_options
+        {
+          banner: 'Usage: ticket_information [options]',
+          options: {
+            use_defaults: {
+              short_on: '-d'
+            },
+            clipboard: {
+              short_on: '-c'
+            },
+            field: {
+              short_on: '-f'
+            },
+            formatted_string: {
+              short_on: '-fs'
+            }
+          }
+        }
+      end
+
       def execute(args, options = {})
         begin
           ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.instance.ticket_tracking_tool.camel_case}")
