@@ -92,11 +92,11 @@ module Toolshed
             dir = File.join dir, '..'
           end
 
-          puts "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
+          Toolshed.logger.info "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
           credentials = YAML.load_file(File.expand_path(loaded_from_path))
         rescue => error
-          puts "Error loading your credentials: #{error.message}"
-          exit 1
+          Toolshed.logger.fatal "Error loading your credentials: #{error.message}"
+          Toolshed.die('Unable to proceed.', 1)
         end
       end
     end

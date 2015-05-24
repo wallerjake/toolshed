@@ -26,6 +26,8 @@ class Toolshed::Commands::PushBranch < Toolshed::Commands::Base
   end
 
   def branch_name(options)
-    Toolshed::Git::Base.push(options)
+    @final_branch_name ||= begin
+      Toolshed::Git::Base.push(options)
+    end
   end
 end

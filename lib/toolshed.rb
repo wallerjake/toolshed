@@ -31,7 +31,7 @@ module Toolshed
   end
 
   def self.die(message = '', exit_code = -1)
-    logger.info(message) unless message.blank?
+    logger.fatal message unless message.blank?
     Kernel.exit(exit_code)
   end
 end

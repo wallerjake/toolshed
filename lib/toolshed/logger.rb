@@ -1,7 +1,9 @@
 require 'singleton'
+require 'term/ansicolor'
 
 class Toolshed::Logger
   include Singleton
+  include Term::ANSIColor
 
   attr_accessor :loggers
 
@@ -23,15 +25,21 @@ class Toolshed::Logger
     end
   end
 
+  def fatal(message)
+    loggers.each do |logger|
+      logger.info(red(message))
+    end
+  end
+
   def info(message)
     loggers.each do |logger|
-      logger.info(message)
+      logger.info(green(message))
     end
   end
 
   def warn(message)
     loggers.each do |logger|
-      logger.warn(message)
+      logger.warn(yellow(message))
     end
   end
 end
