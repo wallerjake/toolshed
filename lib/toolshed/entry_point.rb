@@ -53,6 +53,7 @@ class EntryPoint
         command_class = nil
         command_class_name = command.camel_case
         begin
+          require "toolshed/commands/#{command.to_s}"
           command_class = "Toolshed::Commands::#{command_class_name}".split('::').inject(Object) { |o,c| o.const_get c }
         rescue NameError
           command_class = "Toolshed::Commands::#{command_class_name.upcase}".split('::').inject(Object) { |o,c| o.const_get c }

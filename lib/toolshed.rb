@@ -6,6 +6,7 @@ require 'harvested'
 require 'veto'
 require 'launchy'
 require 'clipboard'
+require 'toolshed/logger'
 
 module Toolshed
   BLANK_REGEX = /\S+/
@@ -20,6 +21,18 @@ module Toolshed
   def self.deprecate(message = nil)
     message ||= "You are using deprecated behavior which will be removed from the next major or minor release."
     warn("DEPRECATION WARNING: #{message}")
+  end
+
+  def self.logger
+    @logger ||= begin
+      Toolshed::Logger.create(log_sources: [STDOUT])
+      Toolshed::Logger.instance
+    end
+  end
+
+  def self.die(message = '', exit_code = -1)
+    logger.info(message) unless message.blank?
+    Kernel.exit(exit_code)
   end
 end
 

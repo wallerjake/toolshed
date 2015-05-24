@@ -2,6 +2,10 @@ require 'commands/commands_helper'
 require 'toolshed/commands/push_branch'
 
 class PushBranchTest < Test::Unit::TestCase
+  def setup
+    Toolshed.expects(:die).at_least(0).returns('Exiting')
+  end
+
   def test_push_branch_current_working_branch
     Toolshed::Client.instance.push_to_remote_name = 'origin'
 
@@ -10,8 +14,9 @@ class PushBranchTest < Test::Unit::TestCase
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
-    output = capture_stdout { Toolshed::Commands::PushBranch.new.execute({}) }
-    assert_match /#{new_branch_name} has been pushed/, output
+    push_branch_command = Toolshed::Commands::PushBranch.new
+    push_branch_command.execute({})
+    assert_equal new_branch_name, push_branch_command.branch_name({})
 
     Toolshed::Git::Base.checkout(current_branch)
     delete_branch(new_branch_name)
@@ -25,8 +30,9 @@ class PushBranchTest < Test::Unit::TestCase
     new_branch_name = "555558_#{random_branch_name}"
     create_and_checkout_branch(new_branch_name, 'master')
 
-    output = capture_stdout { Toolshed::Commands::PushBranch.new.execute({}, { branch_name: '555558' }) }
-    assert_match /#{new_branch_name} has been pushed/, output
+    push_branch_command = Toolshed::Commands::PushBranch.new
+    push_branch_command.execute({}, { branch_name: '555558' })
+    assert_equal new_branch_name, push_branch_command.branch_name({ branch_name: '555558' })
 
     Toolshed::Git::Base.checkout(current_branch)
     delete_branch(new_branch_name)
@@ -40,8 +46,9 @@ class PushBranchTest < Test::Unit::TestCase
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
 
-    output = capture_stdout { Toolshed::Commands::PushBranch.new.execute({}, { force: true }) }
-    assert_match /#{new_branch_name} has been pushed/, output
+    push_branch_command = Toolshed::Commands::PushBranch.new
+    push_branch_command.execute({}, { force: true })
+    assert_equal new_branch_name, push_branch_command.branch_name(force: true)
 
     Toolshed::Git::Base.checkout(current_branch)
     delete_branch(new_branch_name)

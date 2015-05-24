@@ -2,7 +2,7 @@ require 'toolshed/commands/base'
 
 module Toolshed
   module Commands
-    class CreatePullRequest < Base
+    class CreatePullRequest < Toolshed::Commands::Base
       attr_accessor :ticket_tracking_url, :ticket_tracking_title,
                     :ticket_id, :ticket_tracker,
                     :ticket_tracker_class, :ticket_tracker_project_id,
