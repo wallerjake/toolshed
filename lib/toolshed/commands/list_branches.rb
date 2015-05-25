@@ -1,3 +1,5 @@
+require 'toolshed/git/git'
+
 module Toolshed
   module Commands
     class ListBranches
@@ -13,11 +15,8 @@ module Toolshed
       end
 
       def execute(args, options = {})
-        git = Toolshed::Git::Github.new
-        branches = git.list_branches
-        branches.each do |branch|
-          puts branch['name']
-        end
+        git = Toolshed::Git::Base.new
+        git.list_branches
       end
     end
   end

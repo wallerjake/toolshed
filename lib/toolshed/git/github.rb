@@ -60,13 +60,6 @@ module Toolshed
         end
       end
 
-      def list_branches(options={})
-        options.merge!(self.default_options)
-
-        response = HTTParty.get("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.github_username}/#{Toolshed::Client.instance.pull_from_repository_name}/branches", options).response
-        response = JSON.parse(response.body)
-      end
-
       def self.username
         username = Toolshed::Client.instance.github_username
         if (username.nil?)

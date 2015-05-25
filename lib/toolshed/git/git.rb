@@ -1,3 +1,5 @@
+require 'toolshed/base'
+
 module Toolshed
   module Git
     DEFAULT_GIT_TOOL    = 'github'
@@ -113,7 +115,16 @@ module Toolshed
       end
 
       def list_branches
-
+        Toolshed.logger.info ''
+        Toolshed.logger.info 'All Branches'
+        Toolshed.logger.info ''
+        results = Toolshed::Base.wait_for_command('git branch -avv')
+        results[:stdout].each do |stdout|
+          next unless /remotes\/#{from_remote_name}.*/.match(stdout)
+          matches = /([^\s]+)/.match(stdout)
+          Toolshed.logger.info matches[0].gsub("remotes/#{from_remote_name}/", '')
+        end
+        Toolshed.logger.info ''
       end
 
       def push

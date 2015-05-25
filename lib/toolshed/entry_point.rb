@@ -1,6 +1,7 @@
 require 'toolshed'
 require 'toolshed/cli'
 require 'toolshed/base'
+require 'toolshed/commands/base'
 require 'optparse'
 require 'singleton'
 
