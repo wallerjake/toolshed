@@ -2,6 +2,10 @@ require 'commands/commands_helper'
 require 'toolshed/commands/create_pull_request'
 
 class CreatePullRequestTest < Test::Unit::TestCase
+  def setup
+    @git = Toolshed::Git::Base.new
+  end
+
   def test_create_github_pull_request_no_ticket_tracking
     Toolshed::Client.instance.ticket_tracking_tool = ''
     Toolshed::Client.instance.git_tool = 'github'
@@ -29,7 +33,7 @@ class CreatePullRequestTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
+         head: "#{Toolshed::Client.instance.github_username}:#{@git.branch_name}",
          base: Toolshed::Git::Base.branched_from
       }.to_json
     })
@@ -76,7 +80,7 @@ class CreatePullRequestTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
+         head: "#{Toolshed::Client.instance.github_username}:#{@git.branch_name}",
          base: Toolshed::Git::Base.branched_from
       }.to_json
     })

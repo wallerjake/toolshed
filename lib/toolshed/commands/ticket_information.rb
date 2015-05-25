@@ -37,7 +37,7 @@ module Toolshed
             options.merge!({ project: ticket_tracker_project_name })
           end
 
-          default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name)
+          default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(git.branch_name)
           ticket_id = read_user_input_ticket_id("Story ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
           options.merge!({ ticket_id: ticket_id })
 
@@ -75,6 +75,10 @@ module Toolshed
           puts e.message
           exit
         end
+      end
+
+      def git
+        Toolshed::Git::Base.new
       end
 
       def read_user_input_project(message, options)

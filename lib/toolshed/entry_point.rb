@@ -48,7 +48,7 @@ class EntryPoint
         usage
       elsif command == 'version'
         Toolshed::Version.banner
-        exit
+        Toolshed.die
       else
         command_class = nil
         command_class_name = command.camel_case

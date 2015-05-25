@@ -4,6 +4,8 @@
 # Before using this tool you should create a file called .toolshedrc in your projects directory or home directory. This is read as a yaml file so format it as you would a yaml file.
 # If added to the projects directory settings will be applied to that specific project. If applied to your home directory all projects under home will get those settings. It will take the first .toolshedrc file it finds so you can override the home directory global one when needed.
 
+# log_path: ~/toolshed/logs
+
 # ticket_tracking_tool: 'pivotal_tracker' (required)
 # pivotal_tracker_username: [pivotal_tracker_username] (optional)
 # pivotal_tracker_password: [pivotal_tracker_password] (optional)

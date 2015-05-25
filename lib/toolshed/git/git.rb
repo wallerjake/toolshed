@@ -4,8 +4,8 @@ module Toolshed
     DEFAULT_BRANCH_FROM = 'master'
 
     def branch_name
-      # branch information
-      branch_name = `git rev-parse --abbrev-ref HEAD`.strip
+      git = Toolshed::Git::Base.new
+      git.branch_name
     end
 
     def branched_from
@@ -53,14 +53,6 @@ module Toolshed
       branch_name.strip.downcase.tr(" ", "_").gsub("&", "").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "").gsub(",", "")
     end
 
-    def push(options = {})
-      branch_name = (options.has_key?(:branch_name)) ? Toolshed::Git::Base.branch_name_from_id(options[:branch_name]) : Toolshed::Git::Base.branch_name
-      force_command = (options.has_key?(:force_command)) ? '--force' : ''
-      Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force_command}")
-
-      branch_name
-    end
-
     class GitValidator
       include Veto.validator
 
@@ -73,7 +65,7 @@ module Toolshed
     class Base
       extend Toolshed::Git
 
-      attr_accessor :from_remote_name, :from_remote_branch_name, :to_remote_name, :to_remote_branch_name, :validator
+      attr_accessor :from_remote_name, :from_remote_branch_name, :to_remote_name, :to_remote_branch_name, :validator, :passed_branch_name, :force
 
       def initialize(options={})
         # options with defaults
@@ -97,6 +89,12 @@ module Toolshed
         end
 
         self.validator = ::Toolshed::Git::GitValidator.new
+        self.passed_branch_name = options[:branch_name] || ''
+        self.force = (options.key?(:force_command)) ? '--force' : ''
+      end
+
+      def branch_name
+        (passed_branch_name.blank?) ? `git rev-parse --abbrev-ref HEAD`.strip : Toolshed::Git::Base.branch_name_from_id(self.passed_branch_name)
       end
 
       def create_branch
@@ -112,6 +110,10 @@ module Toolshed
         end
 
         Toolshed::Base.wait_for_command("git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.instance.git_quiet}")
+      end
+
+      def push
+        Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force}")
       end
     end
   end

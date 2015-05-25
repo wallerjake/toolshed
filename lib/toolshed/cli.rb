@@ -6,7 +6,7 @@ module Toolshed
 
   class CLI
     def execute(command_name, args, options={})
-      Toolshed::Client.load_credentials
+      load_config
       command = self.send(command_name)
       if command
         begin
@@ -18,6 +18,15 @@ module Toolshed
         end
       else
         raise CommandNotFound, "Unknown command: #{command_name}"
+      end
+    end
+
+    def load_config
+      begin
+        loaded_from_path = Toolshed::Client.load_credentials
+        Toolshed.logger.info "Credentials loaded from #{File.absolute_path(Toolshed::Client.instance.credentials_loaded_from)}"
+      rescue => e
+        Toolshed.logger.fatal "Error loading your credentials: #{e.message}"
       end
     end
 

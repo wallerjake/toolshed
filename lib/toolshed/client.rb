@@ -35,7 +35,9 @@ module Toolshed
                   :time_tracking_password,
                   :time_tracking_owner,
                   :time_tracking_default_project_id,
-                  :load_credentials_if_necessary
+                  :load_credentials_if_necessary,
+                  :log_path,
+                  :credentials_loaded_from
 
     GITHUB_BASE_API_URL  = "https://api.github.com/"
     PIVOTAL_TRACKER_BASE_API_URL = "https://www.pivotaltracker.com/services/v5/"
@@ -74,30 +76,27 @@ module Toolshed
         instance.git_quiet                          ||= (credentials['git_quiet']) ? '&> /dev/null' : ''
         instance.use_defaults                       ||= credentials['use_defaults']
         instance.default_pull_request_title_format  ||= credentials['default_pull_request_title_format']
+        instance.log_path                           ||= credentials['log_path']
+        instance.credentials_loaded_from            ||= load_credentials_from(config_path)
       end
 
       def read_credenials(path = Client.config_path)
-        begin
-          dir = Dir.pwd
-          while File.expand_path(dir) != '/' do
-            if (File.exists? "#{dir}/.toolshedrc")
-              loaded_from_path = "#{dir}/.toolshedrc"
-              break
-            elsif (File.exists? "#{dir}/.toolshed")
-              loaded_from_path = "#{dir}/.toolshed"
-              warn "[DEPRECATION] `.toolshed` file is being deprecated.  Please use a `.toolshedrc` file instead."
-              break
-            end
+        YAML.load_file(File.expand_path(load_credentials_from(path)))
+      end
 
+      def load_credentials_from(path = Client.config_path)
+        dir = Dir.pwd
+        credentials_loaded_from = ''
+        while File.expand_path(dir) != '/' do
+          unless File.exists?("#{dir}/.toolshedrc")
             dir = File.join dir, '..'
+            next
           end
-
-          Toolshed.logger.info "Credentials loaded from #{File.absolute_path(loaded_from_path)}"
-          credentials = YAML.load_file(File.expand_path(loaded_from_path))
-        rescue => error
-          Toolshed.logger.fatal "Error loading your credentials: #{error.message}"
-          Toolshed.die('Unable to proceed.', 1)
+          credentials_loaded_from = "#{dir}/.toolshedrc"
+          break
         end
+
+        credentials_loaded_from
       end
     end
   end

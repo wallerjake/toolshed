@@ -7,6 +7,7 @@ require 'veto'
 require 'launchy'
 require 'clipboard'
 require 'toolshed/logger'
+require 'fileutils'
 
 module Toolshed
   BLANK_REGEX = /\S+/
@@ -25,7 +26,16 @@ module Toolshed
 
   def self.logger
     @logger ||= begin
-      Toolshed::Logger.create(log_sources: [STDOUT])
+      log_sources = [STDOUT]
+      log_path = Toolshed::Client.instance.log_path
+      unless log_path.blank?
+        FileUtils.mkdir_p(log_path)
+        file = "#{log_path}/toolshed_#{Time.now.utc.strftime('%Y%m%d%H%M%S%L')}"
+        FileUtils.touch(file)
+        log_sources << file
+      end
+
+      Toolshed::Logger.create(log_sources: log_sources)
       Toolshed::Logger.instance
     end
   end

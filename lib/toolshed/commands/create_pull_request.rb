@@ -44,6 +44,12 @@ module Toolshed
         options = execute_pull_request(options) unless options.nil?
       end
 
+      def git
+        @git ||= begin
+          Toolshed::Git::Base.new
+        end
+      end
+
       private
 
         def read_user_input_add_note_to_ticket(message)
@@ -66,15 +72,15 @@ module Toolshed
         end
 
         def output_begining_messages
-          puts "Current Branch: #{Toolshed::Git::Base.branch_name}"
+          puts "Current Branch: #{git.branch_name}"
           puts "Branched From: #{Toolshed::Git::Base.branched_from}"
           puts "Using Defaults: #{(Toolshed::Client.instance.use_defaults.nil?) ? 'No' : 'Yes'}"
         end
 
         def get_ticket_id(options)
           self.ticket_id = read_user_input_ticket_tracker_ticket_id(
-            "Ticket ID (Default: #{Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name)}):", {
-              default: Toolshed::TicketTracking::story_id_from_branch_name(Toolshed::Git::Base.branch_name),
+            "Ticket ID (Default: #{Toolshed::TicketTracking::story_id_from_branch_name(git.branch_name)}):", {
+              default: Toolshed::TicketTracking::story_id_from_branch_name(git.branch_name),
             }
           )
           options.merge!({

@@ -10,7 +10,7 @@ module Toolshed
           until (system(command))
             sleep 1
           end
-          return
+          return true
         }
       rescue Timeout::Error => e
         puts "Unable to execute command after #{seconds} seconds"
