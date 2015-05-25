@@ -26,17 +26,21 @@ module Toolshed
 
   def self.logger
     @logger ||= begin
-      log_sources = [STDOUT]
-      log_path = Toolshed::Client.instance.log_path
-      unless log_path.blank?
-        FileUtils.mkdir_p(log_path)
-        file = "#{log_path}/toolshed_#{Time.now.utc.strftime('%Y%m%d%H%M%S%L')}"
-        FileUtils.touch(file)
-        log_sources << file
-      end
-
-      Toolshed::Logger.create(log_sources: log_sources)
+      Toolshed::Logger.create(log_sources: [STDOUT])
       Toolshed::Logger.instance
+    end
+  end
+
+  def self.add_file_log_source(command_name = '')
+    log_path = Toolshed::Client.instance.log_path
+    unless log_path.blank?
+      FileUtils.mkdir_p(log_path)
+      command_name_string = '_'
+      command_name_string = "_#{command_name}_" unless command_name.blank?
+      file_name = "toolshed#{command_name_string}#{Time.now.utc.strftime('%Y%m%d%H%M%S%L')}"
+      file = "#{log_path}/#{file_name}"
+      FileUtils.touch(file)
+      self.logger.add_log_source(file)
     end
   end
 

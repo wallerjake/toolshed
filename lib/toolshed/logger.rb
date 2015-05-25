@@ -16,7 +16,7 @@ class Toolshed::Logger
   end
 
   def add_log_source(source)
-    instance.loggers << Logger.new(source)
+    loggers << Logger.new(source)
   end
 
   def debug(message)
