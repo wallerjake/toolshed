@@ -33,7 +33,6 @@ module Toolshed
       def read_password_from_configuration(type)
         begin
           credentials = Toolshed::Client.read_credenials
-          puts "CREDS: #{credentials.inspect}"
           if credentials[self.send(type)]
             credentials[self.send(type)]
           else
@@ -42,7 +41,6 @@ module Toolshed
         rescue => e
           puts e.inspect
         end
-
       end
   end
 end

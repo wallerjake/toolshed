@@ -4,6 +4,7 @@ require 'toolshed/commands/create_branch'
 class CreateBranchTest < Test::Unit::TestCase
   def setup
     @git = Toolshed::Git::Base.new
+    Toolshed.expects(:die).at_least(0).returns('die')
   end
 
   def test_create_new_branch_passing_in_branch_name_branch_from
@@ -13,9 +14,9 @@ class CreateBranchTest < Test::Unit::TestCase
     current_branch = @git.branch_name
     new_branch_name = ::Faker::Lorem.word.downcase
 
-    output = capture_stdout { Toolshed::Commands::CreateBranch.new.execute({}, { branch_name: new_branch_name, branch_from: 'development' }) }
+    output = Toolshed::Commands::CreateBranch.new.execute({}, { branch_name: new_branch_name, branch_from: 'development' })
 
-    assert_match /Branch #{new_branch_name} has been created/, output
+    assert_match 'die', output
 
     assert_equal new_branch_name, @git.branch_name
     assert_equal 'development', Toolshed::Git::Base.branched_from
@@ -35,9 +36,9 @@ class CreateBranchTest < Test::Unit::TestCase
     Toolshed::Commands::CreateBranch.any_instance.stubs(:read_user_input_branch_name).returns(new_branch_name)
     Toolshed::Commands::CreateBranch.any_instance.stubs(:read_user_input_branch_from).returns('development')
 
-    output = capture_stdout { Toolshed::Commands::CreateBranch.new.execute({}) }
+    output = Toolshed::Commands::CreateBranch.new.execute({})
 
-    assert_match /Branch #{new_branch_name} has been created/, output
+    assert_match 'die', output
 
     assert_equal new_branch_name, @git.branch_name
     assert_equal 'development', Toolshed::Git::Base.branched_from
@@ -56,9 +57,9 @@ class CreateBranchTest < Test::Unit::TestCase
     # stub the possible input
     Toolshed::Commands::CreateBranch.any_instance.stubs(:read_user_input_branch_name).returns(new_branch_name)
 
-    output = capture_stdout { Toolshed::Commands::CreateBranch.new.execute({}, { branch_name: new_branch_name }) }
+    output = Toolshed::Commands::CreateBranch.new.execute({}, { branch_name: new_branch_name })
 
-    assert_match /Branch #{new_branch_name} has been created/, output
+    assert_match 'die', output
     assert_equal new_branch_name, @git.branch_name
     assert_equal 'master', Toolshed::Git::Base.branched_from
 

@@ -100,18 +100,35 @@ module Toolshed
       end
 
       def create_branch
-        self.validator.validate!(self)
+        validator.validate!(self)
+        Toolshed.logger.info ''
 
-        new_branch_name = Toolshed::Git::Base.clean_branch_name(self.to_remote_branch_name)
-        Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.instance.git_quiet}")
+        new_branch_name = Toolshed::Git::Base.clean_branch_name(to_remote_branch_name)
+        Toolshed.logger.info "Creating branch #{new_branch_name} from #{from_remote_name}/#{from_remote_branch_name}"
 
-        Toolshed::Base.wait_for_command("git checkout -b #{new_branch_name} #{self.from_remote_name}/#{self.from_remote_branch_name} #{Toolshed::Client.instance.git_quiet}")
+        remote_update
 
-        unless (Toolshed::Git::Base.git_submodule_command.empty?)
-          Toolshed::Base.wait_for_command(Toolshed::Git::Base.git_submodule_command)
+        results = Toolshed::Base.wait_for_command("git checkout -b #{new_branch_name} #{from_remote_name}/#{from_remote_branch_name} #{Toolshed::Client.instance.git_quiet}")
+        results[:stdout] + results[:stderr].each do |out|
+          Toolshed.logger.info out
         end
 
-        Toolshed::Base.wait_for_command("git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.instance.git_quiet}")
+        Toolshed::Base.wait_for_command(Toolshed::Git::Base.git_submodule_command) unless Toolshed::Git::Base.git_submodule_command.empty?
+
+        Toolshed.logger.info ''
+        Toolshed.logger.info "Pushing branch #{new_branch_name} to #{from_remote_name}/#{from_remote_branch_name}."
+        self.passed_branch_name = new_branch_name
+        push
+
+        Toolshed.logger.info ''
+        Toolshed.logger.info "Branch #{new_branch_name} has been created from #{from_remote_name}/#{from_remote_branch_name}."
+      end
+
+      def remote_update
+        results = Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.instance.git_quiet}")
+        results[:stdout] + results[:stderr].each do |out|
+          Toolshed.logger.info out
+        end
       end
 
       def list_branches
@@ -132,7 +149,7 @@ module Toolshed
           Toolshed.logger.fatal "Branch #{passed_branch_name} was not found. Unable to push branch."
           Toolshed.die
         end
-        result = Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force}")
+        result = Toolshed::Base.wait_for_command("git push #{to_remote_name} #{branch_name} #{force} #{Toolshed::Client.instance.git_quiet}")
         result[:stdout].each do |stdout|
           Toolshed.logger.info stdout
         end
