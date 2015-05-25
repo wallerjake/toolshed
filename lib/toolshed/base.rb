@@ -1,21 +1,18 @@
 module Toolshed
   class Base
     def initialize
-      puts "#{__FILE__} #{__LINE__}"
     end
 
     def self.wait_for_command(command, seconds=10)
-      begin
-        Timeout::timeout(seconds) {
-          until (system(command))
-            sleep 1
-          end
-          return true
-        }
-      rescue Timeout::Error => e
-        puts "Unable to execute command after #{seconds} seconds"
-        return
+      result = ''
+      Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
+        pid = wait_thr.pid # pid of the started process.
+        stdin.close  # make sure the subprocess is done
+        result = stdout.read.chomp
+        result = stderr.read.chomp if result.blank?
+        exit_status = wait_thr.value # Process::Status object returned.
       end
+      result
     end
   end
 end

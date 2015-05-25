@@ -113,7 +113,9 @@ module Toolshed
       end
 
       def push
-        Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force}")
+        result = Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force}")
+        info_message = (result.blank?) ? 'Everything up-to-date' : result
+        Toolshed.logger.info info_message
       end
     end
   end
