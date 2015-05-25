@@ -112,14 +112,24 @@ module Toolshed
         Toolshed::Base.wait_for_command("git push #{self.to_remote_name} #{new_branch_name} #{Toolshed::Client.instance.git_quiet}")
       end
 
+      def list_branches
+
+      end
+
       def push
         if branch_name.blank? && !passed_branch_name.blank?
           Toolshed.logger.fatal "Branch #{passed_branch_name} was not found. Unable to push branch."
           Toolshed.die
         end
         result = Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} #{branch_name} #{force}")
-        info_message = (result.blank?) ? 'Everything up-to-date' : result
-        Toolshed.logger.info info_message
+        result[:stdout].each do |stdout|
+          Toolshed.logger.info stdout
+        end
+        result[:stderr].each do |stderr|
+          Toolshed.logger.info stderr
+        end
+        Toolshed.logger.info 'Everything up-to-date' if result[:stdout].empty? && result[:stderr].empty?
+        true
       end
     end
   end
