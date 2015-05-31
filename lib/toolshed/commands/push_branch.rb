@@ -23,10 +23,7 @@ class Toolshed::Commands::PushBranch < Toolshed::Commands::Base
   def execute(args, options = {})
     Toolshed.logger.info "Running toolshed push_branch with #{options.inspect}"
     git = Toolshed::Git::Base.new(options)
-    Toolshed.logger.info "Pushing #{git.branch_name}"
-    if git.push
-      Toolshed.logger.info "#{git.branch_name} has been pushed"
-    end
+    git.push_branch
     Toolshed.die
   end
 end

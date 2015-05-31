@@ -38,7 +38,7 @@ class GitHubTest < Test::Unit::TestCase
 
     assert_equal JSON.parse(expected_result), github.create_pull_request('Sample', 'Sample Body')
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 

@@ -14,7 +14,7 @@ class GitTest < Test::Unit::TestCase
 
     assert_equal new_branch_name, Toolshed::Git::Base.branch_name
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     pop_stash
     delete_branch(new_branch_name)
   end
@@ -25,7 +25,7 @@ class GitTest < Test::Unit::TestCase
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name)
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
 
     assert_equal current_branch, Toolshed::Git::Base.branch_name
 
@@ -41,13 +41,13 @@ class GitTest < Test::Unit::TestCase
     new_branch_name = "#{branch_id}_#{new_branch_name}"
     create_and_checkout_branch(new_branch_name)
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     assert_equal current_branch, Toolshed::Git::Base.branch_name
 
-    Toolshed::Git::Base.checkout(branch_id)
+    Toolshed::Git::Base.checkout_branch(branch_id)
     assert_equal new_branch_name, Toolshed::Git::Base.branch_name
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -60,7 +60,7 @@ class GitTest < Test::Unit::TestCase
 
     assert_equal 'development', Toolshed::Git::Base.branched_from
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -79,7 +79,7 @@ class GitTest < Test::Unit::TestCase
     assert_equal new_branch_name, Toolshed::Git::Base.branch_name
     assert_equal 'development', Toolshed::Git::Base.branched_from
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -105,12 +105,12 @@ class GitTest < Test::Unit::TestCase
     # go to the remote repo and verify it exists
     Dir.chdir(File.join(TEST_ROOT, "remote"))
     remote_current_branch = Toolshed::Git::Base.branch_name
-    Toolshed::Git::Base.checkout(new_branch_name)
+    Toolshed::Git::Base.checkout_branch(new_branch_name)
     assert_equal new_branch_name, Toolshed::Git::Base.branch_name
-    Toolshed::Git::Base.checkout(remote_current_branch)
+    Toolshed::Git::Base.checkout_branch(remote_current_branch)
 
     Dir.chdir(File.join(TEST_ROOT, "local"))
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
 
     @git.delete_branch(new_branch_name)
 

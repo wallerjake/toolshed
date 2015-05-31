@@ -20,7 +20,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     assert_equal new_branch_name, @git.branch_name
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -38,7 +38,7 @@ class PushBranchTest < Test::Unit::TestCase
     push_branch_command.execute({}, { branch_name: '555558' })
     assert_equal new_branch_name, expected_git.branch_name
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -55,7 +55,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     assert_equal new_branch_name, @git.branch_name
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 end

@@ -14,8 +14,8 @@ module Toolshed
 
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or Branch Name:", options)
-        branch_name = Toolshed::Git::Base.checkout(branch_name)
-        puts "Switched to '#{branch_name}'"
+        Toolshed::Git::Base.checkout_branch(branch_name)
+        Toolshed.die
       end
 
       def read_user_input(message, options)

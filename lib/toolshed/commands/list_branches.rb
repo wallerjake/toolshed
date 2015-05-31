@@ -17,6 +17,7 @@ module Toolshed
       def execute(args, options = {})
         git = Toolshed::Git::Base.new
         git.list_branches
+        Toolshed.die
       end
     end
   end

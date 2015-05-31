@@ -21,7 +21,7 @@ class CreateBranchTest < Test::Unit::TestCase
     assert_equal new_branch_name, @git.branch_name
     assert_equal 'development', Toolshed::Git::Base.branched_from
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -43,7 +43,7 @@ class CreateBranchTest < Test::Unit::TestCase
     assert_equal new_branch_name, @git.branch_name
     assert_equal 'development', Toolshed::Git::Base.branched_from
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -63,7 +63,7 @@ class CreateBranchTest < Test::Unit::TestCase
     assert_equal new_branch_name, @git.branch_name
     assert_equal 'master', Toolshed::Git::Base.branched_from
 
-    Toolshed::Git::Base.checkout(current_branch)
+    Toolshed::Git::Base.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 end

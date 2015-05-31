@@ -18,15 +18,15 @@ module Toolshed
       branch_name = `git branch | grep \"#{id}\"`.gsub("*", "").strip
     end
 
-    def checkout(branch_name)
-      branch_name = Toolshed::Git::Base.branch_name_from_id(branch_name)
-      Toolshed::Base.wait_for_command("git checkout #{branch_name} #{Toolshed::Client.instance.git_quiet}")
-
-      unless (Toolshed::Git::Base.git_submodule_command.empty?)
-        Toolshed::Base.wait_for_command(Toolshed::Git::Base.git_submodule_command)
-      end
-
-      branch_name
+    def checkout_branch(checkout_branch_name)
+      Toolshed.logger.info ''
+      Toolshed.logger.info "Looking for branch #{checkout_branch_name}"
+      actual_branch_name = Toolshed::Git::Base.branch_name_from_id(checkout_branch_name)
+      Toolshed.logger.info "Switching to branch #{actual_branch_name}"
+      Toolshed::Base.wait_for_command("git checkout #{actual_branch_name} #{Toolshed::Client.instance.git_quiet}")
+      Toolshed::Base.wait_for_command(Toolshed::Git::Base.git_submodule_command) unless Toolshed::Git::Base.git_submodule_command.empty?
+      Toolshed.logger.info "Switched to branch #{actual_branch_name}"
+      actual_branch_name
     end
 
     def git_submodule_command
@@ -105,7 +105,7 @@ module Toolshed
         Toolshed.logger.info ''
         Toolshed.logger.info "Pushing branch #{new_branch_name} to #{from_remote_name}/#{from_remote_branch_name}."
         self.passed_branch_name = new_branch_name
-        push
+        push_branch
 
         Toolshed.logger.info ''
         Toolshed.logger.info "Branch #{new_branch_name} has been created from #{from_remote_name}/#{from_remote_branch_name}."
@@ -119,7 +119,7 @@ module Toolshed
         if actual_branch_name == branch_name
           Toolshed.logger.info 'Checking out master branch'
           Toolshed.logger.info ''
-          Toolshed::Git::Base.checkout('master')
+          Toolshed::Git::Base.checkout_branch('master')
         end
 
         delete_local_branch(actual_branch_name)
@@ -193,6 +193,20 @@ module Toolshed
         end
       end
 
+      def push_branch
+        Toolshed.logger.info "Pushing #{branch_name}"
+        if branch_name.blank? && !passed_branch_name.blank?
+          Toolshed.logger.fatal "Branch #{passed_branch_name} was not found. Unable to push branch."
+          Toolshed.die
+        end
+        result = Toolshed::Base.wait_for_command("git push #{to_remote_name} #{branch_name} #{force} #{Toolshed::Client.instance.git_quiet}")
+        result[:all].each do |stdout|
+          Toolshed.logger.info stdout
+        end
+        Toolshed.logger.info 'Everything up-to-date' if result[:stdout].empty? && result[:stderr].empty?
+        Toolshed.logger.info "#{branch_name} has been pushed"
+      end
+
       def remote_branches
         remote_branches = []
         results = Toolshed::Base.wait_for_command('git branch -avv')
@@ -210,19 +224,6 @@ module Toolshed
         results[:all].each do |out|
           Toolshed.logger.info out
         end
-      end
-
-      def push
-        if branch_name.blank? && !passed_branch_name.blank?
-          Toolshed.logger.fatal "Branch #{passed_branch_name} was not found. Unable to push branch."
-          Toolshed.die
-        end
-        result = Toolshed::Base.wait_for_command("git push #{to_remote_name} #{branch_name} #{force} #{Toolshed::Client.instance.git_quiet}")
-        result[:all].each do |stdout|
-          Toolshed.logger.info stdout
-        end
-        Toolshed.logger.info 'Everything up-to-date' if result[:stdout].empty? && result[:stderr].empty?
-        true
       end
     end
   end
