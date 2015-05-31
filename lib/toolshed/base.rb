@@ -26,8 +26,8 @@ module Toolshed
             end
 
             all = a_stdout + a_stderr
-            result.merge!(stdout: a_stdout, stderr: a_stderr, all: all)
             exit_status = wait_thr.value # Process::Status object returned.
+            result.merge!(stdout: a_stdout, stderr: a_stderr, all: all, process_status: exit_status)
           end
         rescue Timeout::Error
           Process.kill("KILL", wait_thr.pid)

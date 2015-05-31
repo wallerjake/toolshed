@@ -11,5 +11,6 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'rake'
 require 'toolshed/entry_point'
+require 'awesome_print'
 
 EntryPoint.instance.execute

@@ -124,6 +124,11 @@ module Toolshed
         Toolshed.logger.info "Branch #{new_branch_name} has been created from #{from_remote_name}/#{from_remote_branch_name}."
       end
 
+      def master_exists_locally?
+        results = Toolshed::Base.wait_for_command('git rev-parse --verify master')
+        results[:process_status].exitstatus == 0
+      end
+
       def remote_update
         results = Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.instance.git_quiet}")
         results[:all].each do |out|
@@ -132,16 +137,34 @@ module Toolshed
       end
 
       def list_branches
+        list_local_branches
+        list_remote_branches
+      end
+
+      def list_local_branches
         Toolshed.logger.info ''
-        Toolshed.logger.info 'All Branches'
+        Toolshed.logger.info 'Local Branches'
+        Toolshed.logger.info ''
+        current_branch_name = branch_name
+        Toolshed.logger.info 'master' if master_exists_locally?
+        results = Toolshed::Base.wait_for_command('git branch -avv')
+        results[:stdout].each do |stdout|
+          next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
+          Toolshed.logger.info stdout.lstrip.rstrip
+        end
+      end
+
+      def list_remote_branches
+        Toolshed.logger.info ''
+        Toolshed.logger.info 'Remote Branches'
         Toolshed.logger.info ''
         results = Toolshed::Base.wait_for_command('git branch -avv')
         results[:stdout].each do |stdout|
           next unless /remotes\/#{from_remote_name}.*/.match(stdout)
+          next if  /.*HEAD.*/.match(stdout)
           matches = /([^\s]+)/.match(stdout)
           Toolshed.logger.info matches[0].gsub("remotes/#{from_remote_name}/", '')
         end
-        Toolshed.logger.info ''
       end
 
       def push
