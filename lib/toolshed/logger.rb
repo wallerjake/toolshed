@@ -1,5 +1,6 @@
 require 'singleton'
 require 'term/ansicolor'
+require 'logger'
 
 class Toolshed::Logger
   include Singleton
