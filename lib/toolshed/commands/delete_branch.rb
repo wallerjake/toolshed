@@ -14,9 +14,9 @@ module Toolshed
 
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or branch name:", options)
-        branch_name = Toolshed::Git::Base.delete(branch_name)
-        puts "#{branch_name} has been deleted"
-        return
+        git = Toolshed::Git::Base.new
+        git.delete_branch(branch_name)
+        Toolshed.die
       end
 
       def read_user_input(message, options)

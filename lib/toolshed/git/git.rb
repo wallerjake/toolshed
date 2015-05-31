@@ -29,19 +29,6 @@ module Toolshed
       branch_name
     end
 
-    def delete(branch_name)
-      branch_name = Toolshed::Git::Base.branch_name_from_id(branch_name)
-
-      # if delete your current branch checkout master so it can be deleted
-      if (branch_name == Toolshed::Git::Base.branch_name)
-        Toolshed::Git::Base.checkout('master')
-      end
-
-      Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} :#{branch_name}; git branch -D #{branch_name}")
-
-      branch_name
-    end
-
     def git_submodule_command
       git_submodule_command = ''
       if (Toolshed::Client.instance.use_git_submodules)
@@ -124,19 +111,50 @@ module Toolshed
         Toolshed.logger.info "Branch #{new_branch_name} has been created from #{from_remote_name}/#{from_remote_branch_name}."
       end
 
-      def master_exists_locally?
-        results = Toolshed::Base.wait_for_command('git rev-parse --verify master')
-        results[:process_status].exitstatus == 0
+      def delete_branch(delete_branch_name)
+        actual_branch_name = Toolshed::Git::Base.branch_name_from_id(delete_branch_name)
+        Toolshed.logger.info ''
+        Toolshed.logger.info "Deleting branch #{actual_branch_name}"
+        Toolshed.logger.info ''
+        if actual_branch_name == branch_name
+          Toolshed.logger.info 'Checking out master branch'
+          Toolshed.logger.info ''
+          Toolshed::Git::Base.checkout('master')
+        end
+
+        delete_local_branch(actual_branch_name)
+        delete_remote_branch(actual_branch_name)
+        Toolshed.logger.info ''
+        Toolshed.logger.info "Deleted branch #{actual_branch_name}"
       end
 
-      def remote_update
-        results = Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.instance.git_quiet}")
-        results[:all].each do |out|
-          Toolshed.logger.info out
+      def delete_local_branch(local_branch_name)
+        unless local_branches.map { |local_branch| local_branch[:branch_name] }.include?(local_branch_name)
+          Toolshed.logger.warn "Unable to delete '#{local_branch_name}' from local as it does not exist skipping"
+          return
+        end
+
+        results = Toolshed::Base.wait_for_command("git branch -D #{local_branch_name}")
+        results[:all].each do |result|
+          Toolshed.logger.info result.rstrip
+        end
+      end
+
+      def delete_remote_branch(remote_branch_name)
+        unless remote_branches.include?(remote_branch_name)
+          Toolshed.logger.warn "Unable to delete '#{remote_branch_name}' from remote as it does not exist skipping"
+          return
+        end
+
+        Toolshed.logger.info "Deleting #{remote_branch_name} from remote"
+        results = Toolshed::Base.wait_for_command("git push #{Toolshed::Client.instance.push_to_remote_name} --delete #{remote_branch_name}")
+        results[:all].each do |result|
+          Toolshed.logger.info result.rstrip
         end
       end
 
       def list_branches
+        remote_update
         list_local_branches
         list_remote_branches
       end
@@ -147,10 +165,8 @@ module Toolshed
         Toolshed.logger.info ''
         current_branch_name = branch_name
         Toolshed.logger.info 'master' if master_exists_locally?
-        results = Toolshed::Base.wait_for_command('git branch -avv')
-        results[:stdout].each do |stdout|
-          next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
-          Toolshed.logger.info stdout.lstrip.rstrip
+        local_branches.each do |local_branch|
+          Toolshed.logger.info "#{local_branch[:branch_name]} #{local_branch[:branch_info]}"
         end
       end
 
@@ -158,12 +174,45 @@ module Toolshed
         Toolshed.logger.info ''
         Toolshed.logger.info 'Remote Branches'
         Toolshed.logger.info ''
+        remote_branches.each do |remote_branch|
+          Toolshed.logger.info remote_branch
+        end
+      end
+
+      def local_branches
+        local_branches = []
+        results = Toolshed::Base.wait_for_command('git branch -avv')
+        results[:stdout].each do |stdout|
+          next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
+          branch_name = /([a-z].*)\s{3,}/.match(stdout)[0]
+          branch_name = branch_name.gsub('*', '')
+          branch_info = /\[[a-z].*\]/.match(stdout)[0]
+          local_branches << { branch_name: branch_name.lstrip.rstrip, branch_info: branch_info.lstrip.rstrip }
+        end
+        local_branches
+      end
+
+      def master_exists_locally?
+        results = Toolshed::Base.wait_for_command('git rev-parse --verify master')
+        results[:process_status].exitstatus == 0
+      end
+
+      def remote_branches
+        remote_branches = []
         results = Toolshed::Base.wait_for_command('git branch -avv')
         results[:stdout].each do |stdout|
           next unless /remotes\/#{from_remote_name}.*/.match(stdout)
           next if  /.*HEAD.*/.match(stdout)
           matches = /([^\s]+)/.match(stdout)
-          Toolshed.logger.info matches[0].gsub("remotes/#{from_remote_name}/", '')
+          remote_branches << matches[0].gsub("remotes/#{from_remote_name}/", '')
+        end
+        remote_branches
+      end
+
+      def remote_update
+        results = Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.instance.git_quiet}")
+        results[:all].each do |out|
+          Toolshed.logger.info out
         end
       end
 

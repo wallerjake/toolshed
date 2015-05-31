@@ -1,6 +1,11 @@
 require 'git/git_helper'
 
 class GitTest < Test::Unit::TestCase
+  def setup
+    Toolshed.expects(:die).at_least(0).returns('Exiting')
+    @git = Toolshed::Git::Base.new
+  end
+
   def test_get_branch_name
     current_branch = Toolshed::Git::Base.branch_name
 
@@ -107,7 +112,7 @@ class GitTest < Test::Unit::TestCase
     Dir.chdir(File.join(TEST_ROOT, "local"))
     Toolshed::Git::Base.checkout(current_branch)
 
-    Toolshed::Git::Base.delete(new_branch_name)
+    @git.delete_branch(new_branch_name)
 
     branch_found = `git branch | grep #{new_branch_name}`
     assert_equal '', branch_found
