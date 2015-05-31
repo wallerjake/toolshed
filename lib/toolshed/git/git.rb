@@ -126,7 +126,7 @@ module Toolshed
 
       def remote_update
         results = Toolshed::Base.wait_for_command("git remote update #{Toolshed::Client.instance.git_quiet}")
-        results[:stdout] + results[:stderr].each do |out|
+        results[:all].each do |out|
           Toolshed.logger.info out
         end
       end
@@ -150,11 +150,8 @@ module Toolshed
           Toolshed.die
         end
         result = Toolshed::Base.wait_for_command("git push #{to_remote_name} #{branch_name} #{force} #{Toolshed::Client.instance.git_quiet}")
-        result[:stdout].each do |stdout|
+        result[:all].each do |stdout|
           Toolshed.logger.info stdout
-        end
-        result[:stderr].each do |stderr|
-          Toolshed.logger.info stderr
         end
         Toolshed.logger.info 'Everything up-to-date' if result[:stdout].empty? && result[:stderr].empty?
         true
