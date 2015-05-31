@@ -11,7 +11,6 @@ class DeleteBranchTest < Test::Unit::TestCase
     current_branch = @git.branch_name
 
     new_branch_name = random_branch_name
-    Toolshed::Git::Base.any_instance.stubs(:local_branches).returns([ { branch_name: new_branch_name } ])
     create_and_checkout_branch(new_branch_name, 'master')
 
     # go to the remote repo and verify it exists
@@ -35,7 +34,6 @@ class DeleteBranchTest < Test::Unit::TestCase
     current_branch = @git.branch_name
 
     new_branch_name = "1234333_#{random_branch_name}"
-    Toolshed::Git::Base.any_instance.stubs(:local_branches).returns([ { branch_name: new_branch_name } ])
     create_and_checkout_branch(new_branch_name, 'master')
 
     # go to the remote repo and verify it exists

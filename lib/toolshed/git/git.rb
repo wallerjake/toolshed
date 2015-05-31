@@ -164,7 +164,6 @@ module Toolshed
         Toolshed.logger.info 'Local Branches'
         Toolshed.logger.info ''
         current_branch_name = branch_name
-        Toolshed.logger.info 'master' if master_exists_locally?
         local_branches.each do |local_branch|
           Toolshed.logger.info "#{local_branch[:branch_name]} #{local_branch[:branch_info]}"
         end
@@ -180,21 +179,18 @@ module Toolshed
       end
 
       def local_branches
-        local_branches = []
-        results = Toolshed::Base.wait_for_command('git branch -avv')
-        results[:stdout].each do |stdout|
-          next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
-          branch_name = /([a-z].*)\s{3,}/.match(stdout)[0]
-          branch_name = branch_name.gsub('*', '')
-          branch_info = /\[[a-z].*\]/.match(stdout)[0]
-          local_branches << { branch_name: branch_name.lstrip.rstrip, branch_info: branch_info.lstrip.rstrip }
+        @local_branches ||= begin
+          local_branches = []
+          results = Toolshed::Base.wait_for_command('git branch -avv')
+          results[:stdout].each do |stdout|
+            next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
+            branch_name = /.*\s{3,}/.match(stdout)[0]
+            branch_name = branch_name.gsub('*', '')
+            branch_info = /\[[a-z].*\]/.match(stdout)[0]
+            local_branches << { branch_name: branch_name.lstrip.rstrip, branch_info: branch_info.lstrip.rstrip }
+          end
+          local_branches
         end
-        local_branches
-      end
-
-      def master_exists_locally?
-        results = Toolshed::Base.wait_for_command('git rev-parse --verify master')
-        results[:process_status].exitstatus == 0
       end
 
       def remote_branches

@@ -12,16 +12,13 @@ module Toolshed
         begin
           Timeout.timeout(seconds) do
             stdin.close  # make sure the subprocess is done
-            stderr.gets
-            stdout.gets
 
             a_stdout = []
-            stdout.each_line do |line|
+            while line = stdout.gets
               a_stdout << line
             end
-
             a_stderr = []
-            stderr.each_line do |line|
+            while line = stderr.gets
               a_stderr << line
             end
 
