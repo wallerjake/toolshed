@@ -1,3 +1,6 @@
+require 'open3'
+require 'timeout'
+
 module Toolshed
   class Base
     def initialize
@@ -6,23 +9,31 @@ module Toolshed
     def self.wait_for_command(command, seconds=10)
       result = {}
       Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
-        pid = wait_thr.pid # pid of the started process.
-        stdin.close  # make sure the subprocess is done
-        stderr.gets
-        stdout.gets
+        begin
+          Timeout.timeout(seconds) do
+            stdin.close  # make sure the subprocess is done
+            stderr.gets
+            stdout.gets
 
-        a_stdout = []
-        stdout.each_line do |line|
-          a_stdout << line
+            a_stdout = []
+            stdout.each_line do |line|
+              a_stdout << line
+            end
+
+            a_stderr = []
+            stderr.each_line do |line|
+              a_stderr << line
+            end
+
+            all = a_stdout + a_stderr
+            result.merge!(stdout: a_stdout, stderr: a_stderr, all: all)
+            exit_status = wait_thr.value # Process::Status object returned.
+          end
+        rescue Timeout::Error
+          Process.kill("KILL", wait_thr.pid)
+          Toolshed.logger.fatal "Unable to perform the '#{command}' command in the allowed amount of time of #{seconds} seconds. Exiting."
+          Toolshed.die
         end
-
-        a_stderr = []
-        stderr.each_line do |line|
-          a_stderr << line
-        end
-
-        result.merge!(stdout: a_stdout, stderr: a_stderr)
-        exit_status = wait_thr.value # Process::Status object returned.
       end
       result
     end
