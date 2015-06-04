@@ -1,3 +1,5 @@
+require 'toolshed/git'
+
 module Toolshed
   module Commands
     class TicketInformation
@@ -78,7 +80,7 @@ module Toolshed
       end
 
       def git
-        Toolshed::Git::Base.new
+        Toolshed::Git.new
       end
 
       def read_user_input_project(message, options)

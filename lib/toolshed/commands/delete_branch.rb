@@ -1,3 +1,5 @@
+require 'toolshed/git'
+
 module Toolshed
   module Commands
     class DeleteBranch
@@ -14,7 +16,7 @@ module Toolshed
 
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or branch name:", options)
-        git = Toolshed::Git::Base.new
+        git = Toolshed::Git.new
         git.delete_branch(branch_name)
         Toolshed.die
       end

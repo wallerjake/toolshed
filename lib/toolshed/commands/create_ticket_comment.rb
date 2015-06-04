@@ -1,4 +1,5 @@
 require 'toolshed/commands/base'
+require 'toolshed/git'
 
 module Toolshed
   module Commands
@@ -51,7 +52,7 @@ module Toolshed
       end
 
       def git
-        Toolshed::Git::Base.new
+        Toolshed::Git.new
       end
     end
   end

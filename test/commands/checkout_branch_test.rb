@@ -3,7 +3,7 @@ require 'toolshed/commands/checkout_branch'
 
 class CheckoutBranchTest < Test::Unit::TestCase
   def setup
-    @git = Toolshed::Git::Base.new
+    @git = Toolshed::Git.new
     Toolshed.expects(:die).at_least(0).returns('die')
   end
 

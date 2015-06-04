@@ -3,7 +3,7 @@ require 'toolshed/commands/create_branch'
 
 class CreateBranchTest < Test::Unit::TestCase
   def setup
-    @git = Toolshed::Git::Base.new
+    @git = Toolshed::Git.new
     Toolshed.expects(:die).at_least(0).returns('die')
   end
 
@@ -19,9 +19,9 @@ class CreateBranchTest < Test::Unit::TestCase
     assert_match 'die', output
 
     assert_equal new_branch_name, @git.branch_name
-    assert_equal 'development', Toolshed::Git::Base.branched_from
+    assert_equal 'development', Toolshed::Git.branched_from
 
-    Toolshed::Git::Base.checkout_branch(current_branch)
+    Toolshed::Git.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -41,9 +41,9 @@ class CreateBranchTest < Test::Unit::TestCase
     assert_match 'die', output
 
     assert_equal new_branch_name, @git.branch_name
-    assert_equal 'development', Toolshed::Git::Base.branched_from
+    assert_equal 'development', Toolshed::Git.branched_from
 
-    Toolshed::Git::Base.checkout_branch(current_branch)
+    Toolshed::Git.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -61,9 +61,9 @@ class CreateBranchTest < Test::Unit::TestCase
 
     assert_match 'die', output
     assert_equal new_branch_name, @git.branch_name
-    assert_equal 'master', Toolshed::Git::Base.branched_from
+    assert_equal 'master', Toolshed::Git.branched_from
 
-    Toolshed::Git::Base.checkout_branch(current_branch)
+    Toolshed::Git.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 end

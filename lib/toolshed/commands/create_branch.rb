@@ -1,3 +1,5 @@
+require 'toolshed/git'
+
 module Toolshed
   module Commands
     # Create a branch from a given set of parameters
@@ -20,7 +22,7 @@ module Toolshed
         branch_name = read_user_input_branch_name('Branch name:', options)
         branch_from = read_user_input_branch_from('Branch from:', options)
 
-        git = Toolshed::Git::Base.new(from_remote_branch_name: branch_from, to_remote_branch_name: branch_name) # rubocop:disable Metrics/LineLength
+        git = Toolshed::Git.new(from_remote_branch_name: branch_from, to_remote_branch_name: branch_name) # rubocop:disable Metrics/LineLength
         git.create_branch
         Toolshed.die
       rescue Veto::InvalidEntity => e

@@ -1,4 +1,4 @@
-require 'toolshed/git/git'
+require 'toolshed/git'
 
 module Toolshed
   module Commands
@@ -15,7 +15,7 @@ module Toolshed
       end
 
       def execute(args, options = {})
-        git = Toolshed::Git::Base.new
+        git = Toolshed::Git.new
         git.list_branches
         Toolshed.die
       end

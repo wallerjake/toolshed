@@ -4,13 +4,13 @@ require 'toolshed/commands/push_branch'
 class PushBranchTest < Test::Unit::TestCase
   def setup
     Toolshed.expects(:die).at_least(0).returns('Exiting')
-    @git = Toolshed::Git::Base.new
+    @git = Toolshed::Git.new
   end
 
   def test_push_branch_current_working_branch
     Toolshed::Client.instance.push_to_remote_name = 'origin'
 
-    current_branch = Toolshed::Git::Base.branch_name
+    current_branch = Toolshed::Git.branch_name
 
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
@@ -20,7 +20,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     assert_equal new_branch_name, @git.branch_name
 
-    Toolshed::Git::Base.checkout_branch(current_branch)
+    Toolshed::Git.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -34,18 +34,18 @@ class PushBranchTest < Test::Unit::TestCase
 
     push_branch_command = Toolshed::Commands::PushBranch.new
 
-    expected_git = Toolshed::Git::Base.new(branch_name: '555558')
+    expected_git = Toolshed::Git.new(branch_name: '555558')
     push_branch_command.execute({}, { branch_name: '555558' })
     assert_equal new_branch_name, expected_git.branch_name
 
-    Toolshed::Git::Base.checkout_branch(current_branch)
+    Toolshed::Git.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 
   def test_push_branch_current_working_branch_with_force
     Toolshed::Client.instance.push_to_remote_name = 'origin'
 
-    current_branch = Toolshed::Git::Base.branch_name
+    current_branch = Toolshed::Git.branch_name
 
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name, 'master')
@@ -55,7 +55,7 @@ class PushBranchTest < Test::Unit::TestCase
 
     assert_equal new_branch_name, @git.branch_name
 
-    Toolshed::Git::Base.checkout_branch(current_branch)
+    Toolshed::Git.checkout_branch(current_branch)
     delete_branch(new_branch_name)
   end
 end

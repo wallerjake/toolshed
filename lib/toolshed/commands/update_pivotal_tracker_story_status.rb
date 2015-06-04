@@ -1,3 +1,5 @@
+require 'toolshed/git'
+
 module Toolshed
   module Commands
     class UpdatePivotalTrackerStoryStatus
@@ -41,7 +43,7 @@ module Toolshed
       end
 
       def git
-        Toolshed::Git::Base.new
+        Toolshed::Git.new
       end
     end
   end

@@ -1,3 +1,5 @@
+require 'toolshed/git'
+
 module Toolshed
   module Commands
     class CheckoutBranch
@@ -14,7 +16,7 @@ module Toolshed
 
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or Branch Name:", options)
-        Toolshed::Git::Base.checkout_branch(branch_name)
+        Toolshed::Git.checkout_branch(branch_name)
         Toolshed.die
       end
 

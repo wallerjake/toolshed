@@ -1,7 +1,8 @@
+require 'toolshed/git'
+
 module Toolshed
-  module Git
-    class Github < Base
-      extend Toolshed::Git
+  class Git
+    class Github < Toolshed::Git
       include HTTParty
 
       attr_accessor :default_options
@@ -46,8 +47,8 @@ module Toolshed
           body: {
             title: title,
              body: body,
-             head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Base.branch_name}",
-             base: Toolshed::Git::Base.branched_from
+             head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git.branch_name}",
+             base: Toolshed::Git.branched_from
           }.to_json
         })
 

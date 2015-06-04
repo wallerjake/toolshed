@@ -1,4 +1,5 @@
 require 'toolshed/commands/base'
+require 'toolshed/git'
 
 module Toolshed
   module Commands
@@ -46,7 +47,7 @@ module Toolshed
 
       def git
         @git ||= begin
-          Toolshed::Git::Base.new
+          Toolshed::Git.new
         end
       end
 
@@ -73,7 +74,7 @@ module Toolshed
 
         def output_begining_messages
           puts "Current Branch: #{git.branch_name}"
-          puts "Branched From: #{Toolshed::Git::Base.branched_from}"
+          puts "Branched From: #{Toolshed::Git.branched_from}"
           puts "Using Defaults: #{(Toolshed::Client.instance.use_defaults.nil?) ? 'No' : 'Yes'}"
         end
 

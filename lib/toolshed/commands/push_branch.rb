@@ -1,4 +1,5 @@
 require 'toolshed/commands/base'
+require 'toolshed/git'
 
 class Toolshed::Commands::PushBranch < Toolshed::Commands::Base
   def initialize(options = {})
@@ -22,7 +23,7 @@ class Toolshed::Commands::PushBranch < Toolshed::Commands::Base
 
   def execute(args, options = {})
     Toolshed.logger.info "Running toolshed push_branch with #{options.inspect}"
-    git = Toolshed::Git::Base.new(options)
+    git = Toolshed::Git.new(options)
     git.push_branch
     Toolshed.die
   end
