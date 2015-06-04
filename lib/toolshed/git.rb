@@ -63,6 +63,7 @@ module Toolshed
         branches = Toolshed::Base.wait_for_command("git branch | grep \"#{id}\"")
         branch_names = branches[:all].map { |branch_name| branch_name.gsub('*', '').strip }
 
+        return id if branch_names.length == 0
         return branch_names.first if branch_names.length == 1
         ask_which_branch(branch_names)
       end
