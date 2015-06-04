@@ -1,9 +1,24 @@
 require 'toolshed/base'
+require 'highline/import'
 
 module Toolshed
   module Git
     DEFAULT_GIT_TOOL    = 'github'
     DEFAULT_BRANCH_FROM = 'master'
+
+    def ask_which_branch(branch_names)
+      selected_branch_name = ''
+      choose do |menu|
+        menu.prompt = "Multiple branches matched input branch name. Which branch are you looking for?  "
+
+        branch_names.each do |branch_name|
+          menu.choice(branch_name.to_sym, branch_name) do |branch_name|
+            selected_branch_name = branch_name
+          end
+        end
+      end
+      selected_branch_name.to_s
+    end
 
     def branch_name
       git = Toolshed::Git::Base.new
@@ -15,7 +30,11 @@ module Toolshed
     end
 
     def branch_name_from_id(id)
-      branch_name = `git branch | grep \"#{id}\"`.gsub("*", "").strip
+      branches = Toolshed::Base.wait_for_command("git branch | grep \"#{id}\"")
+      branch_names = branches[:all].map { |branch_name| branch_name.gsub('*', '').strip }
+
+      return branch_names.first if branch_names.length == 1
+      ask_which_branch(branch_names)
     end
 
     def checkout_branch(checkout_branch_name)
@@ -31,15 +50,12 @@ module Toolshed
 
     def git_submodule_command
       git_submodule_command = ''
-      if (Toolshed::Client.instance.use_git_submodules)
-        git_submodule_command = "git submodule update #{Toolshed::Client.instance.git_quiet}"
-      end
-
+      git_submodule_command = "git submodule update #{Toolshed::Client.instance.git_quiet}" if Toolshed::Client.instance.use_git_submodules
       git_submodule_command
     end
 
     def clean_branch_name(branch_name)
-      branch_name.strip.downcase.tr(" ", "_").gsub("&", "").gsub(".", "_").gsub("'", "").gsub("__", "_").gsub(":", "").gsub(",", "")
+      branch_name.strip.downcase.tr(' ', '_').gsub('&', '').gsub('.', '_').gsub("'", '').gsub(':', '').gsub(',', '').gsub('>', '').gsub('__', '_')
     end
 
     class GitValidator
