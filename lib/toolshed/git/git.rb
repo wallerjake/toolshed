@@ -202,7 +202,9 @@ module Toolshed
             next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
             branch_name = /.*\s{3,}/.match(stdout)[0]
             branch_name = branch_name.gsub('*', '')
-            branch_info = /\[[a-z].*\]/.match(stdout)[0]
+            branch_info_match = /\[[a-z].*\]/.match(stdout)
+            branch_info = ''
+            branch_info = branch_info_match[0] unless branch_info_match.nil?
             local_branches << { branch_name: branch_name.lstrip.rstrip, branch_info: branch_info.lstrip.rstrip }
           end
           local_branches
