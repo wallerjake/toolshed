@@ -6,6 +6,7 @@ require 'toolshed/ticket_tracking/pivotal_tracker'
 class CreatePullRequestTest < Test::Unit::TestCase
   def setup
     @git = Toolshed::Git.new
+    Toolshed.expects(:die).at_least(0).returns('Exiting')
   end
 
   def test_create_github_pull_request_no_ticket_tracking
@@ -48,8 +49,8 @@ class CreatePullRequestTest < Test::Unit::TestCase
     # stub the possible input
     Toolshed::Commands::CreatePullRequest.any_instance.stubs(:read_user_input_add_note_to_ticket).returns(false)
 
-    output = capture_stdout { Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' }) }
-    assert_match /Created Pull Request: github.com\/pulls\/1/, output
+    result = Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' })
+    assert_equal 'github.com/pulls/1', result.pull_request_url
   end
 
   def test_create_github_pull_request_with_pivotal_tracker
@@ -126,14 +127,14 @@ class CreatePullRequestTest < Test::Unit::TestCase
     Toolshed::Commands::CreatePullRequest.any_instance.stubs(:read_user_input_ticket_tracker_ticket_id).returns('1')
     Toolshed::Commands::CreatePullRequest.any_instance.stubs(:read_user_input_add_note_to_ticket).returns(false)
 
-    output = capture_stdout { Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' }) }
-    assert_match /Created Pull Request: github.com\/pulls\/1/, output
+    result = Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' })
+    assert_equal 'github.com/pulls/1', result.pull_request_url
   end
 
   def test_create_github_pull_request_with_invalid_ticket_tracker
     Toolshed::Client.instance.ticket_tracking_tool = 'unfuddle'
     Toolshed::Client.instance.git_tool = 'github'
-    output = capture_stdout { Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' }) }
-    assert_match /Ticket tracking tool is not supported at this time/, output
+    result = Toolshed::Commands::CreatePullRequest.new.execute({}, { title: 'Sample', body: 'Sample Body' })
+    assert_equal nil, result.pull_request_url
   end
 end

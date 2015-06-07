@@ -108,7 +108,7 @@ module Toolshed
             Toolshed.logger.fatal e.inspect
             Toolshed.logger.fatal e.backtrace
             Toolshed.logger.fatal 'Ticket tracking tool is not supported at this time'
-            return
+            Toolshed.die
           end
 
           options
@@ -145,6 +145,7 @@ module Toolshed
           send_pull_request
           add_note_to_ticket unless ticket_tracker_class.nil?
           pull_request_created_message
+          self
         rescue => e
           Toolshed.logger.fatal e.message
           Toolshed.die
