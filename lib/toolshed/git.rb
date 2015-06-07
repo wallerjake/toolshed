@@ -73,7 +73,11 @@ module Toolshed
         Toolshed.logger.info "Looking for branch #{checkout_branch_name}"
         actual_branch_name = Toolshed::Git.branch_name_from_id(checkout_branch_name)
         Toolshed.logger.info "Switching to branch #{actual_branch_name}"
-        Toolshed::Base.wait_for_command("git checkout #{actual_branch_name} #{Toolshed::Client.instance.git_quiet}")
+        result = Toolshed::Base.wait_for_command("git checkout #{actual_branch_name} #{Toolshed::Client.instance.git_quiet}")
+        if /.*Your local changes to the following files would be overwritten by checkout.*/.match(result[:stderr][0])
+          Toolshed.logger.fatal "Unable to checkout branch due to the following error(s) #{result[:all].join(', ')}"
+          Toolshed.die
+        end
         Toolshed::Base.wait_for_command(Toolshed::Git.git_submodule_command) unless Toolshed::Git.git_submodule_command.empty?
         Toolshed.logger.info "Switched to branch #{actual_branch_name}"
         actual_branch_name

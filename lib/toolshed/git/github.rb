@@ -48,7 +48,7 @@ module Toolshed
           }.to_json
         )
         display_options = Marshal.load(Marshal.dump(options))
-        display_options[:password] = '********'
+        display_options[:basic_auth][:password] = '********'
         Toolshed.logger.info "Creating pull request with the following options: #{display_options.inspect}" # rubocop:disable Metrics/LineLength
         response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.pull_from_repository_user}/#{Toolshed::Client.instance.pull_from_repository_name}/pulls", options).response # rubocop:disable Metrics/LineLength
         response = JSON.parse(response.body)
