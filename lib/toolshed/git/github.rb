@@ -41,8 +41,8 @@ module Toolshed
         }
       end
 
-      def create_pull_request(title, body, options={})
-        options.merge!(self.default_options)
+      def create_pull_request(title, body, options = {})
+        options.merge!(default_options)
         options.merge!({
           body: {
             title: title,
@@ -51,7 +51,9 @@ module Toolshed
              base: Toolshed::Git.branched_from
           }.to_json
         })
-
+        display_options = Marshal.load(Marshal.dump(options))
+        display_options[:password] = '********'
+        Toolshed.logger.info "Creating pull request with the following options: #{display_options.inspect}"
         response = HTTParty.post("#{Toolshed::Client::GITHUB_BASE_API_URL}repos/#{Toolshed::Client.instance.pull_from_repository_user}/#{Toolshed::Client.instance.pull_from_repository_name}/pulls", options).response
         response = JSON.parse(response.body)
         if (response["errors"].nil?)

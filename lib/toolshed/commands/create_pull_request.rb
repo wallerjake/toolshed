@@ -75,9 +75,9 @@ module Toolshed
         end
 
         def output_begining_messages
-          logger.info "Current Branch: #{git.branch_name}"
-          logger.info "Branched From: #{Toolshed::Git.branched_from}"
-          logger.info "Using Defaults: #{(Toolshed::Client.instance.use_defaults.nil?) ? 'No' : 'Yes'}" # rubocop:disable Metrics/LineLength
+          Toolshed.logger.info "Current Branch: #{git.branch_name}"
+          Toolshed.logger.info "Branched From: #{Toolshed::Git.branched_from}"
+          Toolshed.logger.info "Using Defaults: #{(Toolshed::Client.instance.use_defaults.nil?) ? 'No' : 'Yes'}" # rubocop:disable Metrics/LineLength
         end
 
         def get_ticket_id(options)
@@ -90,9 +90,9 @@ module Toolshed
         end
 
         def output_ticket_information
-          logger.info "Ticket Tracking URL: #{ticket_tracking_url}"
-          logger.info "Ticket Tracking title: #{ticket_tracking_title}"
-          logger.info "Ticket ID: #{ticket_id}"
+          Toolshed.logger.info "Ticket Tracking URL: #{ticket_tracking_url}"
+          Toolshed.logger.info "Ticket Tracking title: #{ticket_tracking_title}"
+          Toolshed.logger.info "Ticket ID: #{ticket_id}"
         end
 
         def execute_ticket_tracking(options) # rubocop:disable Metrics/AbcSize
@@ -105,9 +105,9 @@ module Toolshed
 
             output_ticket_information
           rescue StandardError => e
-            logger.fatal e.inspect
-            logger.fatal e.backtrace
-            logger.fatal 'Ticket tracking tool is not supported at this time'
+            Toolshed.logger.fatal e.inspect
+            Toolshed.logger.fatal e.backtrace
+            Toolshed.logger.fatal 'Ticket tracking tool is not supported at this time'
             return
           end
 
@@ -134,7 +134,7 @@ module Toolshed
         end
 
         def pull_request_created_message
-          logger.info "Created Pull Request: #{pull_request_url}"
+          Toolshed.logger.info "Created Pull Request: #{pull_request_url}"
         end
 
         def execute_pull_request(options) # rubocop:disable Metrics/AbcSize
@@ -146,7 +146,7 @@ module Toolshed
           add_note_to_ticket unless ticket_tracker_class.nil?
           pull_request_created_message
         rescue => e
-          logger.fatal e.message
+          Toolshed.logger.fatal e.message
           Toolshed.die
         end
 
@@ -167,8 +167,22 @@ module Toolshed
         end
 
         def send_pull_request
-          Toolshed.logger.info 'Your ull request is being created.'
+          Toolshed.logger.info 'Your pull request is being created.'
           git_pull_request_result = git_tool.create_pull_request(pull_request_title, pull_request_body) # rubocop:disable Metrics/LineLength
+
+          self.pull_request_url = git_pull_request_result['html_url']
+          return if git_pull_request_result['message'].nil?
+
+          if git_pull_request_result['message'].downcase == 'bad credentials'
+            Toolshed.logger.fatal 'Bad Credentials please try again.'
+            Toolshed.die
+          end
+
+          if git_pull_request_result['message'].downcase == 'not found'
+            Toolshed.logger.fatal 'Pull request not found please try again.'
+            Toolshed.die
+          end
+
           self.pull_request_url = git_pull_request_result['html_url']
         end
 
