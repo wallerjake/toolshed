@@ -1,4 +1,6 @@
 require 'helper'
+require 'toolshed/ticket_tracking/ticket_tracking'
+require 'toolshed/ticket_tracking/jira'
 
 class JiraTest < Test::Unit::TestCase
   def self.startup

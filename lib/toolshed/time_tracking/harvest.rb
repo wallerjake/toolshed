@@ -1,3 +1,5 @@
+require 'harvested'
+
 module Toolshed
   module TimeTracking
     class Harvest

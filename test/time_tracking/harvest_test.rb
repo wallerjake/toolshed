@@ -1,4 +1,6 @@
 require 'helper'
+require 'toolshed/time_tracking/time_tracking'
+require 'toolshed/time_tracking/harvest'
 
 class HarvestTest < Test::Unit::TestCase
   def self.startup

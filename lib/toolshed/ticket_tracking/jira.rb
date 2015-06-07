@@ -1,3 +1,5 @@
+require 'jira'
+
 module Toolshed
   module TicketTracking
     class Jira < Base

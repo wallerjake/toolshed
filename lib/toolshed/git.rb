@@ -91,7 +91,7 @@ module Toolshed
     end
 
     def branch_name
-      (passed_branch_name.blank?) ? `git rev-parse --abbrev-ref HEAD`.strip : Toolshed::Git.branch_name_from_id(self.passed_branch_name)
+      (passed_branch_name.nil? || passed_branch_name.empty?) ? `git rev-parse --abbrev-ref HEAD`.strip : Toolshed::Git.branch_name_from_id(self.passed_branch_name) # rubocop:disable Metrics/LineLength
     end
 
     def create_branch
@@ -205,7 +205,7 @@ module Toolshed
 
     def push_branch
       Toolshed.logger.info "Pushing #{branch_name}"
-      if branch_name.blank? && !passed_branch_name.blank?
+      if ((branch_name.nil? || branch_name.empty?) && (!passed_branch_name.nil? && !passed_branch_name.empty?))
         Toolshed.logger.fatal "Branch #{passed_branch_name} was not found. Unable to push branch."
         Toolshed.die
       end

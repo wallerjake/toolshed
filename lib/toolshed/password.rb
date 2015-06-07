@@ -8,7 +8,8 @@ module Toolshed
     end
 
     def read_user_input_password(type, prompt_message='Password:')
-      unless self.send(type).blank?
+      value = self.send(type)
+      unless value.nil? || value.empty?
         read_password_from_configuration(type)
       else
         prompt_user_to_input_password(prompt_message)

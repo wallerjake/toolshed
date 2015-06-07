@@ -1,3 +1,5 @@
+require 'toolshed/password'
+
 require 'net/ssh'
 
 module Toolshed
@@ -81,8 +83,8 @@ module Toolshed
         end
 
         def set_ssh_options
-          self.ssh_options.merge!({ keys: [self.keys] }) unless self.keys.blank?
-          self.ssh_options.merge!({ password: self.password.read_user_input_password('password') }) if self.keys.blank?
+          self.ssh_options.merge!({ keys: [self.keys] }) unless keys.nil? || keys.empty?
+          self.ssh_options.merge!({ password: self.password.read_user_input_password('password') }) if keys.nil? || keys.empty?
         end
     end
   end

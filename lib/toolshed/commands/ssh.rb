@@ -40,7 +40,7 @@ module Toolshed
       end
 
       def execute(args, options = {})
-        puts "running ssh command with options #{options.inspect}" unless options[:verbose_output].blank?
+        puts "running ssh command with options #{options.inspect}" unless options[:verbose_output].nil? || options[:verbose_output].empty? # rubocop:disable Metrics/LineLength
         begin
           ssh = Toolshed::ServerAdministration::SSH.new(options)
           ssh.execute

@@ -69,7 +69,7 @@ module Toolshed
         puts message
         value = $stdin.gets.chomp
 
-        until (!value.blank?)
+        until !value.nil? && !value.empty?
           puts "Status must be passed in"
           puts message
           value = $stdin.gets.chomp

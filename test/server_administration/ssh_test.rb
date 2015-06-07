@@ -1,4 +1,5 @@
 require 'helper'
+require 'toolshed/server_administration/ssh'
 
 class SSHTest < Test::Unit::TestCase
   def test_setting_ssh_options

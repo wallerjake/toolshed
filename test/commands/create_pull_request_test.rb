@@ -1,6 +1,7 @@
 require 'commands/commands_helper'
 require 'toolshed/commands/create_pull_request'
 require 'toolshed/git/github'
+require 'toolshed/ticket_tracking/pivotal_tracker'
 
 class CreatePullRequestTest < Test::Unit::TestCase
   def setup

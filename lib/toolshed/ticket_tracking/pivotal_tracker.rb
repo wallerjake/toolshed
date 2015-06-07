@@ -1,3 +1,5 @@
+require 'pivotal-tracker'
+
 module Toolshed
   module TicketTracking
     class PivotalTracker < Base
