@@ -1,0 +1,11 @@
+AllCops:
+  Exclude:
+    - 'test/**/*'
+Metrics/LineLength:
+  Max: 90
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 15
+Style/IndentationConsistency:
+  Description: 'Keep indentation straight.'
+  Enabled: false
