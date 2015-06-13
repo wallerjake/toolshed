@@ -20,13 +20,17 @@ module Toolshed
         }
       end
 
+      def branch
+        @branch ||= Toolshed::Git::Branch.new
+      end
+
       def execute(args, options = {})
         ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
 
         options = use_ticket_tracker_project_id(options)
         options = use_ticket_tracker_project_name(options)
 
-        default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(git.branch_name)
+        default_ticket_id = Toolshed::TicketTracking::story_id_from_branch_name(branch.name)
         ticket_id = read_user_input("Ticket ID (Default: #{default_ticket_id}):", options.merge!({ default: default_ticket_id }))
         options.merge!({ ticket_id: ticket_id })
 
@@ -49,10 +53,6 @@ module Toolshed
           puts e.message
           exit
         end
-      end
-
-      def git
-        Toolshed::Git.new
       end
     end
   end

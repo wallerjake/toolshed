@@ -2,10 +2,11 @@ require 'commands/commands_helper'
 require 'toolshed/commands/create_pull_request'
 require 'toolshed/git/github'
 require 'toolshed/ticket_tracking/pivotal_tracker'
+require 'toolshed/git/branch'
 
 class CreatePullRequestTest < Test::Unit::TestCase
   def setup
-    @git = Toolshed::Git.new
+    @branch = Toolshed::Git::Branch.new
     Toolshed.expects(:die).at_least(0).returns('Exiting')
   end
 
@@ -36,8 +37,8 @@ class CreatePullRequestTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.instance.github_username}:#{@git.branch_name}",
-         base: Toolshed::Git.branched_from
+         head: "#{Toolshed::Client.instance.github_username}:#{@branch.name}",
+         base: Toolshed::Git::Branch.from
       }.to_json
     })
 
@@ -83,8 +84,8 @@ class CreatePullRequestTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.instance.github_username}:#{@git.branch_name}",
-         base: Toolshed::Git.branched_from
+         head: "#{Toolshed::Client.instance.github_username}:#{@branch.name}",
+         base: Toolshed::Git::Branch.from
       }.to_json
     })
 

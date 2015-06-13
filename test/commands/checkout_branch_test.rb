@@ -3,12 +3,12 @@ require 'toolshed/commands/checkout_branch'
 
 class CheckoutBranchTest < Test::Unit::TestCase
   def setup
-    @git = Toolshed::Git.new
+    @branch = Toolshed::Git::Branch.new
     Toolshed.expects(:die).at_least(0).returns('die')
   end
 
   def test_checkout_branch
-    current_branch = @git.branch_name
+    current_branch = @branch.name
 
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name)
@@ -18,7 +18,7 @@ class CheckoutBranchTest < Test::Unit::TestCase
   end
 
   def test_checkout_branch_prompt
-    current_branch = @git.branch_name
+    current_branch = @branch.name
 
     new_branch_name = random_branch_name
     create_and_checkout_branch(new_branch_name)   

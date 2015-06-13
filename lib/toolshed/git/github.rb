@@ -1,3 +1,4 @@
+require 'toolshed/git/branch'
 require 'toolshed/git'
 
 module Toolshed
@@ -43,8 +44,8 @@ module Toolshed
           {
             title: title,
             body: body,
-            head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git.branch_name}", # rubocop:disable Metrics/LineLength
-            base: Toolshed::Git.branched_from
+            head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Branch.name}", # rubocop:disable Metrics/LineLength
+            base: Toolshed::Git::Branch.from
           }.to_json
         )
         display_options = Marshal.load(Marshal.dump(options))

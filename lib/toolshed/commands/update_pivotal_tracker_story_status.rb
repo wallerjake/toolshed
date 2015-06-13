@@ -5,6 +5,10 @@ module Toolshed
     class UpdatePivotalTrackerStoryStatus
       STORY_STATUS_DEFAULT = 'finished'
 
+      def branch
+        @branch ||= Toolshed::Git::Branch.new
+      end
+
       def execute(args, options = {})
         print "Project ID (Default: #{Toolshed::Client.instance.default_pivotal_tracker_project_id})? "
         project_id = $stdin.gets.chomp.strip
@@ -18,7 +22,7 @@ module Toolshed
             password: Toolshed::TicketTracking::PivotalTracker.password,
         })
 
-        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(git.branch_name)
+        default_story_id = Toolshed::TicketTracking::PivotalTracker::story_id_from_branch_name(branch.name)
         print "Story ID (Default: #{default_story_id})? "
         story_id = $stdin.gets.chomp.strip
         if (story_id == '')
@@ -40,10 +44,6 @@ module Toolshed
           puts e.message
           exit
         end
-      end
-
-      def git
-        Toolshed::Git.new
       end
     end
   end

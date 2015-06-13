@@ -1,8 +1,12 @@
 require 'toolshed/git'
 
+require 'highline/import'
+
 module Toolshed
   module Commands
     class DeleteBranch
+      attr_accessor :branch
+
       def self.cli_options
         {
           banner: 'Usage: delete_branch [options]',
@@ -16,8 +20,9 @@ module Toolshed
 
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or branch name:", options)
-        git = Toolshed::Git.new
-        git.delete_branch(branch_name)
+        self.branch = Toolshed::Git::Branch.new
+        confirm_delete 
+        branch.delete(branch_name)
         Toolshed.die
       end
 
@@ -34,6 +39,21 @@ module Toolshed
         end
 
         value
+      end
+
+      def confirm_delete
+        begin
+          raise 'here'
+          choices = "yn"
+          answer = ask("Are you sure you want to delete #{branch.name} [#{choices}]? ") do |q|
+             q.echo      = false
+             q.character = true
+             q.validate  = /\A[#{choices}]\Z/
+           end
+        rescue Exception => e
+          puts e.backtrace
+          abort('here')
+        end
       end
     end
   end

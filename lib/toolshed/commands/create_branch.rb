@@ -22,8 +22,8 @@ module Toolshed
         branch_name = read_user_input_branch_name('Branch name:', options)
         branch_from = read_user_input_branch_from('Branch from:', options)
 
-        git = Toolshed::Git.new(from_remote_branch_name: branch_from, to_remote_branch_name: branch_name) # rubocop:disable Metrics/LineLength
-        git.create_branch
+        branch = Toolshed::Git::Branch.new(from_remote_branch_name: branch_from, to_remote_branch_name: branch_name) # rubocop:disable Metrics/LineLength
+        branch.create
         Toolshed.die
       rescue Veto::InvalidEntity => e
         Toolshed.logger.fatal 'Unable to create branch due to the following errors' # rubocop:disable Metrics/LineLength

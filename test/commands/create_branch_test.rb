@@ -3,7 +3,7 @@ require 'toolshed/commands/create_branch'
 
 class CreateBranchTest < Test::Unit::TestCase
   def setup
-    @git = Toolshed::Git.new
+    @branch = Toolshed::Git::Branch.new
     Toolshed.expects(:die).at_least(0).returns('die')
   end
 
@@ -11,17 +11,17 @@ class CreateBranchTest < Test::Unit::TestCase
     Toolshed::Client.instance.pull_from_remote_name = 'origin'
     Toolshed::Client.instance.push_to_remote_name = 'origin'
 
-    current_branch = @git.branch_name
+    current_branch = @branch.name
     new_branch_name = ::Faker::Lorem.word.downcase
 
     output = Toolshed::Commands::CreateBranch.new.execute({}, { branch_name: new_branch_name, branch_from: 'development' })
 
     assert_match 'die', output
 
-    assert_equal new_branch_name, @git.branch_name
-    assert_equal 'development', Toolshed::Git.branched_from
+    assert_equal new_branch_name, @branch.name
+    assert_equal 'development', Toolshed::Git::Branch.from
 
-    Toolshed::Git.checkout_branch(current_branch)
+    Toolshed::Git::Branch.checkout(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -29,7 +29,7 @@ class CreateBranchTest < Test::Unit::TestCase
     Toolshed::Client.instance.pull_from_remote_name = 'origin'
     Toolshed::Client.instance.push_to_remote_name = 'origin'
 
-    current_branch = @git.branch_name
+    current_branch = @branch.name
     new_branch_name = ::Faker::Lorem.word.downcase
 
     # stub the possible input
@@ -40,10 +40,10 @@ class CreateBranchTest < Test::Unit::TestCase
 
     assert_match 'die', output
 
-    assert_equal new_branch_name, @git.branch_name
-    assert_equal 'development', Toolshed::Git.branched_from
+    assert_equal new_branch_name, @branch.name
+    assert_equal 'development', Toolshed::Git::Branch.from
 
-    Toolshed::Git.checkout_branch(current_branch)
+    Toolshed::Git::Branch.checkout(current_branch)
     delete_branch(new_branch_name)
   end
 
@@ -51,7 +51,7 @@ class CreateBranchTest < Test::Unit::TestCase
     Toolshed::Client.instance.pull_from_remote_name = 'origin'
     Toolshed::Client.instance.push_to_remote_name = 'origin'
 
-    current_branch = @git.branch_name
+    current_branch = @branch.name
     new_branch_name = ::Faker::Lorem.word.downcase
 
     # stub the possible input
@@ -60,10 +60,10 @@ class CreateBranchTest < Test::Unit::TestCase
     output = Toolshed::Commands::CreateBranch.new.execute({}, { branch_name: new_branch_name })
 
     assert_match 'die', output
-    assert_equal new_branch_name, @git.branch_name
-    assert_equal 'master', Toolshed::Git.branched_from
+    assert_equal new_branch_name, @branch.name
+    assert_equal 'master', Toolshed::Git::Branch.from
 
-    Toolshed::Git.checkout_branch(current_branch)
+    Toolshed::Git::Branch.checkout(current_branch)
     delete_branch(new_branch_name)
   end
 end

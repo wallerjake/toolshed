@@ -41,16 +41,14 @@ module Toolshed
         }
       end
 
+      def branch
+        @branch ||= Toolshed::Git::Branch.new
+      end
+
       def execute(_args, options = {})
         output_begining_messages
         options = execute_ticket_tracking(options)
         execute_pull_request(options) unless options.nil?
-      end
-
-      def git
-        @git ||= begin
-          Toolshed::Git.new
-        end
       end
 
       private
@@ -75,15 +73,15 @@ module Toolshed
         end
 
         def output_begining_messages
-          Toolshed.logger.info "Current Branch: #{git.branch_name}"
-          Toolshed.logger.info "Branched From: #{Toolshed::Git.branched_from}"
+          Toolshed.logger.info "Current Branch: #{branch.name}"
+          Toolshed.logger.info "Branched From: #{Toolshed::Git::Branch.from}"
           Toolshed.logger.info "Using Defaults: #{(Toolshed::Client.instance.use_defaults.nil?) ? 'No' : 'Yes'}" # rubocop:disable Metrics/LineLength
         end
 
         def get_ticket_id(options)
           self.ticket_id = read_user_input_ticket_tracker_ticket_id(
-            "Ticket ID (Default: #{Toolshed::TicketTracking.story_id_from_branch_name(git.branch_name)}):", # rubocop:disable Metrics/LineLength
-            default: Toolshed::TicketTracking.story_id_from_branch_name(git.branch_name)
+            "Ticket ID (Default: #{Toolshed::TicketTracking.story_id_from_branch_name(branch.name)}):", # rubocop:disable Metrics/LineLength
+            default: Toolshed::TicketTracking.story_id_from_branch_name(branch.name)
           )
           options.merge!(ticket_id: ticket_id)
           options

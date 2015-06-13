@@ -2,7 +2,7 @@ require 'git/git_helper'
 
 class GitHubTest < Test::Unit::TestCase
   def test_create_pull_request
-    current_branch = Toolshed::Git.branch_name
+    current_branch = Toolshed::Git::Branch.name
     new_branch_name = '1234_testing'
 
     Toolshed::Client.instance.pull_from_repository_user = 'sample'
@@ -26,8 +26,8 @@ class GitHubTest < Test::Unit::TestCase
       body: {
         title: 'Sample',
          body: 'Sample Body',
-         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git.branch_name}",
-         base: Toolshed::Git.branched_from
+         head: "#{Toolshed::Client.instance.github_username}:#{Toolshed::Git::Branch.name}",
+         base: Toolshed::Git::Branch.from
       }.to_json
     })
 
@@ -38,7 +38,7 @@ class GitHubTest < Test::Unit::TestCase
 
     assert_equal JSON.parse(expected_result), github.create_pull_request('Sample', 'Sample Body')
 
-    Toolshed::Git.checkout_branch(current_branch)
+    Toolshed::Git::Branch.checkout(current_branch)
     delete_branch(new_branch_name)
   end
 
