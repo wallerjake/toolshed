@@ -68,12 +68,15 @@ module Toolshed
         Toolshed.logger.info "Creating branch #{new_branch_name} from #{from_remote_name}/#{from_remote_branch_name}"
 
         remote_update
-
         results = Toolshed::Base.wait_for_command("git checkout -b #{new_branch_name} #{from_remote_name}/#{from_remote_branch_name} #{Toolshed::Client.instance.git_quiet}")
-        results[:stdout] + results[:stderr].each do |out|
-          Toolshed.logger.info out
+        results[:all].each do |out|
+          if out.match(/.*fatal.*/)
+            Toolshed.logger.fatal out
+            Toolshed.die
+          else
+           Toolshed.logger.info out
+          end
         end
-
         Toolshed::Base.wait_for_command(Toolshed::Git.git_submodule_command) unless Toolshed::Git.git_submodule_command.empty?
 
         Toolshed.logger.info ''
@@ -88,8 +91,7 @@ module Toolshed
       def delete(delete_branch_name)
         actual_branch_name = Toolshed::Git::Branch.name_from_substring(delete_branch_name)
         Toolshed.logger.info ''
-        Toolshed.logger.info "Deleting branch #{actual_branch_name}"
-        Toolshed.logger.info ''
+        Toolshed.logger.info "Deleting branch '#{actual_branch_name}'"
         if actual_branch_name == name
           Toolshed.logger.info 'Checking out master branch'
           Toolshed.logger.info ''
@@ -137,7 +139,7 @@ module Toolshed
         Toolshed.logger.info ''
         Toolshed.logger.info 'Local Branches'
         Toolshed.logger.info ''
-        current_branch_name = branch_name
+        current_branch_name = name
         local.each do |local_branch|
           Toolshed.logger.info "#{local_branch[:branch_name]} #{local_branch[:branch_info]}"
         end
