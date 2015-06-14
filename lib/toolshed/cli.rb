@@ -32,8 +32,19 @@ module Toolshed
     end
 
     def method_missing(method_name, *args, &block)
-      require "toolshed/commands/#{method_name}"
-      "Toolshed::Commands::#{method_name.to_s.camel_case}".split('::').inject(Object) { |o,c| o.const_get c }
+      begin
+        require "toolshed/commands/#{method_name}"
+        "Toolshed::Commands::#{translate_method_name(method_name)}".split('::').inject(Object) { |o,c| o.const_get c }
+      rescue NameError => e
+        Toolshed.logger.fatal e.message
+        Toolshed.die
+      end
+    end
+
+    def translate_method_name(name)
+      name = name.to_s
+      name.upcase! if %w(ssh).include?(name.downcase)
+      name.camel_case
     end
   end
 end

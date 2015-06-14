@@ -1,12 +1,14 @@
 # encoding: UTF-8
 
+# Module for toolshed
 module Toolshed
-  VERSION = "1.0.2"
+  VERSION = '1.0.3'
 
+  # Display the version information with the toolshed banner
   class Version
     def self.banner
-      formatted_version = "%80s" % "Version: #{Toolshed::VERSION}"
-      formatted_authors_string = "%80s" % "Authors: Jake Waller"
+      formatted_version = format('%80s', "Version: #{Toolshed::VERSION}")
+      formatted_authors_string = format('%80s', 'Authors: Jake Waller')
 puts <<-EOS
  ______   ___    ___   _       _____ __ __    ___  ___   
 |      | /   \  /   \ | |     / ___/|  |  |  /  _]|   \  

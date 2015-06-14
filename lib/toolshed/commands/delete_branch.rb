@@ -20,7 +20,7 @@ module Toolshed
 
       def execute(args, options = {})
         branch_name = read_user_input("Ticket ID or branch name:", options)
-        self.branch = Toolshed::Git::Branch.new
+        self.branch = Toolshed::Git::Branch.new(branch_name: branch_name)
         if confirm_delete
           branch.delete(branch_name)
         else

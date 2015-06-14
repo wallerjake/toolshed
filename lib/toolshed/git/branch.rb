@@ -172,7 +172,7 @@ module Toolshed
       end
 
       def name
-        (passed_branch_name.nil? || passed_branch_name.empty?) ? `git rev-parse --abbrev-ref HEAD`.strip : Toolshed::Git::Branch.name_from_substring(self.passed_branch_name) # rubocop:disable Metrics/LineLength
+        (passed_branch_name.nil? || passed_branch_name.empty?) ? `git rev-parse --abbrev-ref HEAD`.strip : Toolshed::Git::Branch.name_from_substring(passed_branch_name) # rubocop:disable Metrics/LineLength
       end
 
       def push

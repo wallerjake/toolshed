@@ -1,3 +1,5 @@
+require 'toolshed/server_administration/ssh'
+
 module Toolshed
   module Commands
     class SSH
@@ -40,13 +42,14 @@ module Toolshed
       end
 
       def execute(args, options = {})
-        puts "running ssh command with options #{options.inspect}" unless options[:verbose_output].nil? || options[:verbose_output].empty? # rubocop:disable Metrics/LineLength
+        Toolshed.logger.info "Running ssh command with options #{options.inspect}" unless options[:verbose_output].nil? || options[:verbose_output].empty? # rubocop:disable Metrics/LineLength
         begin
           ssh = Toolshed::ServerAdministration::SSH.new(options)
           ssh.execute
         rescue => e
-          puts e.inspect
-          puts "Unable to connect to #{options[:host]}"
+          Toolshed.logger.fatal e.message
+          Toolshed.logger.fatal "Unable to connect to #{options[:host]}"
+          Toolshed.die
         end
       end
     end
