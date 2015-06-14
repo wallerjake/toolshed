@@ -26,7 +26,7 @@ module Toolshed
               short_on: '-a'
             },
             ticket_system: {
-              short_on: '-s'
+              short_on: '-m'
             },
             use_defaults: {
               short_on: '-d'
@@ -36,6 +36,10 @@ module Toolshed
             },
             body: {
               short_on: '-b'
+            },
+            skip_ticket: {
+              short_on: '-s',
+              default: true
             }
           }
         }
@@ -94,13 +98,13 @@ module Toolshed
         end
 
         def execute_ticket_tracking(options) # rubocop:disable Metrics/AbcSize
+          return options if options[:skip_ticket]
           return options if Toolshed::Client.instance.ticket_tracking_tool.nil? || Toolshed::Client.instance.ticket_tracking_tool.empty? # rubocop:disable Metrics/LineLength
 
           begin
             self.ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.instance.ticket_tracking_tool.camel_case}") # rubocop:disable Metrics/LineLength
             options = get_ticket_project_information(options)
             initialize_ticket_tracker_properties(options)
-
             output_ticket_information
           rescue StandardError => e
             Toolshed.logger.fatal e.inspect
