@@ -26,7 +26,8 @@ module Toolshed
           cli = Toolshed::CLI.new
           cli.execute(command, ARGV, options)
         rescue Toolshed::CommandNotFound => e
-          puts e.message
+          Toolshed.logger.fatal e.message
+          Toolshed.die
         end
       end
 
