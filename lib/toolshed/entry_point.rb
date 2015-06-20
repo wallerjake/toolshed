@@ -70,19 +70,20 @@ Please see toolshedrc.sample to create your toolshedrc settings file.
 
 Available Commands:
 
-  create_pull_request
-  ticket_information
-  create_pivotal_tracker_note
-  update_pivotal_tracker_story_status
-  create_branch
   checkout_branch
-  push_branch
+  create_branch
+  create_pivotal_tracker_note
+  create_pull_request
+  create_ticket_comment
+  delete_branch
   get_daily_time_update
   list_branches
-  delete_branch
-  create_ticket_comment
-  update_ticket_status
+  push_branch
+  rename_branch
   ssh
+  ticket_information
+  update_pivotal_tracker_story_status
+  update_ticket_status
 EOF
   end
 end

@@ -200,6 +200,25 @@ module Toolshed
         end
         remote_branches
       end
+
+      def rename(new_branch_name)
+        current_branch_name = passed_branch_name
+        results = Toolshed::Base.wait_for_command("git branch -m #{passed_branch_name} #{new_branch_name}")
+        results[:all].each do |out|
+          matches = /(error.*|fatal.*)/.match(out)
+          if matches.length > 0
+            Toolshed.logger.fatal out
+            Toolshed.die("Unable to proceed supplied branch '#{current_branch_name}' does not exist in local repository.")
+          else
+            Toolshed.logger.info out
+          end
+        end
+        self.passed_branch_name = new_branch_name
+        push
+        delete_remote(current_branch_name)
+        Toolshed.logger.info ''
+        Toolshed.logger.info "Deleted branch #{current_branch_name}"
+      end
     end
   end
 end

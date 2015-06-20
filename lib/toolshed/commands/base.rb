@@ -31,9 +31,18 @@ module Toolshed
         end
       end
 
-      def read_user_input(message, options={})
+      def read_user_input(message, options = {})
         return options[:default] if Toolshed::Client.instance.use_defaults
-        prompt_user_input(message, options)
+        required = options[:required] || false
+        value = ''
+        if required
+          until !value.empty?
+            value = prompt_user_input(message, options)
+          end
+        else
+          value = prompt_user_input(message, options)
+        end
+        value
       end
 
       def read_user_input_title(message, options={})
@@ -85,9 +94,14 @@ module Toolshed
       private
 
         def prompt_user_input(message, options)
+          required = options[:required] || false
           puts message
           value = $stdin.gets.chomp
-          value.empty? ? options[:default] : value
+          if required && value.nil? || value.empty?
+            puts 'Value is required please try again.'
+            return value
+          end
+          (value.nil? || value.empty?) ? options[:default] : value
         end
     end
   end
