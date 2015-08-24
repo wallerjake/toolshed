@@ -160,7 +160,8 @@ module Toolshed
           results = Toolshed::Base.wait_for_command('git branch -avv')
           results[:stdout].each do |stdout|
             next if /remotes.*/.match(stdout) || /HEAD.*/.match(stdout)
-            branch_name = /.*\s{3,}/.match(stdout)[0]
+            matches = /.*\s{1,}/.match(stdout)
+            branch_name = matches[0] unless matches.nil? || matches.length == 0
             branch_name = branch_name.gsub('*', '')
             branch_info_match = /\[[a-z].*\]/.match(stdout)
             branch_info = ''
