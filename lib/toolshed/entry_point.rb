@@ -86,7 +86,11 @@ class EntryPoint
   def default_command_class_string
     command_class = "Toolshed::Commands"
     command_parts.each do |command_part|
-      command_class = "#{command_class}::#{command_part.capitalize}"
+      if command_part.include?('_')
+        command_class = "#{command_class}::#{command_part.split('_').map(&:capitalize).join('')}"
+      else
+        command_class = "#{command_class}::#{command_part.capitalize}"
+      end
     end
     command_class
   end
