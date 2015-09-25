@@ -100,20 +100,21 @@ Please see toolshedrc.sample to create your toolshedrc settings file.
 
 Available Commands:
 
-  checkout_branch
-  create_branch
-  create_pivotal_tracker_note
-  create_pull_request
-  create_ticket_comment
-  delete_branch
-  get_daily_time_update
-  list_branches
-  push_branch
-  rename_branch
-  ssh
-  ticket_information
-  update_pivotal_tracker_story_status
-  update_ticket_status
+  toolshed checkout_branch
+  toolshed create_branch
+  toolshed create_pivotal_tracker_note
+  toolshed create_pull_request
+  toolshed create_ticket_comment
+  toolshed delete_branch
+  toolshed get_daily_time_update
+  toolshed list_branches
+  toolshed push_branch
+  toolshed rename_branch
+  toolshed scp download
+  toolshed ssh
+  toolshed ticket_information
+  toolshed update_pivotal_tracker_story_status
+  toolshed update_ticket_status
 EOF
   end
 end
