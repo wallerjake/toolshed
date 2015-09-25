@@ -72,8 +72,7 @@ class EntryPoint
       command_parts = []
       arguments_left = true
       until !arguments_left
-        if ARGV.first.nil? || ARGV.first.start_with?('--')
-        #if argument.nil? || argument.start_with?('--')
+        if ARGV.first.nil? || ARGV.first.start_with?('--') || ARGV.first.start_with?('-')
           arguments_left = false
         else
           command_parts << ARGV.shift

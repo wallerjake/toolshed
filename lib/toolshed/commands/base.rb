@@ -34,7 +34,8 @@ module Toolshed
 
       def read_user_input(message, options = {})
         return options[:default] if Toolshed::Client.instance.use_defaults
-        required = options[:required] || false
+        required = options[:required].is_a?(TrueClass)
+
         value = ''
         if required
           value = prompt_user_input(message, options) while value.empty?
