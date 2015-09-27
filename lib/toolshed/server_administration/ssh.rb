@@ -5,7 +5,8 @@ require 'net/ssh'
 module Toolshed
   module ServerAdministration
     class SSH
-      attr_accessor :keys, :password, :sudo_password, :host, :user, :ssh_options, :channel, :commands, :password
+      attr_accessor :keys, :password, :sudo_password, :host, :user, :ssh_options, :channel, :commands, :password, :data
+      attr_reader :silent
 
       def initialize(options={})
         self.password = options[:password] ||= ''
@@ -16,6 +17,8 @@ module Toolshed
         self.ssh_options = options[:ssh_options] ||= {}
         self.commands = options[:commands] ||= ''
         self.password = Toolshed::Password.new(options)
+        self.data = []
+        @silent = options[:silent] || false
 
         set_ssh_options
       end
@@ -29,6 +32,7 @@ module Toolshed
           end
           ssh.loop
         end
+        data
       end
 
       protected
@@ -46,25 +50,26 @@ module Toolshed
 
         def request_pty
           self.channel.request_pty do |ch, success|
-            puts (success) ? "Successfully obtained pty" : "Could not obtain pty"
+            puts (success) ? "Successfully obtained pty" : "Could not obtain pty" unless silent
           end
         end
 
         def on_close
           self.channel.on_close do |ch|
-            puts "Channel is closing!"
+            puts "Channel is closing!" unless silent
           end
         end
 
         def on_extended_data
           self.channel.on_extended_data do |ch, type, data|
-            puts "stderr: #{data}"
+            puts "stderr: #{data}" unless silent
           end
         end
 
         def on_data
           self.channel.on_data do |ch, data|
-            puts "#{data}"
+            puts "#{data}" unless silent
+            self.data << data
             send_data(data)
           end
         end

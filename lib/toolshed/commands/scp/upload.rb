@@ -3,11 +3,11 @@ require 'toolshed/commands/scp_base'
 module Toolshed
   module Commands
     module SCP
-      # Responsible for handing downloading of files
-      class Download < Toolshed::Commands::SCPBase
+      # Responsible for handing uploading of files
+      class Upload < Toolshed::Commands::SCPBase
         def self.cli_options # rubocop:disable MethodLength
           {
-            banner: 'Usage: scp download [options]',
+            banner: 'Usage: scp upload [options]',
             options: {
               remote_host: {
                 short_on: '-r'
@@ -34,7 +34,7 @@ module Toolshed
         def execute(_args, options = nil)
           options ||= nil
           Toolshed.logger.info ''
-          Toolshed::ServerAdministration::SCP.new(scp_options(options)).download
+          Toolshed::ServerAdministration::SCP.new(scp_options(options)).upload
           Toolshed.die
         end
       end
