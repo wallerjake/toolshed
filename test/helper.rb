@@ -18,6 +18,7 @@ require 'fileutils'
 require 'json'
 
 require 'toolshed'
+require 'toolshed/logger'
 
 Test::Unit.at_start do
   Toolshed::Client.instance.use_git_submodules = false
@@ -99,4 +100,28 @@ def capture_stdout(&block)
     $stdout = original_stdout
   end
   fake.string
+end
+
+class Toolshed::Logger
+  attr_reader :logs
+
+  def initialize
+    @logs = { debug: [], fatal: [], info: [], warn: [] }
+  end
+
+  def debug(message)
+    logs[:debug] << message
+  end
+
+  def fatal(message)
+    logs[:fatal] << message
+  end
+
+  def info(message)
+    logs[:info] << message
+  end
+
+  def warn(message)
+    logs[:warn] << message
+  end
 end

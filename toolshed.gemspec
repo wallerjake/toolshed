@@ -29,6 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'net-ssh', '2.9.2'
   spec.add_dependency 'term-ansicolor', '1.3.0'
   spec.add_dependency 'highline', '1.7.2'
+  spec.add_dependency 'net-scp', '1.2.1'
+  spec.add_dependency 'ruby-progressbar', '1.7.5'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'

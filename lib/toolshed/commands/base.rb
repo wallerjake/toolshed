@@ -8,7 +8,7 @@ module Toolshed
       def initialize(_options = {})
       end
 
-      def self.parse(command, cli_options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/LineLength, Metrics/CyclomaticComplexity
+      def self.parse(command_class, cli_options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/LineLength, Metrics/CyclomaticComplexity
         options = {}
         options_parser = OptionParser.new do |opts|
           opts.banner = cli_options[:banner] if cli_options[:banner]
@@ -25,7 +25,7 @@ module Toolshed
         options_parser.order! if options_parser
         begin
           cli = Toolshed::CLI.new
-          cli.execute(command, ARGV, options)
+          cli.execute(command_class, ARGV, options)
         rescue Toolshed::CommandNotFound => e
           Toolshed.logger.fatal e.message
           Toolshed.die
@@ -34,7 +34,8 @@ module Toolshed
 
       def read_user_input(message, options = {})
         return options[:default] if Toolshed::Client.instance.use_defaults
-        required = options[:required] || false
+        required = options[:required].is_a?(TrueClass)
+
         value = ''
         if required
           value = prompt_user_input(message, options) while value.empty?
