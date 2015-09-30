@@ -6,6 +6,8 @@ module Toolshed
   module ServerAdministration
     # SSH class that can ssh to a host and perform commands
     class SSH
+      include Toolshed::Password
+
       attr_accessor :channel, :commands, :data, :host, :keys, :password, :ssh_options, :sudo_password, :user # rubocop:disable LineLength
       attr_reader :silent
 
@@ -18,7 +20,7 @@ module Toolshed
         @user = options[:user] || ''
         @ssh_options = options[:ssh_options] || {}
         @commands = options[:commands] || ''
-        @password = Toolshed::Password.new(options)
+        @password = options[:password] || ''
         @data = []
         @silent = options[:silent] || false
 
@@ -87,7 +89,7 @@ module Toolshed
         end
 
         def send_password_data
-          channel.send_data "#{password.read_user_input_password('sudo_password')}\n"
+          channel.send_data "#{password_from_config(sudo_password)}\n"
         end
 
         def send_yes_no_data
@@ -96,7 +98,7 @@ module Toolshed
 
         def set_ssh_options # rubocop:disable AbcSize
           if keys.nil? || keys.empty?
-            final_password = password.read_user_input_password('password')
+            final_password = password_from_config(password)
             ssh_options.merge!(password: final_password)
           else
             ssh_options.merge!(keys: [keys]) unless keys.nil? || keys.empty?

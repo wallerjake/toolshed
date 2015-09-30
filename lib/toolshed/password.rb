@@ -1,47 +1,23 @@
+require 'toolshed/client'
+
 module Toolshed
-  class Password
-    attr_accessor :password, :sudo_password
+  module Password
+    def password_from_config(password)
+      return '' if password.nil? || password.empty?
 
-    def initialize(options={})
-      self.password = options[:password] ||= ''
-      self.sudo_password = options[:sudo_password] ||= ''
-    end
-
-    def read_user_input_password(type, prompt_message='Password:')
-      value = self.send(type)
-      unless value.nil? || value.empty?
-        read_password_from_configuration(type)
-      else
-        prompt_user_to_input_password(prompt_message)
-      end
-    end
-
-    protected
-
-      def prompt_user_to_input_password(message)
-        system "stty -echo"
-        puts message
-        value = get_password_input
-        system "stty echo"
-
-        value
-      end
-
-      def get_password_input
-        $stdin.gets.chomp.strip
-      end
-
-      def read_password_from_configuration(type)
-        begin
-          credentials = Toolshed::Client.read_credenials
-          if credentials[self.send(type)]
-            credentials[self.send(type)]
-          else
-            self.send(type)
-          end
-        rescue => e
-          puts e.inspect
+      begin
+        credentials = Toolshed::Client.read_credenials
+        password_parts = password.split(':')
+        password_parts.each do |password_part|
+          return password if credentials[password_part].nil?
+          credentials = credentials[password_part]
         end
+      rescue => e
+        Toolshed::Logger.instance.fatal e.message
+        Toolshed::Logger.instance.fatal e.inspect
+        return password
       end
+      credentials
+    end
   end
 end
