@@ -5,7 +5,7 @@ module Toolshed
   module Commands
     # Base class for all commands responsible for common methods
     class Base
-      def initialize(_options = {})
+      def initialize(options = {})
       end
 
       def self.parse(command_class, cli_options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/LineLength, Metrics/CyclomaticComplexity
@@ -42,6 +42,15 @@ module Toolshed
         else
           value = prompt_user_input(message, options)
         end
+        value
+      end
+
+      def read_user_input_password(password, prompt_message='Password:')
+        return password unless password.nil? || password.empty?
+        system "stty -echo"
+        puts prompt_message
+        value = $stdin.gets.chomp.strip
+        system "stty echo"
         value
       end
 
