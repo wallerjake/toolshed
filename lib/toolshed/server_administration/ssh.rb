@@ -1,3 +1,4 @@
+require 'toolshed/error'
 require 'toolshed/password'
 
 require 'net/ssh'
@@ -86,6 +87,7 @@ module Toolshed
           send_password_data if data =~ /password/
           # send_yes_no_data if data =~ /Do you want to continue \[Y\/n\]?/
           send_yes_no_data if data =~ %r{Do you want to continue [Y/n]?}
+          raise SSHResponseException, "Unable to handle response for #{data}"
         end
 
         def send_password_data
