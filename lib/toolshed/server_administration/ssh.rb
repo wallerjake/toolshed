@@ -85,9 +85,8 @@ module Toolshed
 
         def send_data(data)
           send_password_data if data =~ /password/
-          # send_yes_no_data if data =~ /Do you want to continue \[Y\/n\]?/
           send_yes_no_data if data =~ %r{Do you want to continue [Y/n]?}
-          raise SSHResponseException, "Unable to handle response for #{data}"
+          raise SSHResponseException, "Unable to handle response for #{data}" if data.rstrip.end_with?('?')
         end
 
         def send_password_data
