@@ -1,5 +1,6 @@
 require 'toolshed/error'
 require 'toolshed/password'
+require 'toolshed/timeout'
 
 require 'net/ssh'
 
@@ -10,7 +11,7 @@ module Toolshed
       include Toolshed::Password
 
       attr_accessor :channel, :commands, :data, :host, :keys, :password, :ssh_options, :sudo_password, :user # rubocop:disable LineLength
-      attr_reader :silent
+      attr_reader :silent, :timeout
 
       def initialize(options = nil) # rubocop:disable AbcSize, CyclomaticComplexity, PerceivedComplexity, LineLength
         options ||= {}
@@ -24,18 +25,26 @@ module Toolshed
         @password = options[:password] || ''
         @data = []
         @silent = options[:silent] || false
+        @timeout = Toolshed::Timeout.new(timeout_period: 120)
 
         set_ssh_options
       end
 
       def execute
-        Net::SSH.start(host, user, ssh_options) do |ssh|
-          ssh.open_channel do |channel|
-            self.channel = channel
-            request_pty
-            run_commands
+        begin
+          timeout.timeout do
+            Net::SSH.start(host, user, ssh_options) do |ssh|
+              ssh.open_channel do |channel|
+                self.channel = channel
+                request_pty
+                run_commands
+              end
+              ssh.loop
+            end
           end
-          ssh.loop
+        rescue Toolshed::TimeoutError => e
+          Toolshed.logger.fatal e.message
+          raise SSHResponseException, "Unable to handle response for #{data.last}"
         end
         data
       end
@@ -56,6 +65,7 @@ module Toolshed
 
         def request_pty
           channel.request_pty do |_ch, success|
+            timeout.reset_start_time
             unless silent
               message = (success) ? 'Successfully obtained pty' : 'Could not obtain pty'
               puts message
@@ -71,6 +81,7 @@ module Toolshed
 
         def on_extended_data
           channel.on_extended_data do |_ch, _type, data|
+            timeout.reset_start_time
             puts "stderr: #{data}" unless silent
           end
         end
@@ -79,6 +90,7 @@ module Toolshed
           channel.on_data do |_ch, data|
             puts "#{data}" unless silent
             self.data << data
+            timeout.reset_start_time
             send_data(data)
           end
         end
@@ -86,7 +98,6 @@ module Toolshed
         def send_data(data)
           send_password_data if data =~ /password/
           send_yes_no_data if data =~ %r{Do you want to continue [Y/n]?}
-          raise SSHResponseException, "Unable to handle response for #{data}" if data.rstrip.end_with?('?')
         end
 
         def send_password_data
