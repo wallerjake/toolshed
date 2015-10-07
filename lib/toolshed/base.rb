@@ -11,7 +11,7 @@ module Toolshed
       result = {}
       Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
         begin
-          Timeout.timeout(seconds) do
+          ::Timeout.timeout(seconds) do
             stdin.close  # make sure the subprocess is done
 
             a_stdout = []
@@ -27,7 +27,7 @@ module Toolshed
             exit_status = wait_thr.value # Process::Status object returned.
             result.merge!(stdout: a_stdout, stderr: a_stderr, all: all, process_status: exit_status) # rubocop:disable Metrics/LineLength
           end
-        rescue Timeout::Error
+        rescue ::Timeout::Error
           Process.kill('KILL', wait_thr.pid)
           Toolshed.logger.fatal "Unable to perform the '#{command}' command in the allowed amount of time of #{seconds} seconds. Exiting." # rubocop:disable Metrics/LineLength
           Toolshed.die
