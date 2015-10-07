@@ -1,29 +1,6 @@
 require 'time'
 
 module Toolshed
-  # Raised by Timeout#timeout when the block times out.
-  class TimeoutError < RuntimeError
-    attr_reader :thread
-
-    def self.catch(*args)
-      exc = new(*args)
-      exc.instance_variable_set(:@thread, Thread.current)
-      ::Kernel.catch(exc) {yield exc}
-    end
-
-    def exception(*)
-      # TODO: use Fiber.current to see if self can be thrown
-      if self.thread == Thread.current
-        bt = caller
-        begin
-          throw(self, bt)
-        rescue UncaughtThrowError
-        end
-      end
-      self
-    end
-  end
-
   THIS_FILE = /\A#{Regexp.quote(__FILE__)}:/o
   CALLER_OFFSET = ((c = caller[0]) && THIS_FILE =~ c) ? 1 : 0
   private_constant :THIS_FILE, :CALLER_OFFSET
@@ -48,10 +25,10 @@ module Toolshed
       @start_time = Time.now.utc.to_i
     end
 
-    def timeout(klass = nil)   #:yield: +sec+
+    def start(klass = nil)   #:yield: +sec+
       return yield(timeout_period) if timeout_period == nil or timeout_period.zero?
       message = "execution expired in #{timeout_period} seconds".freeze
-      e = TimeoutError
+      e = Error
       bl = proc do |exception|
         begin
           x = Thread.current
@@ -79,7 +56,7 @@ module Toolshed
           bt = e.backtrace
         end
       else
-        bt = TimeoutError.catch(message, &bl)
+        bt = Error.catch(message, &bl)
       end
       level = -caller(CALLER_OFFSET).size-2
       while THIS_FILE =~ bt[level]
@@ -90,6 +67,29 @@ module Toolshed
 
     def timed_out?
       Time.now.utc.to_i - start_time > timeout_period
+    end
+
+    # Raised by Timeout#timeout when the block times out.
+    class Error < RuntimeError
+      attr_reader :thread
+
+      def self.catch(*args)
+        exc = new(*args)
+        exc.instance_variable_set(:@thread, Thread.current)
+        ::Kernel.catch(exc) {yield exc}
+      end
+
+      def exception(*)
+        # TODO: use Fiber.current to see if self can be thrown
+        if self.thread == Thread.current
+          bt = caller
+          begin
+            throw(self, bt)
+          rescue UncaughtThrowError
+          end
+        end
+        self
+      end
     end
   end
 end

@@ -33,7 +33,7 @@ module Toolshed
 
       def execute
         begin
-          timeout.timeout do
+          timeout.start do
             Net::SSH.start(host, user, ssh_options) do |ssh|
               ssh.open_channel do |channel|
                 self.channel = channel
@@ -43,7 +43,7 @@ module Toolshed
               ssh.loop
             end
           end
-        rescue Toolshed::TimeoutError => e
+        rescue Toolshed::Timeout::Error => e
           Toolshed.logger.fatal e.message
           raise SSHResponseException, "Unable to handle response for #{data.last}"
         end
