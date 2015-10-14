@@ -19,9 +19,8 @@ module Toolshed
     end
 
     def load_config(command_class)
-      Toolshed::Client.load_credentials
       Toolshed.add_file_log_source(command_class.class.name)
-      Toolshed.logger.info "Credentials loaded from #{File.absolute_path(Toolshed::Client.instance.credentials_loaded_from)}" # rubocop:disable Metrics/LineLength
+      Toolshed.logger.info "Credentials loaded from #{File.absolute_path(Toolshed::Client.instance.toolshedrc_path)}" # rubocop:disable Metrics/LineLength
     rescue => e
       Toolshed.logger.fatal "Error loading your credentials: #{e.message}"
     end
