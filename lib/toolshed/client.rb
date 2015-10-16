@@ -29,7 +29,20 @@ module Toolshed
 
     def method_missing(*args)
       begin
-        struct.send(args.first)
+        if args.first.to_s.end_with?('=')
+          val = args.last
+          my_h = self
+          args.each_with_index do |arg, index|
+            arg = arg.to_s.gsub('=', '')
+            next_arg_val = args[index + 1].to_s.gsub('=', '')
+            my_h = my_h[arg] unless next_arg_val == val.to_s
+            my_h[arg] = val if next_arg_val == val.to_s && !my_h[arg].nil?
+            my_h.merge!(arg => val) if next_arg_val == val.to_s && my_h[arg].nil?
+          end
+          @struct = to_ostruct
+        else
+          struct.send(args.first)
+        end
       rescue NoMethodError => e
         Toolshed.die(e.message)
       end

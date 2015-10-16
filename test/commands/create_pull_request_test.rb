@@ -103,26 +103,18 @@ class CreatePullRequestTest < Test::Unit::TestCase
     pivotal_tracker_mock = mock('PivotalTracker::Client')
     pivotal_tracker_mock.stubs(:id => '1')
 
-    PivotalTracker::Project.expects(:find).
-    with(Toolshed::Client.instance.default_pivotal_tracker_project_id).
-    returns(pivotal_tracker_mock)
+    PivotalTracker::Project.expects(:find).with(Toolshed::Client.instance.default_pivotal_tracker_project_id).returns(pivotal_tracker_mock)
 
     # mock up the story information
     pivotal_tracker_story_mock = mock('PivotalTracker::Story')
     pivotal_tracker_story_mock.stubs(:url => 'http://www.example.com', :id => '1', :name => "Test Title")
 
-    pivotal_tracker_mock.expects(:stories).
-    returns(pivotal_tracker_story_mock)
+    pivotal_tracker_mock.expects(:stories).returns(pivotal_tracker_story_mock)
 
-    pivotal_tracker_story_mock.expects(:find).
-    with('1').
-    returns(pivotal_tracker_story_mock)
+    pivotal_tracker_story_mock.expects(:find).with('1').returns(pivotal_tracker_story_mock)
 
-    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:title).
-    returns("Sample")
-
-    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:url).
-    returns("github.com/pulls/1")
+    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:title).returns("Sample")
+    Toolshed::TicketTracking::PivotalTracker.any_instance.expects(:url).returns("github.com/pulls/1")
 
     # stub the possible input
     Toolshed::Commands::CreatePullRequest.any_instance.stubs(:read_user_input_ticket_tracker_ticket_id).returns('1')
