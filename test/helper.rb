@@ -21,9 +21,7 @@ require 'toolshed'
 require 'toolshed/logger'
 
 Test::Unit.at_start do
-  Toolshed::Client.instance.use_git_submodules = false
   #Toolshed::Client.git_quiet = '&> /dev/null' unless ENV['RUNNING_ON_CI']
-  Toolshed::Client.instance.git_quiet = ''
 
   I18n.config.enforce_available_locales = true
 

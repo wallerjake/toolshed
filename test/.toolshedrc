@@ -1,1 +1,3 @@
 server_password: "tester1234"
+use_git_submodules: false
+git_quiet: ''

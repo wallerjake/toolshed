@@ -15,7 +15,7 @@ module Toolshed
 
   class << self
     def add_file_log_source(command_name = '')
-      log_path = Toolshed::Client.instance.log_path
+      log_path = Toolshed.configuration.log_path
       return if log_path.nil? || log_path.empty?
 
       FileUtils.mkdir_p(log_path)
@@ -25,6 +25,10 @@ module Toolshed
       file = "#{log_path}/#{file_name}"
       FileUtils.touch(file)
       logger.add_log_source(file)
+    end
+
+    def configuration
+      Toolshed::Client.instance
     end
 
     def deprecate(message = nil)
