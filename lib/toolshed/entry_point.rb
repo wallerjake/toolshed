@@ -108,9 +108,11 @@ Available Commands:
   toolshed delete_branch
   toolshed get_daily_time_update
   toolshed list_branches
+  toolshed mysql backup
   toolshed push_branch
   toolshed rename_branch
   toolshed scp download
+  toolshed scp upload
   toolshed ssh
   toolshed ticket_information
   toolshed update_pivotal_tracker_story_status
