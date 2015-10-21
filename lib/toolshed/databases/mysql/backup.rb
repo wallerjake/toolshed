@@ -21,13 +21,17 @@ module Toolshed
 
         def execute
           raise TypeError, "Wait time passed in is not a number #{wait_time}" unless wait_time.is_a?(Fixnum)
-          Toolshed.logger.info "Starting execution of mysqldump -h #{local_host} -u #{username} -p #{password} #{name} > #{path}."
+          Toolshed.logger.info "Starting execution of mysqldump -h #{local_host} -u #{username} #{hidden_password_param} #{name} > #{path}."
           Toolshed::Base.wait_for_command("mysqldump -h #{local_host} -u #{username} #{password_param} #{name} > #{path}", wait_time)
           Toolshed.logger.info 'mysqldump has completed.'
         end
 
         def password_param
-          password.nil? || password.empty?  ? '' : "-p #{password}"
+          password.nil? || password.empty?  ? '' : "-p #{password_from_config(password)}"
+        end
+
+        def hidden_password_param
+          password_param.empty? ? '' : '-p *******'
         end
       end
     end
