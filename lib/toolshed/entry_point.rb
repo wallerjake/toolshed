@@ -21,22 +21,22 @@ class EntryPoint
       # @TODO - clean this up as it should really be part of the command it's being used in not globally.
       global = OptionParser.new do |opts|
         opts.on("-u", "--github-username [ARG]") do |username|
-          Toolshed::Client.github_username = username
+          Toolshed::Client.instance.github_username = username
         end
         opts.on("-p", "--github-password [ARG]") do |password|
-          Toolshed::Client.github_password = password
+          Toolshed::Client.instance.github_password = password
         end
         opts.on("-t", "--github-token [ARG]") do |token|
-          Toolshed::Client.github_token = token
+          Toolshed::Client.instance.github_token = token
         end
         opts.on("-u", "--pivotal-tracker-username [ARG]") do |username|
-          Toolshed::Client.pivotal_tracker_username = username
+          Toolshed::Client.instance.pivotal_tracker_username = username
         end
         opts.on("-p", "--pivotal-tracker-password [ARG]") do |password|
-          Toolshed::Client.pivotal_tracker_password = password
+          Toolshed::Client.instance.pivotal_tracker_password = password
         end
         opts.on("-d", "--debug [ARG]") do
-          Toolshed::Client.debug = true
+          Toolshed::Client.instance.debug = true
         end
         opts.on('-v', '--version', 'Version') do
           Toolshed::Version.banner
@@ -108,9 +108,11 @@ Available Commands:
   toolshed delete_branch
   toolshed get_daily_time_update
   toolshed list_branches
+  toolshed mysql backup
   toolshed push_branch
   toolshed rename_branch
   toolshed scp download
+  toolshed scp upload
   toolshed ssh
   toolshed ticket_information
   toolshed update_pivotal_tracker_story_status

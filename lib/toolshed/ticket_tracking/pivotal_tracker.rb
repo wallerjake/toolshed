@@ -24,7 +24,6 @@ module Toolshed
         end
 
         self.token = ::PivotalTracker::Client.token(username, password)
-
         self.project_id = (options[:project_id].nil?) ? Toolshed::Client.instance.default_pivotal_tracker_project_id : options[:project_id]
         @pt_project = ::PivotalTracker::Project.find(self.project_id)
         self.story = @pt_project.stories.find(options[:ticket_id])

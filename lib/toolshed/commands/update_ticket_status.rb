@@ -8,17 +8,17 @@ module Toolshed
       end
 
       def execute(args, options = {})
-        ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.ticket_tracking_tool.camel_case}")
+        ticket_tracker_class =  Object.const_get("Toolshed::TicketTracking::#{Toolshed::Client.instance.ticket_tracking_tool.camel_case}")
 
         use_project_id = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_ID") rescue false
         if use_project_id
-          ticket_tracker_project_id = read_user_input_project("Project ID (Default: #{Toolshed::Client.default_pivotal_tracker_project_id}):", options.merge!({ default: Toolshed::Client.default_pivotal_tracker_project_id }))
+          ticket_tracker_project_id = read_user_input_project("Project ID (Default: #{Toolshed::Client.instance.default_pivotal_tracker_project_id}):", options.merge!({ default: Toolshed::Client.instance.default_pivotal_tracker_project_id }))
           options.merge!({ project_id: ticket_tracker_project_id })
         end
 
         use_project_name = Object.const_get("#{ticket_tracker_class}::USE_PROJECT_NAME") rescue false
         if use_project_name
-          ticket_tracker_project_name = read_user_input_project("Project Name (Default: #{Toolshed::Client.default_ticket_tracker_project}):", options.merge!({ default: Toolshed::Client.default_ticket_tracker_project }))
+          ticket_tracker_project_name = read_user_input_project("Project Name (Default: #{Toolshed::Client.instance.default_ticket_tracker_project}):", options.merge!({ default: Toolshed::Client.instance.default_ticket_tracker_project }))
           options.merge!({ project: ticket_tracker_project_name })
         end
 

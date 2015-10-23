@@ -36,6 +36,9 @@ module Toolshed
             },
             verbose_output: {
               short_on: '-v'
+            },
+            timeout_period: {
+              short_on: '-t'
             }
           }
         }

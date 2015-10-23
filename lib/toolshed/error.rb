@@ -4,4 +4,5 @@ module Toolshed
   class RecordNotFoundError < Error; end
   class AuthenticationFailed < Error; end
   class SSHResponseException < Error; end
+  class CorruptFileException < StandardError; end
 end
