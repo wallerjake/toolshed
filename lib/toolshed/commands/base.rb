@@ -13,13 +13,17 @@ module Toolshed
         options_parser = OptionParser.new do |opts|
           opts.banner = cli_options[:banner] if cli_options[:banner]
           cli_options[:options].each do |option_name, option_variables|
-            letter_map = ('a'..'z').map { |letter| letter }
+            letter_map = ('a'..'z').map { |letter| letter }.delete_if { |letter| letter == 'h' }
             short_on = (option_variables[:short_on]) ? option_variables[:short_on] : letter_map[rand(letter_map.length)] # rubocop:disable Metrics/LineLength
             on = (option_variables[:on]) ? option_variables[:on] : "--#{option_name.to_s.split('_').join('-')} [ARG]" # rubocop:disable Metrics/LineLength
             opts.on(short_on, on) do |opt|
               value = (option_variables[:default].nil?) ? opt : option_variables[:default]
               options.merge!(option_name => value)
             end
+          end
+          opts.on_tail("-h", "--help", "Show this message") do
+            puts opts
+            exit
           end
         end
         options_parser.order! if options_parser

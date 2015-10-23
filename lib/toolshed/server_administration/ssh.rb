@@ -25,8 +25,8 @@ module Toolshed
         @password = options[:password] || ''
         @data = []
         @silent = options[:silent] || false
-        timeout_period = options[:timeout_period] || 30
-        @timeout = Toolshed::Timeout.new(timeout_period: options[:timeout_period])
+        timeout_period = options[:timeout_period].to_i || 30
+        @timeout = Toolshed::Timeout.new(timeout_period: timeout_period)
 
         set_ssh_options
       end
