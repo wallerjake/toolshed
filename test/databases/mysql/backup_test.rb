@@ -22,7 +22,7 @@ module Test
           password = 'test'
           name = 'localdb'
 
-          Toolshed::Databases::Mysql::Backup.new(path: path, username: username, password: password, name: name, local_host: 'localhost').execute
+          Toolshed::Databases::Mysql::Backup.new(path: path, username: username, password: password, name: name, host: 'localhost').execute
 
           assert Toolshed::Logger.instance.logs[:info].include?("Starting execution of mysqldump -h localhost -u #{username} -p ******* #{name} > #{path}.")
           assert Toolshed::Logger.instance.logs[:info].include?('mysqldump has completed.')
@@ -35,7 +35,7 @@ module Test
           name = 'localdb'
 
           ex = assert_raises TypeError do
-            Toolshed::Databases::Mysql::Backup.new(path: path, username: username, password: password, name: name, local_host: 'localhost', wait_time: 'bla').execute
+            Toolshed::Databases::Mysql::Backup.new(path: path, username: username, password: password, name: name, host: 'localhost', wait_time: 'bla').execute
           end
           assert_equal 'Wait time passed in is not a number bla', ex.message
         end
