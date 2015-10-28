@@ -10,7 +10,7 @@ module Toolshed
           {
             banner: 'Usage: mysql backup [options]',
             options: {
-              local_host: {
+              host: {
                 short_on: '-l'
               },
               path: {
@@ -44,7 +44,7 @@ module Toolshed
 
         def options_with_defaults(options = nil)
           options ||= {}
-          options[:local_host] ||= 'localhost'
+          options[:host] ||= 'localhost'
           options[:path] ||= read_user_input("Storage Path (/tmp/test/#{Time.now.utc.getlocal.strftime('%Y%m%d')}.sql) ?", required: true)
           options[:username] ||= read_user_input('Username?', required: true)
           options[:name] ||= read_user_input('Database Name?', required: true)
