@@ -1,6 +1,8 @@
 require 'toolshed/error'
 require 'toolshed/password'
 
+require 'fileutils'
+
 module Toolshed
   module Databases
     module Mysql
@@ -19,9 +21,14 @@ module Toolshed
           @wait_time = options[:wait_time] || 120
         end
 
+        def create_path
+          FileUtils.mkdir_p(File.dirname(path))
+        end
+
         def execute
           raise TypeError, "Wait time passed in is not a number #{wait_time}" unless wait_time.is_a?(Fixnum)
           Toolshed.logger.info "Starting execution of mysqldump -h #{host} -u #{username} #{hidden_password_param} #{name} > #{path}."
+          create_path
           Toolshed::Base.wait_for_command("mysqldump -h #{host} -u #{username} #{password_param} #{name} > #{path}", wait_time)
           Toolshed.logger.info 'mysqldump has completed.'
         end
