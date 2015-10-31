@@ -15,7 +15,7 @@ module Test
         end
 
         def test_execute
-          Toolshed::Base.expects(:wait_for_command).returns(true)
+          Toolshed::Base.expects(:wait_for_command).returns({})
 
           path = '/tmp/testing/test.sql'
           username = 'test'
