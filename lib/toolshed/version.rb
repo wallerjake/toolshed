@@ -2,7 +2,7 @@
 
 # Module for toolshed
 module Toolshed
-  VERSION = '1.0.6'
+  VERSION = '1.0.7'
 
   # Display the version information with the toolshed banner
   class Version
