@@ -24,7 +24,7 @@ module Toolshed
             end
 
             all = a_stdout + a_stderr
-            exit_status = wait_thr.value # Process::Status object returned.
+            exit_status = wait_thr.value.to_s # Process::Status object returned.
             result.merge!(stdout: a_stdout, stderr: a_stderr, all: all, process_status: exit_status) # rubocop:disable Metrics/LineLength
           end
         rescue ::Timeout::Error

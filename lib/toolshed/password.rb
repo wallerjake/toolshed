@@ -10,14 +10,17 @@ module Toolshed
       translated_password = Toolshed.configuration
       password_parts = password.split(':')
       password_parts.each do |password_part|
-        return password if translated_password[password_part].nil?
+        if translated_password[password_part].nil?
+          translated_password = password
+          break
+        end
         translated_password = translated_password[password_part]
       end
-      return translated_password
+      translated_password
     rescue => e
       Toolshed::Logger.instance.fatal e.message
       Toolshed::Logger.instance.fatal e.inspect
-      return password
+      password
     end
   end
 end
