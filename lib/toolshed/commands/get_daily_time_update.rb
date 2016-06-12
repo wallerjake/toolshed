@@ -29,7 +29,7 @@ module Toolshed
           puts "Getting time entries:"
           time_tracker.display
         rescue Exception => e
-          puts "Time tracking tool is undefined implementation needed or an error occured #{e.inspect}"
+          puts "Time tracking tool is undefined implementation needed or an error occurred #{e.inspect}"
           return
         end
       end
