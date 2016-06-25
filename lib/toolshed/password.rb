@@ -8,6 +8,8 @@ module Toolshed
       return '' if password.nil? || password.empty?
 
       translated_password = Toolshed.configuration
+      return password unless translated_password.is_a?(Hash)
+
       password_parts = password.split(':')
       password_parts.each do |password_part|
         if translated_password[password_part].nil?

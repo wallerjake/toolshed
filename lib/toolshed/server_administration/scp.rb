@@ -22,7 +22,7 @@ module Toolshed
         @verbose_output = options[:verbose_output]
         @ssh_options = options[:ssh_options]
         @ssh_options ||= {}
-        @ssh_options.merge(password: password_from_config(password))
+        @ssh_options.merge!(password: password_from_config(password))
       end
 
       def download
