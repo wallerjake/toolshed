@@ -30,7 +30,7 @@ module Toolshed
           Toolshed.logger.info "Starting execution of mysqldump -h #{host} -u #{username} #{hidden_password_param} #{name} > #{path}."
           create_path
           results = Toolshed::Base.wait_for_command("mysqldump -h #{host} -u #{username} #{password_param} #{name} > #{path}", wait_time)
-          unless results[:stderr].is_a?(NilClass)
+          unless results[:stderr].is_a?(NilClass) || results[:stderr].empty?
             error_message = results[:stderr].join(' ')
             Toolshed.logger.fatal error_message
             raise Toolshed::PermissionsException, error_message
