@@ -63,12 +63,10 @@ module Toolshed
       def create
         validator.validate!(self)
         Toolshed.logger.info ''
-
-        new_branch_name = Toolshed::Git.clean_branch_name(to_remote_branch_name)
-        Toolshed.logger.info "Creating branch #{new_branch_name} from #{from_remote_name}/#{from_remote_branch_name}"
+        Toolshed.logger.info "Creating branch #{to_remote_branch_name} from #{from_remote_name}/#{from_remote_branch_name}"
 
         remote_update
-        results = Toolshed::Base.wait_for_command("git checkout -b #{new_branch_name} #{from_remote_name}/#{from_remote_branch_name} #{Toolshed::Client.instance.git_quiet}")
+        results = Toolshed::Base.wait_for_command("git checkout -b #{to_remote_branch_name} #{from_remote_name}/#{from_remote_branch_name} #{Toolshed::Client.instance.git_quiet}")
         results[:all].each do |out|
           if out.match(/.*fatal.*/)
             Toolshed.logger.fatal out
@@ -80,12 +78,12 @@ module Toolshed
         Toolshed::Base.wait_for_command(Toolshed::Git.git_submodule_command) unless Toolshed::Git.git_submodule_command.empty?
 
         Toolshed.logger.info ''
-        Toolshed.logger.info "Pushing branch #{new_branch_name} to #{from_remote_name}/#{from_remote_branch_name}."
-        self.passed_branch_name = new_branch_name
+        Toolshed.logger.info "Pushing branch #{to_remote_branch_name} to #{from_remote_name}/#{from_remote_branch_name}."
+        self.passed_branch_name = to_remote_branch_name
         push
 
         Toolshed.logger.info ''
-        Toolshed.logger.info "Branch #{new_branch_name} has been created from #{from_remote_name}/#{from_remote_branch_name}."
+        Toolshed.logger.info "Branch #{to_remote_branch_name} has been created from #{from_remote_name}/#{from_remote_branch_name}."
       end
 
       def delete(delete_branch_name)
