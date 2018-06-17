@@ -43,10 +43,6 @@ module Toolshed
         git_submodule_command = "git submodule update #{Toolshed::Client.instance.git_quiet}" if Toolshed::Client.instance.use_git_submodules
         git_submodule_command
       end
-
-      def clean_branch_name(branch_name)
-        branch_name.strip.downcase.tr(' ', '_').gsub('&', '').gsub('.', '_').gsub("'", '').gsub(':', '').gsub(',', '').gsub('>', '').gsub('__', '_')
-      end
     end
 
     def remote_update
