@@ -9,13 +9,17 @@ class HarvestTest < Test::Unit::TestCase
     Toolshed::Client.instance.time_tracking_username           = 'sample_username'
     Toolshed::Client.instance.time_tracking_password           = 'sample1234'
     Toolshed::Client.instance.time_tracking_owner              = 'me'
+  end
 
+  def stub_harvest
     ::Harvest.expects(:client).
     with(subdomain: Toolshed::Client.instance.time_tracking_owner, username: Toolshed::Client.instance.time_tracking_username, password: Toolshed::Client.instance.time_tracking_password).
     returns('')
   end
 
   def test_get_previous_time_entries
+    stub_harvest
+
     harvest_mock = mock('Harvest::TimeEntry')
     harvest_mock.stubs(:notes => 'Worked on this yesterday')
 
@@ -33,6 +37,8 @@ class HarvestTest < Test::Unit::TestCase
   end
 
   def test_get_todays_time_entries
+    stub_harvest
+
     harvest_mock = mock('Harvest::TimeEntry')
     harvest_mock.stubs(:notes => 'Worked on this today')
 

@@ -1,4 +1,4 @@
-require 'jira'
+require 'jira-ruby'
 
 module Toolshed
   module TicketTracking
