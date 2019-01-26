@@ -7,9 +7,6 @@ if (ENV["COVERAGE"])
   end
 end
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 require 'test/unit'
 require 'mocha/test_unit'
 require 'faker'
