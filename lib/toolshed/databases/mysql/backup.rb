@@ -40,11 +40,11 @@ module Toolshed
         end
 
         def password_param
-          password.nil? || password.empty?  ? '' : "-p#{password_from_config(password)}"
+          password.nil? || password.empty?  ? '' : "-p'#{password_from_config(password)}'"
         end
 
         def hidden_password_param
-          password_param.empty? ? '' : '-p *******'
+          password_param.empty? ? '' : "-p'*******'"
         end
       end
     end
