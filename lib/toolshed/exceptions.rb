@@ -1,2 +1,2 @@
-class RequiredOptionException < StandardError;
-class Toolshed::PermissionsException < StandardError;
+class RequiredOptionException < StandardError; end
+class Toolshed::PermissionsException < StandardError; end
