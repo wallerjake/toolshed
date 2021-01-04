@@ -1,4 +1,5 @@
 require 'toolshed/error'
+require 'toolshed/exceptions'
 require 'toolshed/password'
 
 require 'fileutils'
